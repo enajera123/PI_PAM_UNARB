@@ -7,7 +7,122 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Test{
- id Int @id @default(autoincrement())
- name String
+model Test {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
+model GeneralInformation {
+  id          Int    @id @default(autoincrement())
+  name        String
+  vision      String
+  mission     String
+  description String
+  image       String
+}
+
+model Users {
+  id            Int    @id @default(autoincrement())
+  firstName     String
+  firstSurname  String
+  secondSurname String
+  phoneNumber   String
+  birthDate     String
+  email         String
+  password      String
+  role          Role
+}
+enum Role{
+  Admin
+  User
+}
+enum TypeIdentification {
+  Nacional
+  DIMEX
+}
+
+enum Grade {
+  Sin_Estudio
+  Primaria_Completa
+  Primaria_Incompleta
+  Secundaria_Completa
+  Secundaria_Incompleta
+  Universidad_Incompleta
+  Universidad_Completa
+}
+
+model Participants {
+  id                    Int                     @id @default(autoincrement())
+  firstName             String
+  firstSurname          String
+  secondSurname         String
+  email                 String
+  phoneNumber           String
+  birthDate             String
+  identification        String
+  hasWhatsapp           String
+  photo                 String
+  grade                 Grade
+  ReferenceContacts     ReferenceContacts[]
+  typeIdentification    TypeIdentification
+  ParticipantHealths    ParticipantsHealths?
+  ParticipantsOnCourses ParticipantsOnCourses[]
+}
+
+model ParticipantsOnCourses {
+  participantId Int
+  courseId      Int
+  Participants  Participants @relation(fields: [participantId], references: [id])
+  Courses       Courses      @relation(fields: [courseId], references: [id])
+
+  @@id([participantId, courseId])
+}
+
+model ReferenceContacts {
+  id            Int          @id @default(autoincrement())
+  firstName     String
+  firstSurname  String
+  secondSurname String
+  phoneNumber   String
+  relationship  String
+  participantId Int
+  Participants  Participants @relation(fields: [participantId], references: [id])
+}
+
+model ParticipantsHealths {
+  id                   Int                    @id @default(autoincrement())
+  bloodType            String
+  ParticipantDisseases ParticipantDisseases[]
+  ParticipantMedicines ParticipantMedicines[]
+  participantId        Int                    @unique
+  Participant          Participants           @relation(fields: [participantId], references: [id])
+}
+
+model ParticipantDisseases {
+  id                    Int                 @id @default(autoincrement())
+  disease               String
+  description           String
+  ParticipantsHealths   ParticipantsHealths @relation(fields: [participantsHealthsId], references: [id])
+  participantsHealthsId Int
+}
+
+model ParticipantMedicines {
+  id                    Int                 @id @default(autoincrement())
+  medicine              String
+  description           String
+  ParticipantsHealths   ParticipantsHealths @relation(fields: [participantsHealthsId], references: [id])
+  participantsHealthsId Int
+}
+
+model Courses {
+  id                    Int                     @id @default(autoincrement())
+  courseNumber          String                  @unique
+  initialDate           String
+  finalDate             String
+  name                  String
+  location              String
+  professor             String
+  quota                 Int
+  description           String
+  ParticipantsOnCourses ParticipantsOnCourses[]
 }
