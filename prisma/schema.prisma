@@ -21,21 +21,30 @@ model GeneralInformation {
   image       String
 }
 
-model Users {
-  id            Int    @id @default(autoincrement())
-  firstName     String
-  firstSurname  String
-  secondSurname String
-  phoneNumber   String
-  birthDate     String
-  email         String
-  password      String
-  role          Role
+enum State {
+  Active
+  Inactive
 }
-enum Role{
+
+model Users {
+  id             Int    @id @default(autoincrement())
+  firstName      String
+  firstSurname   String
+  secondSurname  String
+  phoneNumber    String
+  birthDate      String
+  identification String
+  state          State
+  email          String
+  password       String
+  role           Role
+}
+
+enum Role {
   Admin
   User
 }
+
 enum TypeIdentification {
   Nacional
   DIMEX
@@ -52,21 +61,30 @@ enum Grade {
 }
 
 model Participants {
-  id                    Int                     @id @default(autoincrement())
-  firstName             String
-  firstSurname          String
-  secondSurname         String
-  email                 String
-  phoneNumber           String
-  birthDate             String
-  identification        String
-  hasWhatsapp           String
-  photo                 String
-  grade                 Grade
-  ReferenceContacts     ReferenceContacts[]
-  typeIdentification    TypeIdentification
-  ParticipantHealths    ParticipantsHealths?
-  ParticipantsOnCourses ParticipantsOnCourses[]
+  id                     Int                      @id @default(autoincrement())
+  firstName              String
+  firstSurname           String
+  secondSurname          String
+  email                  String
+  phoneNumber            String
+  birthDate              String
+  identification         String
+  hasWhatsApp            String
+  photo                  String
+  grade                  Grade
+  ReferenceContacts      ReferenceContacts[]
+  ParticipantAttachments ParticipantAttachments[]
+  typeIdentification     TypeIdentification
+  ParticipantHealths     ParticipantsHealths?
+  ParticipantsOnCourses  ParticipantsOnCourses[]
+}
+
+model ParticipantAttachments {
+  id            Int          @id @default(autoincrement())
+  name          String
+  attachmentUrl String
+  participantId Int
+  Participant  Participants @relation(fields: [participantId], references: [id])
 }
 
 model ParticipantsOnCourses {
