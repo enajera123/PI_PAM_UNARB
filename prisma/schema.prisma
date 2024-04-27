@@ -7,11 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Test {
-  id   Int    @id @default(autoincrement())
-  name String
-}
-
 model GeneralInformation {
   id          Int    @id @default(autoincrement())
   name        String
@@ -84,7 +79,7 @@ model ParticipantAttachments {
   name          String
   attachmentUrl String
   participantId Int
-  Participant  Participants @relation(fields: [participantId], references: [id])
+  Participant   Participants @relation(fields: [participantId], references: [id])
 }
 
 model ParticipantsOnCourses {
