@@ -21,7 +21,7 @@ enum State {
   Inactive
 }
 
-model Users {
+model User {
   id             Int    @id @default(autoincrement())
   firstName      String
   firstSurname   String
@@ -55,8 +55,8 @@ enum Grade {
   Universidad_Completa
 }
 
-model Participants {
-  id                     Int                      @id @default(autoincrement())
+model Participant {
+  id                     Int                     @id @default(autoincrement())
   firstName              String
   firstSurname           String
   secondSurname          String
@@ -64,78 +64,106 @@ model Participants {
   phoneNumber            String
   birthDate              String
   identification         String
-  hasWhatsApp            String
-  photo                  String
+  hasWhatsApp            YesOrNo
+  photo                  String?
   grade                  Grade
-  ReferenceContacts      ReferenceContacts[]
-  ParticipantAttachments ParticipantAttachments[]
+  Policy                 Policy?
+  MedicalReport          MedicalReport?
+  ReferenceContacts      ReferenceContact[]
+  ParticipantAttachments ParticipantAttachment[]
   typeIdentification     TypeIdentification
-  ParticipantHealths     ParticipantsHealths?
-  ParticipantsOnCourses  ParticipantsOnCourses[]
+  ParticipantHealths     ParticipantHealth?
+  ParticipantsOnCourses  ParticipantOnCourse[]
 }
 
-model ParticipantAttachments {
-  id            Int          @id @default(autoincrement())
+model MedicalReport {
+  id             Int         @id @default(autoincrement())
+  expirationDate String
+  participant    Participant @relation(fields: [id], references: [id])
+}
+
+model Policy {
+  id             Int         @id @default(autoincrement())
+  expirationDate String
+  participant    Participant @relation(fields: [id], references: [id])
+}
+
+model ParticipantAttachment {
+  id            Int         @id @default(autoincrement())
   name          String
   attachmentUrl String
   participantId Int
-  Participant   Participants @relation(fields: [participantId], references: [id])
+  Participant   Participant @relation(fields: [participantId], references: [id])
 }
 
-model ParticipantsOnCourses {
+enum StateParticipantOnCourse {
+  Retired
+  Registered
+  Finished
+}
+
+model ParticipantOnCourse {
   participantId Int
   courseId      Int
-  Participants  Participants @relation(fields: [participantId], references: [id])
-  Courses       Courses      @relation(fields: [courseId], references: [id])
+  state         StateParticipantOnCourse
+  Participants  Participant              @relation(fields: [participantId], references: [id])
+  Courses       Course                   @relation(fields: [courseId], references: [id])
 
   @@id([participantId, courseId])
 }
 
-model ReferenceContacts {
-  id            Int          @id @default(autoincrement())
+model ReferenceContact {
+  id            Int         @id @default(autoincrement())
   firstName     String
   firstSurname  String
   secondSurname String
   phoneNumber   String
   relationship  String
   participantId Int
-  Participants  Participants @relation(fields: [participantId], references: [id])
+  Participant  Participant @relation(fields: [participantId], references: [id])
 }
 
-model ParticipantsHealths {
-  id                   Int                    @id @default(autoincrement())
+model ParticipantHealth {
+  id                   Int                   @id @default(autoincrement())
   bloodType            String
-  ParticipantDisseases ParticipantDisseases[]
-  ParticipantMedicines ParticipantMedicines[]
-  participantId        Int                    @unique
-  Participant          Participants           @relation(fields: [participantId], references: [id])
+  ParticipantDisseases ParticipantDissease[]
+  ParticipantMedicines ParticipantMedicine[]
+  participantId        Int                   @unique
+  Participant          Participant           @relation(fields: [participantId], references: [id])
 }
 
-model ParticipantDisseases {
-  id                    Int                 @id @default(autoincrement())
+model ParticipantDissease {
+  id                    Int               @id @default(autoincrement())
   disease               String
-  description           String
-  ParticipantsHealths   ParticipantsHealths @relation(fields: [participantsHealthsId], references: [id])
-  participantsHealthsId Int
+  description           String?
+  ParticipantHealth   ParticipantHealth @relation(fields: [participantHealthId], references: [id])
+  participantHealthId Int
 }
 
-model ParticipantMedicines {
-  id                    Int                 @id @default(autoincrement())
+model ParticipantMedicine {
+  id                    Int               @id @default(autoincrement())
   medicine              String
-  description           String
-  ParticipantsHealths   ParticipantsHealths @relation(fields: [participantsHealthsId], references: [id])
-  participantsHealthsId Int
+  description           String?
+  ParticipantHealth   ParticipantHealth @relation(fields: [participantHealthId], references: [id])
+  participantHealthId Int
 }
 
-model Courses {
-  id                    Int                     @id @default(autoincrement())
-  courseNumber          String                  @unique
+enum YesOrNo {
+  Yes
+  No
+}
+
+model Course {
+  id                    Int                   @id @default(autoincrement())
+  courseNumber          String                @unique
   initialDate           String
   finalDate             String
   name                  String
-  location              String
+  location              String?
   professor             String
   quota                 Int
-  description           String
-  ParticipantsOnCourses ParticipantsOnCourses[]
+  description           String?
+  state                 State                @default(Active)
+  needMedicalReport     YesOrNo
+  ParticipantsOnCourses ParticipantOnCourse[]
 }
