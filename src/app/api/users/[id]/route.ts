@@ -5,7 +5,7 @@ export async function PUT(req: NextRequest, { params }: ParameterId) {
     try {
         const fetchedId = parseInt(params.id);
         const user = await req.json();
-        const response = await prisma.users.update({
+        const response = await prisma.user.update({
             where: {
                 id: fetchedId,
             },
@@ -25,7 +25,7 @@ export async function PUT(req: NextRequest, { params }: ParameterId) {
 export async function DELETE(req: NextRequest, { params }: ParameterId) {
     try {
         const fetchedId = parseInt(params.id);
-        const response = await prisma.users.delete({
+        const response = await prisma.user.delete({
             where: {
                 id: fetchedId,
             },
@@ -42,7 +42,7 @@ export async function DELETE(req: NextRequest, { params }: ParameterId) {
 export async function GET(req: NextRequest, { params }: ParameterId) {
     try {
         const fetchedId = parseInt(params.id);
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 id: fetchedId,
             },
