@@ -14,3 +14,9 @@ export type ParameterId = {
     params: { name: string };
   };
   
+  export type ParameterIdentification = {
+    params: { identification: string };
+  };
+  export type ParameterEmail = {
+    params: { email: string };
+  };
