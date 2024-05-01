@@ -28,3 +28,7 @@ export type ParameterIdentification = {
 export type ParameterEmail = {
   params: { email: string };
 };
+
+export type ParameterBloodType = {
+  params: { bloodType: string };
+};
