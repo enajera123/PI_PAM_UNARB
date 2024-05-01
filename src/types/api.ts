@@ -6,6 +6,10 @@ export type ParameterParticipantId = {
   params: { participantId: string };
 };
 
+export type ParameterParticipantHealthId = {
+  params: { participantHealthId: string };
+};
+
 export type ParameterCourseId = {
   params: { courseId: string };
 };
@@ -31,4 +35,8 @@ export type ParameterEmail = {
 
 export type ParameterBloodType = {
   params: { bloodType: string };
+};
+
+export type ParameterDisease = {
+  params: { disease: string };
 };
