@@ -2,7 +2,7 @@ import React from "react";
 import { FaUsers } from "react-icons/fa";
 import { SelectProps } from "./type";
 
-const Select = ({label, placeholder, icon, options} : SelectProps) => {
+const Select = ({ label, placeholder, icon, options }: SelectProps) => {
   return (
     <form className="max-w-sm mx-auto">
       <label
@@ -17,13 +17,15 @@ const Select = ({label, placeholder, icon, options} : SelectProps) => {
         </div>
         <select
           id="countries"
+          defaultValue={placeholder}
           className="bg-dark-gray border border-white text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5 dark:bg-dark-gray dark:border-white dark:placeholder-gray-400 dark:text-white"
         >
-          <option selected disabled>{placeholder}</option>
-          { options.map((item) => (
-            <option key={item.value}>{item.label}</option>
-          ))
-          }
+          <option value="" disabled selected>{placeholder}</option>
+          {options.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
+            </option>
+          ))}
         </select>
       </div>
     </form>
