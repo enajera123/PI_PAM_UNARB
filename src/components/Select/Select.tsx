@@ -17,10 +17,10 @@ const Select = ({ label, placeholder, icon, options }: SelectProps) => {
         </div>
         <select
           id="countries"
-          defaultValue={placeholder}
+          defaultValue={placeholder} // or value={placeholder}
           className="bg-dark-gray border border-white text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5 dark:bg-dark-gray dark:border-white dark:placeholder-gray-400 dark:text-white"
         >
-          <option value="" disabled selected>{placeholder}</option>
+          <option value={placeholder} disabled>{placeholder}</option>
           {options.map((item) => (
             <option key={item.value} value={item.value}>
               {item.label}
@@ -33,3 +33,4 @@ const Select = ({ label, placeholder, icon, options }: SelectProps) => {
 };
 
 export default Select;
+
