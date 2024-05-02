@@ -5,7 +5,11 @@ import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { TableProps } from "./type";
 
 const Table = ({data, headers, itemsPerPage} : TableProps) => {
+
+  const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
   
+  const currentPageActiveClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-medium-gray dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
+
   const keys = Object.keys(data[0]);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,9 +91,7 @@ const Table = ({data, headers, itemsPerPage} : TableProps) => {
               .map((_, index) => (
                 <li key={index}>
                   <span
-                    className={`flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer ${
-                      index + 1 === currentPage ? "dark:bg-medium-gray" : ""
-                    }`}
+                    className={index + 1 === currentPage ? currentPageActiveClass : currentPageClass}
                     onClick={() => setCurrentPage(index + 1)}
                   >
                     {index + 1}
