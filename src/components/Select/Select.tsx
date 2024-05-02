@@ -1,5 +1,4 @@
 import React from "react";
-import { FaUsers } from "react-icons/fa";
 import { SelectProps } from "./type";
 
 const Select = ({ label, placeholder, icon, options }: SelectProps) => {
@@ -17,7 +16,7 @@ const Select = ({ label, placeholder, icon, options }: SelectProps) => {
         </div>
         <select
           id="countries"
-          defaultValue={placeholder} // or value={placeholder}
+          defaultValue={placeholder}
           className="bg-dark-gray border border-white text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5 dark:bg-dark-gray dark:border-white dark:placeholder-gray-400 dark:text-white"
         >
           <option value={placeholder} disabled>{placeholder}</option>
