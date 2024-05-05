@@ -40,3 +40,7 @@ export type ParameterBloodType = {
 export type ParameterDisease = {
   params: { disease: string };
 };
+
+export type ParameterMedicine = {
+  params: { medicine: string };
+};
