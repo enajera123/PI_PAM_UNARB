@@ -1,4 +1,3 @@
-import { Participant } from "./../../../../../../node_modules/.prisma/client/index.d";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { ParameterBloodType } from "@/types/api";
