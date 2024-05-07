@@ -48,7 +48,7 @@ export default function Home() {
                 </div>
                 <div className="col-span-1">
                     <div className='mt-7'>
-                    <Button className="bg-medium-gray text-dark-gray">Agregar Poliza Estudiantil</Button>
+                    <Button className="bg-red-gradient">Agregar Poliza Estudiantil</Button>
                     </div>
                 </div>
                 <div className="col-span-1">
@@ -108,15 +108,15 @@ export default function Home() {
                 </div>
                 <div className="col-span-1">
                     <div className='flex flex-col items-center justify-center'>
-                        <LuUserCircle2  className="w-32 h-auto text-dark-gray" />
-                        <Button className="bg-medium-gray text-dark-gray">Foto</Button> 
+                        <LuUserCircle2  className="w-32 h-auto text-white" />
+                        <Button className="bg-red-gradient">Foto</Button> 
                     </div>
                 </div>
             </div>
             <div className='min-w-md'>
-                <Button className="bg-medium-gray text-dark-gray px-28">Salud</Button>
-                <Button className="bg-medium-gray text-dark-gray px-12">Desactivar</Button> 
-                <Button className="bg-medium-gray text-dark-gray px-12">Eliminar</Button>  
+                <Button className="bg-red-gradient px-28">Salud</Button>
+                <Button className="bg-red-gradient px-12">Desactivar</Button> 
+                <Button className="bg-red-gradient px-12">Eliminar</Button>  
             </div>
             
         </div>

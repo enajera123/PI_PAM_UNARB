@@ -70,7 +70,7 @@ export default function courseRegister() {
                 </div>
                 <div className="flex flex-row items-center justify-center ">                   
                     <Button className="bg-red-gradient w-60">Guardar</Button>
-                    <Button className="bg-medium-gray w-60">Eliminar</Button>                  
+                    <Button className="bg-red-gradient w-60">Eliminar</Button>                  
                 </div>
                 
             </div>          
