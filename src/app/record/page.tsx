@@ -5,6 +5,7 @@ import Select from '@/components/Select/Select';
 import TextArea from '@/components/TextArea/TextArea';
 import logoUNAPAM from '@/resources/LogoColorful.png';
 import Image from 'next/image';
+import Table from "@/components/Table/Table";
 import { FaRegCalendarAlt, FaUsers } from 'react-icons/fa';
 import { HiOutlineIdentification } from 'react-icons/hi';
 import { LuFileEdit } from 'react-icons/lu';
@@ -17,7 +18,53 @@ import { LuUserCircle2 } from "react-icons/lu";
       { value: "FR", label: "France" },
       { value: "DE", label: "Germany" },
     ];
+    const data = [
+        {
+          name: "Curso 1",
+          color: "1232",
+          cat: "Activo",
+        },
+        {
+          name: "Curso 2",
+          color: "2354",
+          cat: "Activo",
+        },
+        {
+          name: "Curso 3",
+          color: "5345",
+          cat: "Activo",
+        },
+        {
+          name: "Curso 4",
+          color: "6345",
+          cat: "Activo",
+        },
+        {
+          name: "Curso 5",
+          color: "6345",
+          cat: "Activo",
+        },
+      ];
+      const dataFiles = [
+        {
+          name: "Documento",
+        },
+        {
+          name: "Documento",
+        },
+        {
+          name: "Documento",
+        },
+        {
+          name: "Documento",
+        },
+        {
+          name: "Documento",
+        },
+      ];
 
+    const headers = ["Nombre", "Codigo", "Estado", "Action"];
+    const headersFiles = ["Nombre", "Action"];
 export default function Home() {
     return (
         <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -113,12 +160,32 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-            <div className='min-w-md'>
-                <Button className="bg-red-gradient px-28">Salud</Button>
-                <Button className="bg-red-gradient px-12">Desactivar</Button> 
-                <Button className="bg-red-gradient px-12">Eliminar</Button>  
+            <div className='flex justify-between mt-4'>
+                <Button className="bg-red-gradient w-52">Salud</Button>
+                <Button className="bg-red-gradient w-52">Desactivar</Button> 
+                <Button className="bg-red-gradient w-52">Eliminar</Button>  
             </div>
-            
+            <div className='flex justify-center mt-6'>
+                <Button className="bg-red-gradient w-1/3">Registrar</Button>
+            </div>
+            <div className='container bg-white mt-6 p-4 rounded-xl'>
+                <p className="text-3xl font-bold text-dark-gray flex justify-center">Documentos Adjuntos</p>
+                <div className='mt-6'>
+                    <Table data={dataFiles} headers={headersFiles} itemsPerPage={3}/>
+                </div>
+                <div className='flex justify-center mt-6'>
+                    <Button className="bg-red-gradient w-1/3">Agregar</Button>
+                </div>
+            </div>
+            <div className='container bg-white mt-6 p-4 rounded-xl'>
+                <p className="text-3xl font-bold text-dark-gray flex justify-center">Cursos</p>
+                <div className='mt-6'>
+                    <Table data={data} headers={headers} itemsPerPage={3}/>
+                </div>
+                <div className='flex justify-center mt-6'>
+                    <Button className="bg-red-gradient w-1/3">Agregar</Button>
+                </div>
+            </div>
         </div>
-      );      
+      );
 }

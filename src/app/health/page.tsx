@@ -9,6 +9,7 @@ import { GoPerson, GoPersonAdd } from "react-icons/go";
 import { FiPhoneCall } from "react-icons/fi";
 import logoUNAPAM from '@/resources/LogoColorful.png';
 import Image from 'next/image';
+import { BiInjection } from "react-icons/bi";
 
 export default function health() {
     const options = [
@@ -30,7 +31,7 @@ export default function health() {
             <Select
             label="Tipo Sanguineo"
             placeholder="Tipo Sanguineo"
-            icon={<FaUsers color="white" />}
+            icon={<BiInjection color="white" />}
             options={options}/>
           </div>
           <div className="w-2/3 flex justify-end">
