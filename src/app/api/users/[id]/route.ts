@@ -22,6 +22,7 @@ export async function PUT(req: NextRequest, { params }: ParameterId) {
         );
     }
 }
+
 export async function DELETE(req: NextRequest, { params }: ParameterId) {
     try {
         const fetchedId = parseInt(params.id);
@@ -47,8 +48,10 @@ export async function GET(req: NextRequest, { params }: ParameterId) {
                 id: fetchedId,
             },
         });
-
-        return NextResponse.json(user, { status: 200 });
+        const { password, ...userData } =  user as {
+            password: string;
+        }
+        return NextResponse.json(userData, { status: 200 });
     } catch (error) {
         return NextResponse.json(
             { error: "Internal Server Error" },

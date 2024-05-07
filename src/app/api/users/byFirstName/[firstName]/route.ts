@@ -7,13 +7,15 @@ export async function GET(req: NextRequest, { params }: ParameterFirstName) {
     try {
         const fetchedName = params.firstName;
       
-        const user = await prisma.user.findMany({
+        const users = await prisma.user.findMany({
             where: {
                 firstName: fetchedName,
             },
         });
 
-        return NextResponse.json(user, { status: 200 });
+        const userData = users.map(({ password, ...user }) => user);
+
+        return NextResponse.json(userData, { status: 200 });
     } catch (error) {
         return NextResponse.json(
             { error: "Internal Server Error" },
