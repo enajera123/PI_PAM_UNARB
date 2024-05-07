@@ -79,8 +79,8 @@ return(
                         type="password"
                         iconStart={<GoKey color="white" />}/>
                 </div>
-                    <Button className="bg-medium-gray text-dark-gray">Eliminar</Button> 
-                    <Button className="bg-red-gradient text-dark-gray">Registrar</Button> 
+                    <Button className="bg-red-gradient">Eliminar</Button> 
+                    <Button className="bg-red-gradient">Registrar</Button> 
             </div>
         </div>
     </div> 
