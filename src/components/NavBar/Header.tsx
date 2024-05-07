@@ -8,9 +8,9 @@ export const Header:React.FC = ()=>{
             </Link>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center'}}>
-            <Link href="/information">
+            <a href="/information">
             <Button className="text-dark-gray bg-light-gray">Información</Button>
-            </Link>
+            </a>
             <Link href="/courses">
             <Button className="text-light-red bg-white">Cursos</Button>
             </Link>
