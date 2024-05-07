@@ -1,9 +1,7 @@
 export type ParameterId = {
   params: { id: string };
 };
- export type UserLogin = {
-  params: {email:string, password:string}
- }
+
 export type ParameterParticipantId = {
   params: { participantId: string };
 };
