@@ -10,5 +10,5 @@ export type SelectProps = {
     label: string,
     placeholder: string,
     icon: ReactNode,
-    options: Array<Options>,
+    options: Array<Options>, 
 }
