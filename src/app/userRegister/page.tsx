@@ -13,14 +13,14 @@ import { FiPhoneCall } from "react-icons/fi";
 import { MdOutlineEmail } from "react-icons/md";
 
 export default function courseRegister() {
-    const options = [
+    const optionsRol = [
         { value: "Admin", label: "Administrador" },
         { value: "User", label: "Usuario" },  
     ];
 return(
     <div className="container grid grid-cols-3 gap-0 mx-auto px-36 mt-4 items-center">
         <div className="col-span-1 ">
-            <div className="container bg-white max-h-sm p-6 flex flex-col items-center justify-center rounded-l-3xl">
+            <div className="container bg-light-gray max-h-sm p-6 flex flex-col items-center justify-center rounded-l-3xl">
                     <p className="text-3xl font-bold text-medium-gray text-center">Registro</p>
                     <Image src={logoUNAPAM} alt="logoUNAPAM" className="w-64 h-auto" />
             </div>
@@ -42,7 +42,7 @@ return(
                         label="Rol"
                         placeholder="Roles"
                         icon={<BsDiagram3 color="white" />}
-                        options={options}/>
+                        options={optionsRol}/>
                 </div>
                 <div>
                     <InputField

@@ -4,15 +4,14 @@ import Button from "@/components/Button/Button";
 import TextArea from "@/components/TextArea/TextArea";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import { BsHeartPulse } from "react-icons/bs";
-import { FaUsers } from "react-icons/fa";
 import { GoPerson, GoPersonAdd } from "react-icons/go";
 import { FiPhoneCall } from "react-icons/fi";
-import logoUNAPAM from '@/resources/LogoColorful.png';
+import logoUNAPAM from '@/resources/LogoWhite.png';
 import Image from 'next/image';
 import { BiInjection } from "react-icons/bi";
 
 export default function health() {
-    const options = [
+    const optionsBloodType = [
         { value: "A+", label: "A+" },
         { value: "A-", label: "A-" },
         { value: "B+", label: "B+" },
@@ -21,6 +20,13 @@ export default function health() {
         { value: "AB-", label: "AB-" },
         { value: "O+", label: "O+" },
         { value: "O-", label: "O-" },
+        { value: "NA", label: "Sin proporcionar" },      
+    ];
+    const optionsKinship = [
+      { value: "A+", label: "Hijo/a" },
+      { value: "A-", label: "Pareja/Conyugue" },
+      { value: "B+", label: "Hermano/a" },
+      { value: "B-", label: "Otro" },
     ];
   
   return (
@@ -32,7 +38,7 @@ export default function health() {
             label="Tipo Sanguineo"
             placeholder="Tipo Sanguineo"
             icon={<BiInjection color="white" />}
-            options={options}/>
+            options={optionsBloodType}/>
           </div>
           <div className="w-2/3 flex justify-end">
             <div className="ml-auto">
@@ -74,7 +80,7 @@ export default function health() {
           label="Parentesco"
           placeholder="Parentesco"
           icon={<GoPersonAdd color="white" />}
-          options={options}/>
+          options={optionsKinship}/>
       </div> 
       <div className="flex items-center ">
         <div className="flex-initial w-1/3">
@@ -101,7 +107,7 @@ export default function health() {
           label="Parentesco"
           placeholder="Parentesco"
           icon={<GoPersonAdd color="white" />}
-          options={options}/>
+          options={optionsKinship}/>
       </div> 
       <div className="flex items-center ">
         <div className="flex-initial w-1/3">

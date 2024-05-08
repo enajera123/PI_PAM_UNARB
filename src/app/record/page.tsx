@@ -3,20 +3,24 @@ import Checkbox from '@/components/Checkbox/Checkbox';
 import InputField from '@/components/InputField/InputField';
 import Select from '@/components/Select/Select';
 import TextArea from '@/components/TextArea/TextArea';
-import logoUNAPAM from '@/resources/LogoColorful.png';
+import logoUNAPAM from '@/resources/LogoWhite.png';
 import Image from 'next/image';
 import Table from "@/components/Table/Table";
 import { FaRegCalendarAlt, FaUsers } from 'react-icons/fa';
 import { HiOutlineIdentification } from 'react-icons/hi';
+import Link from 'next/link';
 import { LuFileEdit } from 'react-icons/lu';
 import { LuUserCircle2 } from "react-icons/lu";
 
 
-    const options = [
-      { value: "US", label: "United States" },
-      { value: "CA", label: "Canada" },
-      { value: "FR", label: "France" },
-      { value: "DE", label: "Germany" },
+    const optionsScholarship = [
+      { value: "NO", label: "Sin estudio" },
+      { value: "PC", label: "Primaria completa" },
+      { value: "PI", label: "Primaria incompleta" },
+      { value: "SC", label: "Secundaria completa" },
+      { value: "SI", label: "Secundaria incompleta"},
+      { value: "UC", label: "Universidad completa" },
+      { value: "UI", label: "Universidad incompleta" },
     ];
     const data = [
         {
@@ -87,7 +91,7 @@ export default function Home() {
                     label="Escolaridad"
                     placeholder="Escolaridad"
                     icon={<FaUsers color="white" />}
-                    options={options}
+                    options={optionsScholarship}
                     />
                 </div>
                 <div className="col-span-1 flex justify-center items-center">
@@ -161,7 +165,9 @@ export default function Home() {
                 </div>
             </div>
             <div className='flex justify-between mt-4'>
-                <Button className="bg-red-gradient w-52">Salud</Button>
+                <Link href="/health">
+                    <Button className="bg-red-gradient w-52">Salud</Button>
+                </Link> 
                 <Button className="bg-red-gradient w-52">Desactivar</Button> 
                 <Button className="bg-red-gradient w-52">Eliminar</Button>  
             </div>
