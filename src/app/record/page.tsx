@@ -11,6 +11,10 @@ import { HiOutlineIdentification } from 'react-icons/hi';
 import Link from 'next/link';
 import { LuFileEdit } from 'react-icons/lu';
 import { LuUserCircle2 } from "react-icons/lu";
+import { GoPerson } from 'react-icons/go';
+import { FiPhoneCall } from 'react-icons/fi';
+import { RiGraduationCapLine } from 'react-icons/ri';
+import { MdOutlineEmail } from 'react-icons/md';
 
 
     const optionsScholarship = [
@@ -90,7 +94,7 @@ export default function Home() {
                     <Select
                     label="Escolaridad"
                     placeholder="Escolaridad"
-                    icon={<FaUsers color="white" />}
+                    icon={<RiGraduationCapLine color="white" />}
                     options={optionsScholarship}
                     />
                 </div>
@@ -115,19 +119,19 @@ export default function Home() {
                     <InputField
                         label="Nombre"
                         placeholder="Nombre"
-                        iconStart={<HiOutlineIdentification color="white" />}
+                        iconStart={<GoPerson color="white" />}
                     />
                     <InputField
                         label="Telefono"
                         placeholder="Telefono"
-                        iconStart={<HiOutlineIdentification color="white" />}
+                        iconStart={<FiPhoneCall color="white" />}
                     />
                 </div>
                 <div className="col-span-1">
                     <InputField
                         label="Primer Apellido"
                         placeholder="Primer Apellido"
-                        iconStart={<HiOutlineIdentification color="white" />}
+                        iconStart={<GoPerson color="white" />}
                     />
                     <InputField
                         label="Fecha de Nacimiento"
@@ -140,12 +144,12 @@ export default function Home() {
                     <InputField
                         label="Segundo Apellido"
                         placeholder="Segundo Apellido"
-                        iconStart={<HiOutlineIdentification color="white" />}
+                        iconStart={<GoPerson color="white" />}
                     />
                     <InputField
                         label="Email"
                         placeholder="Email"
-                        iconStart={<HiOutlineIdentification color="white" />}
+                        iconStart={<MdOutlineEmail color="white" />}
                     />
                 </div>
             </div>

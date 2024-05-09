@@ -1,7 +1,9 @@
+import { Header } from '@/components/NavBar/Header';
 import logoUNAPAM from '@/resources/LogoWhite.png';
 import Image from 'next/image';
 
-export default function SpecificLayout({
+export default function InformationLayout({
+
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -9,6 +11,7 @@ export default function SpecificLayout({
   return (
     <html lang="en">
     <body>
+        <Header/>
         <main className="flex-1">
             {children}
         </main>
@@ -30,6 +33,7 @@ export default function SpecificLayout({
           </div>
       </footer>
         </body>
+        
     </html>
   );
 }
