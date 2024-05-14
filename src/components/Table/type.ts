@@ -1,5 +1,7 @@
 export type TableProps = {
     headers: Array<string>,
     data: Array<any>,
-    itemsPerPage: number
+    itemsPerPage: number,
+    resetPagination?: number,
+    showEditColumn?: boolean,
 }
