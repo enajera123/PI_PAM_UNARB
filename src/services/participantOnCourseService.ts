@@ -38,7 +38,7 @@ export async function createParticipantOnCourse(
   }
 }
 
-export async function getParticipantCourses(participantId: number) {
+export async function getParticipantOnCourseByParticipantId(participantId: number) {
   try {
     const response = await axios.get(
       `/api/participantOnCourse/byParticipantId/${participantId}`
