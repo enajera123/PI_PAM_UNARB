@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { TableProps } from "./type";
 
-const Table = ({data, headers, itemsPerPage} : TableProps) => {
+const Table = ({ data, headers, itemsPerPage, resetPagination, showEditColumn = false }: TableProps) => {
 
   const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
   
@@ -32,40 +32,57 @@ const Table = ({data, headers, itemsPerPage} : TableProps) => {
       setCurrentPage(currentPage + 1);
     }
   };
+  
+  useEffect(() => {
+    if (resetPagination) {
+      setCurrentPage(1);
+    }
+  }, [resetPagination, setCurrentPage]);
 
   return (
     <>
       <div className="flex flex-col">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-white uppercase bg-gray-50 dark:bg-medium-red dark:text-white">
+            <thead className="text-xs text-white uppercase bg-dark-red dark:bg-medium-red dark:text-white">
               <tr>
                 {headers.map((header) => (
                   <th key={header} scope="col" className="px-6 py-3">
                     {header}
                   </th>
                 ))}
+                {showEditColumn && <th scope="col" className="px-6 py-3">Edit</th>}
               </tr>
             </thead>
             <tbody>
               {getCurrentPageData().map((item) => (
                 <tr
                   key={item.name}
-                  className="odd:bg-white odd:dark:bg-medium-gray  even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-medium-red"
+                  className={`odd:bg-white odd:dark:bg-medium-gray  even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-medium-red`}
                 >
                   {keys.map((key) => (
                     <td key={key} className="px-6 py-4">
                       {item[key]}
                     </td>
                   ))}
-                  <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Edit
-                    </a>
-                  </td>
+                  {showEditColumn && (
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2">
+                        <button
+                          className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+                          onClick={() => console.log("Eliminar", item)}
+                        >
+                          Eliminar
+                        </button>
+                        <button
+                          className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+                          onClick={() => console.log("Desactivar", item)}
+                        >
+                          Desactivar
+                        </button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
