@@ -11,7 +11,7 @@ export async function getParticipantsOnCourse() {
   }
 }
 
-export async function getParticipantByCourseId(id: number) {
+export async function getParticipantOnCourseByCourseId(id: number) {
   try {
     const response = await axios.get(
       `/api/participantOnCourse/byCourseId/${id}`
