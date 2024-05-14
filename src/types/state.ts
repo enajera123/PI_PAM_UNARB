@@ -67,7 +67,7 @@ export type ParticipantOnCourseState = {
   ) => void;
   getParticipantsOnCourse: () => void;
   getParticipantOnCourseByCourseId: (id: number) => void;
-  getParticipantByCoursesByParticipantId: (participantId: number) => void;
+  getParticipantOnCourseByParticipantId: (participantId: number) => void;
   postParticipantOnCourse: (participantOnCourse: ParticipantOnCourse) => void;
 };
 
