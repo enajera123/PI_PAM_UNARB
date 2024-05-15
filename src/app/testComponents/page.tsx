@@ -88,7 +88,7 @@ export default function Home() {
         </div>
       </div>
       <div className="container mx-auto bg-gray-gradient px-4 py-10 flex justify-center items-center h-auto">
-        <Table data={data} headers={headers} itemsPerPage={3}/>
+        <Table keys={[]} data={data} headers={headers} itemsPerPage={3}/>
       </div>
     </>
   );

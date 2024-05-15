@@ -4,4 +4,5 @@ export type TableProps = {
     itemsPerPage: number,
     resetPagination?: number,
     showEditColumn?: boolean,
+    keys: Array<string>
 }

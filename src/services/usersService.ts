@@ -4,7 +4,7 @@ import { User } from "@/types/types";
 export async function getUsers() {
   try {
     const response = await axios.get("/api/users");
-    return response.data;
+    return response.data as User[];
   } catch (error) {
     console.error(error);
     return null;
