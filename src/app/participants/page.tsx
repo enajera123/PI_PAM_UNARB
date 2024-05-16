@@ -1,10 +1,10 @@
 "use client"
-
+import Button from "@/components/Button/Button";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Table from "@/components/Table/Table";
 import { getParticipants } from "@/services/participantsService";
 import { useEffect, useState } from "react";
-
+import Link from 'next/link';
 
 const Home: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -64,6 +64,11 @@ const Home: React.FC = () => {
                     <p>No se encontraron resultados</p>
                 )}
             </div>
+            <div className="mt-6">
+            <Link href="/record">
+              <Button className="bg-red-gradient w-60">Agregar</Button> 
+            </Link>
+           </div>  
         </div>
     );
 };

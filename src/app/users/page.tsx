@@ -1,9 +1,12 @@
 "use client"
+import Button from "@/components/Button/Button";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Table from "@/components/Table/Table";
 import { getUsers } from "@/services/usersService";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
+import Link from 'next/link';
+
 const UsersPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [randomNumber, setRandomNumber] = useState<number>(0);
@@ -54,6 +57,11 @@ const UsersPage: React.FC = () => {
             ) : (
                 <p>No se encontraron resultados</p>
             )}
+           <div className="mt-6">
+            <Link href="/userRegister">
+                <Button className="bg-red-gradient w-60">Agregar</Button> 
+            </Link> 
+           </div>         
         </div>
     );
 }
