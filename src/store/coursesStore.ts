@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { Course } from "@/types/types";
 import { CoursesState } from "@/types/state";
 import {
     getCourses,

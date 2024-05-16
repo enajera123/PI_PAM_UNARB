@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { ParticipantAttachment } from "@/types/types";
 import { ParticipantAttachmentState } from "@/types/state";
 import {
     getParticipantsAttachment,

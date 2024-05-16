@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Policy } from "@/types/types";
 
 export async function getPolicy() {
   try {

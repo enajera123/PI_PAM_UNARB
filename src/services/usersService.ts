@@ -1,5 +1,4 @@
 import axios from "axios";
-import { User } from "@/types/types";
 
 export async function getUsers() {
   try {

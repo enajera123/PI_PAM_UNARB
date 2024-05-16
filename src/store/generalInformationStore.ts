@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { GeneralInformation } from "@/types/types";
 import { GeneralInformationState } from "@/types/state";
 import {
     getGeneralInformation,

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ParticipantAttachment } from "@/types/types";
 
 export async function getParticipantsAttachment() {
     try {

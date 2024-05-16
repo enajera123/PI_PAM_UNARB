@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Participant } from "@/types/types";
 
 export async function getParticipants() {
   try {

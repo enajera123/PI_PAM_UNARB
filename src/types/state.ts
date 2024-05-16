@@ -1,17 +1,4 @@
-import {
-  User,
-  Course,
-  Participant,
-  ParticipantAttachment,
-  ParticipantDissease,
-  ReferenceContact,
-  ParticipantHealth,
-  ParticipantMedicine,
-  ParticipantOnCourse,
-  MedicalReport,
-  Policy,
-  GeneralInformation,
-} from "./types";
+
 
 export type UsersState = {
   users: User[];

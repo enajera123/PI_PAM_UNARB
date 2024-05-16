@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { ParticipantDissease } from "@/types/types";
 import { ParticipantDisseaseState } from "@/types/state";
 import {
   getParticipantsDissease,

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { MedicalReport } from "@/types/types";
 
 export async function getMedicalReports() {
     try {

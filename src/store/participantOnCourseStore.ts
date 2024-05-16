@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { ParticipantOnCourse } from "@/types/types";
 import { ParticipantOnCourseState } from "@/types/state";
 import {
   getParticipantsOnCourse,

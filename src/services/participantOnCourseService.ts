@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ParticipantOnCourse } from "@/types/types";
 
 export async function getParticipantsOnCourse() {
   try {

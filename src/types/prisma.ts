@@ -114,7 +114,7 @@ interface ReferenceContact {
 
 interface ParticipantHealth {
     id: number;
-    bloodinterface: string;
+    bloodType: string;
     ParticipantDisseases: ParticipantDissease[];
     ParticipantMedicines: ParticipantMedicine[];
     participantId: number;

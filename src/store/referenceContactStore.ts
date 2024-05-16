@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { ReferenceContact } from "@/types/types";
 import { ReferenceContactState } from "@/types/state";
 import {
   getReference,

@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { User } from "@/types/types";
 import { UsersState } from "@/types/state";
 import {
   getUsers,
@@ -18,7 +17,8 @@ export const useUsersStore = create<UsersState>((set) => ({
 
   getUsers: async () => {
     const users = await getUsers();
-    set({ users });
+    if (users)
+      set({ users });
   },
 
   getUserById: async (id: number) => {

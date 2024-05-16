@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { Policy } from "@/types/types";
 import { PolicyState } from "@/types/state";
 import {
   getPolicy,

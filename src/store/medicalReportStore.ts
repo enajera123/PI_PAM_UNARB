@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { MedicalReport } from "@/types/types";
 import { MedicalReportState } from "@/types/state";
 import {
     getMedicalReports,

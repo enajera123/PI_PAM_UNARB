@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ParticipantMedicine } from "@/types/types";
 
 export async function getParticipantsMedicine() {
   try {

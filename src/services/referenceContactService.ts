@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ReferenceContact } from "@/types/types";
 
 export async function getReference() {
   try {
