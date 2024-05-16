@@ -17,8 +17,7 @@ export const useUsersStore = create<UsersState>((set) => ({
 
   getUsers: async () => {
     const users = await getUsers();
-    if (users)
-      set({ users });
+    set({ users });
   },
 
   getUserById: async (id: number) => {
