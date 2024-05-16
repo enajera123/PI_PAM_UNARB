@@ -21,11 +21,14 @@ export const Header: React.FC = () => {
             <Link href="/courses">
                 <Button className="bg-red-gradient">Cursos</Button>
             </Link>
-            <Link href="/participants">
+            <Link href="/searches">
                 <Button className="bg-red-gradient">Participantes</Button>
             </Link>
             <Link href="/users">
                 <Button className="bg-red-gradient">Usuarios</Button>
+            </Link>
+            <Link href="/report">
+                <Button className="bg-red-gradient">Reportes</Button>
             </Link>
         </div>
     </header>

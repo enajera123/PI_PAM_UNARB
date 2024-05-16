@@ -18,30 +18,21 @@ export default function Home() {
               iconStart={<LuFileEdit color="white" />}
             />
           </div>
-          <div className="flex flex-row flex flex-col md:flex-row justify-center items-center h-auto rounded-md">
-            <div className="w-full md:w-3/4 mb-4 md:mb-0 md:mr-4">
+          <div className="flex grid grid-cols-4">
+            <p className='col-span-3 flex items-center justify-center text-lg font-bold text-light-gray'>
+              Nombre completo del participante
+            </p>
+            <div className="w-full">  
+              <Button className="bg-red-gradient w-full">Participante</Button>
+            </div>
+          </div>
+          <div className="w-full md:w-3/4 mb-4 md:mb-0 md:mr-4">
               <Checkbox label="Información personal del participante"/>
-            </div>
-            <div className="w-full md:w-1/4">
-              <Button className="bg-red-gradient w-full">Participante</Button>
-            </div>
-          </div>
-          <div className="flex flex-row flex flex-col md:flex-row justify-center items-center h-auto rounded-md">
-            <div className="w-full md:w-3/4 mb-4 md:mb-0 md:mr-4">
+          </div><div className="w-full md:w-3/4 mb-4 md:mb-0 md:mr-4">
               <Checkbox label="Información de cursos del participante"/>
-            </div>
-            <div className="w-full md:w-1/4">
-              <Button className="bg-red-gradient w-full">Participante</Button>
-            </div>
-          </div>
-          <div className="flex flex-row flex flex-col md:flex-row justify-center items-center h-auto rounded-md">
-            <div className="w-full md:w-3/4 mb-4 md:mb-0 md:mr-4">
+            </div><div className="w-full md:w-3/4 mb-4 md:mb-0 md:mr-4">
               <Checkbox label="Información de salud del participante"/>
             </div>
-            <div className="w-full md:w-1/4">
-              <Button className="bg-red-gradient w-full">Participante</Button>
-            </div>
-          </div>
           <div className="md:w-3/4 mb-4 mb-0 md:mr-4">
             <Checkbox label="Requisitos pendientes"/>
           </div>
@@ -49,6 +40,7 @@ export default function Home() {
             <Button className="bg-red-gradient">Imprimir Reporte</Button>
           </div>
         </div>
+        
       </div>
     </>
   );
