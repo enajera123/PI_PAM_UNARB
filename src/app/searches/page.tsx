@@ -120,6 +120,7 @@ const UsersPage: React.FC = () => {
             />
             {filteredData.length > 0 ? (
                 <Table
+                keys={[]}
                     data={filteredData}
                     headers={headers}
                     itemsPerPage={6}

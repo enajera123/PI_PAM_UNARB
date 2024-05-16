@@ -181,7 +181,7 @@ export default function Home() {
             <div className='container bg-white mt-6 p-4 rounded-xl'>
                 <p className="text-3xl font-bold text-dark-gray flex justify-center">Documentos Adjuntos</p>
                 <div className='mt-6'>
-                    <Table data={dataFiles} headers={headersFiles} itemsPerPage={3}/>
+                    <Table keys={[]} data={dataFiles} headers={headersFiles} itemsPerPage={3}/>
                 </div>
                 <div className='flex justify-center mt-6'>
                     <Button className="bg-red-gradient w-1/3">Agregar</Button>
@@ -190,7 +190,7 @@ export default function Home() {
             <div className='container bg-white mt-6 p-4 rounded-xl'>
                 <p className="text-3xl font-bold text-dark-gray flex justify-center">Cursos</p>
                 <div className='mt-6'>
-                    <Table data={data} headers={headers} itemsPerPage={3}/>
+                    <Table keys={[]} data={data} headers={headers} itemsPerPage={3}/>
                 </div>
                 <div className='flex justify-center mt-6'>
                     <Button className="bg-red-gradient w-1/3">Agregar</Button>
