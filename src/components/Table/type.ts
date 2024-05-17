@@ -3,6 +3,7 @@ export type TableProps = {
     data: Array<any>,
     itemsPerPage: number,
     resetPagination?: number,
-    showEditColumn?: boolean,
-    keys: Array<string>
+    actionButtons?: 'none' | 'delete' | 'participants' | 'both';
+    keys: Array<string>,
+    deleteItem?: (id: number) => void,
 }

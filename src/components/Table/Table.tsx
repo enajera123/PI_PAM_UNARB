@@ -3,13 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { TableProps } from "./type";
+import Link from "next/link";
 
-const Table = ({ keys, data, headers, itemsPerPage, resetPagination, showEditColumn = false }: TableProps) => {
+const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButtons = 'none', deleteItem }: TableProps) => {
 
-  const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
-
-  const currentPageActiveClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-medium-gray dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
-
+  const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer';
+  const currentPageActiveClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-medium-gray dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer';
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -31,11 +30,61 @@ const Table = ({ keys, data, headers, itemsPerPage, resetPagination, showEditCol
       setCurrentPage(currentPage + 1);
     }
   };
+
   useEffect(() => {
     if (resetPagination) {
       setCurrentPage(1);
     }
   }, [resetPagination, setCurrentPage]);
+
+  const handleDeleteItem = (id: number) => {
+    deleteItem && deleteItem(id);
+  };
+
+  const renderButtons = (item: any) => {
+    switch (actionButtons) {
+      case 'delete':
+        return (
+          <button
+            className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+            onClick={() => handleDeleteItem(item.id)}
+          >
+            Eliminar
+          </button>
+        );
+      case 'participants':
+        return (
+          <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
+            <button
+              className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+            >
+              Participantes
+            </button>
+          </Link>
+        );
+      case 'both':
+        return (
+          <>
+            <button
+              className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+              onClick={() => handleDeleteItem(item.id)}
+            >
+              Eliminar
+            </button>
+            <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
+              <button
+                className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+              >
+                Participantes
+              </button>
+            </Link>
+          </>
+        );
+      case 'none':
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
@@ -49,35 +98,24 @@ const Table = ({ keys, data, headers, itemsPerPage, resetPagination, showEditCol
                     {header}
                   </th>
                 ))}
-                {showEditColumn && <th scope="col" className="px-6 py-3">Actions</th>}
+                {actionButtons !== 'none' && <th scope="col" className="px-6 py-3">Acciones</th>}
               </tr>
             </thead>
             <tbody>
               {getCurrentPageData().map((item, index) => (
                 <tr
                   key={index}
-                  className={`odd:bg-white odd:dark:bg-medium-gray  even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-medium-red`}
+                  className={`odd:bg-white odd:dark:bg-medium-gray even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-medium-red`}
                 >
                   {keys.map((key) => (
                     <td key={key} className="px-6 py-4">
                       {item[key]}
                     </td>
                   ))}
-                  {showEditColumn && (
+                  {actionButtons !== 'none' && (
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
-                        <button
-                          className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-                          onClick={() => console.log("Eliminar", item)}
-                        >
-                          Eliminar
-                        </button>
-                        <button
-                          className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-                          onClick={() => console.log("Desactivar", item)}
-                        >
-                          Desactivar
-                        </button>
+                        {renderButtons(item)}
                       </div>
                     </td>
                   )}

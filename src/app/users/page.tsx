@@ -2,7 +2,7 @@
 import Button from "@/components/Button/Button";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Table from "@/components/Table/Table";
-import { getUsers } from "@/services/usersService";
+import { getUsers, deleteUser } from "@/services/usersService";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
 import Link from 'next/link';
@@ -34,6 +34,16 @@ const UsersPage: React.FC = () => {
         setRandomNumber(generateRandomNumber());
     };
 
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteUser(id);
+            setData(data.filter(user => user.id !== id));
+            setFilteredData(filteredData.filter(user => user.id !== id));
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
+
     return (
         <div className="container mx-auto bg-gray-gradient flex flex-col justify-center items-center h-auto my-6 py-10 px-20 rounded-2xl max-w-4xl">
             <h1 className="text-white font-bold text-2xl mb-4 mt-0">
@@ -52,7 +62,8 @@ const UsersPage: React.FC = () => {
                     headers={["Identificación", "Nombre", "Primer Apellido", "Segundo Apellido",]}
                     itemsPerPage={6}
                     resetPagination={randomNumber}
-                    showEditColumn={true}
+                    actionButtons="delete"
+                    deleteItem={handleDelete}
                 />
             ) : (
                 <p>No se encontraron resultados</p>
