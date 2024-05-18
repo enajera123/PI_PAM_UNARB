@@ -5,7 +5,8 @@ import Table from "@/components/Table/Table";
 import { deleteParticipant, getParticipants } from "@/services/participantsService";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
-
+import Link from 'next/link';
+import Button from "@/components/Button/Button";
 
 const UsersPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -58,6 +59,11 @@ const UsersPage: React.FC = () => {
             ) : (
                 <p>No se encontraron resultados</p>
             )}
+            <div className="mt-6">
+                <Link href="/record">
+                    <Button className="bg-red-gradient w-60">Agregar</Button> 
+                </Link> 
+           </div>
         </div>
     );
 }
