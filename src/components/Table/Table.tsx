@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
+import { MdArrowBackIosNew, MdArrowForwardIos, MdDelete, MdEdit } from "react-icons/md";
 import { TableProps } from "./type";
 import Link from "next/link";
-import Swal from "sweetalert2";
-import { showDeleteConfirmation, showDeletionCancelled, showDeletionSuccess } from "@/utils/alerts";
+import { showDeleteConfirmation, showDeletionSuccess } from "@/utils/alerts";
 
-const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButtons = 'none', deleteItem }: TableProps) => {
+const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButtons, deleteItem }: TableProps) => {
 
   const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer';
   const currentPageActiveClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-medium-gray dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer';
@@ -44,44 +43,54 @@ const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButto
       if (result.isConfirmed) {
         deleteItem && deleteItem(id);
         showDeletionSuccess();
-      } 
+      }
     });
   };
 
   const renderButtons = (item: any) => {
+    const buttonClass = "flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800";
+
     switch (actionButtons) {
       case 'delete':
         return (
-          <button
-            className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-            onClick={() => handleDeleteItem(item.id)}
-          >
-            Eliminar
-          </button>
+          <>
+            <button
+              className={buttonClass}
+              onClick={() => handleDeleteItem(item.id)}
+            >
+              <MdDelete className="text-medium-red text-xl" />
+            </button>
+            <button
+              className={buttonClass}
+            >
+              <MdEdit className="text-dark-gray text-xl" />
+            </button>
+          </>
         );
       case 'participants':
         return (
           <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
-            <button
-              className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-            >
+            <button className={buttonClass}>
               Participantes
             </button>
           </Link>
         );
-      case 'both':
+      case 'all':
         return (
           <>
             <button
-              className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+              className={buttonClass}
               onClick={() => handleDeleteItem(item.id)}
             >
-              Eliminar
+              <MdDelete className="text-medium-red text-xl" />
+            </button>
+            <button
+              className={buttonClass}
+            >
+              <MdEdit className="text-dark-gray text-xl" />
             </button>
             <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
-              <button
-                className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-              >
+              <button className={buttonClass}>
                 Participantes
               </button>
             </Link>

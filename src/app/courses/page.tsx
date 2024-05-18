@@ -72,7 +72,7 @@ const SearchCoursesPage: React.FC = () => {
                     headers={["Nombre", "Código"]}
                     itemsPerPage={6}
                     resetPagination={randomNumber}
-                    actionButtons="both"
+                    actionButtons="all"
                     deleteItem={handleDelete}
                 />
             ) : (
