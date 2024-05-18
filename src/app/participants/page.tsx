@@ -2,8 +2,8 @@
 import Button from "@/components/Button/Button";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Table from "@/components/Table/Table";
-import { deleteParticipant, getParticipants } from "@/services/participantsService";
-import { getParticipantOnCourseByCourseId } from "@/services/participantOnCourseService";
+import { deleteParticipant } from "@/services/participantsService";
+import { getParticipantOnCourseByCourseId, deleteParticipantOnCourse } from "@/services/participantOnCourseService";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
 import Link from 'next/link';
@@ -53,7 +53,7 @@ const Home = () => {
     const handleDelete = async (id: number) => {
         try {
             //await deleteParticipant(id);
-            
+            deleteParticipantOnCourse(id, Number(courseId));
             setData(data.filter(participant => participant.id !== id));
             setFilteredData(filteredData.filter(participant => participant.id !== id));
         } catch (error) {
@@ -81,7 +81,7 @@ const Home = () => {
                         data={filteredData}
                         headers={["Identificación", "Nombre", "Primer Apellido", "Segundo Apellido", "Email", "Teléfono", 'WhatsApp']}
                         itemsPerPage={6}
-                        actionButtons="none"/////
+                        actionButtons="delete"
                         resetPagination={randomNumber}
                         deleteItem={handleDelete}
                     />
