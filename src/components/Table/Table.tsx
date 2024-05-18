@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { TableProps } from "./type";
 import Link from "next/link";
+import Swal from "sweetalert2";
+import { showDeleteConfirmation, showDeletionCancelled, showDeletionSuccess } from "@/utils/alerts";
 
 const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButtons = 'none', deleteItem }: TableProps) => {
 
@@ -38,7 +40,12 @@ const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButto
   }, [resetPagination, setCurrentPage]);
 
   const handleDeleteItem = (id: number) => {
-    deleteItem && deleteItem(id);
+    showDeleteConfirmation().then((result) => {
+      if (result.isConfirmed) {
+        deleteItem && deleteItem(id);
+        showDeletionSuccess();
+      } 
+    });
   };
 
   const renderButtons = (item: any) => {
