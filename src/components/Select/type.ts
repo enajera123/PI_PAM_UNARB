@@ -7,8 +7,10 @@ type Options = {
 }
 
 export type SelectProps = {
+    value?: string,
     label: string,
+    onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void,
     placeholder: string,
     icon: ReactNode,
-    options: Array<Options>, 
+    options: Array<Options>,
 }

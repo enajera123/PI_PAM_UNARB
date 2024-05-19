@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { TableProps } from "./type";
 
-const Table = ({ keys, data, headers, itemsPerPage, resetPagination, showEditColumn = false }: TableProps) => {
+const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, headers, itemsPerPage, resetPagination, showEditColumn = false, deleteRowFunction }: TableProps) => {
 
   const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
 
@@ -56,6 +56,7 @@ const Table = ({ keys, data, headers, itemsPerPage, resetPagination, showEditCol
             <tbody>
               {getCurrentPageData().map((item, index) => (
                 <tr
+                  onDoubleClick={() => doubleClickRowFunction && doubleClickRowFunction(item.id)}
                   key={index}
                   className={`odd:bg-white odd:dark:bg-medium-gray  even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-medium-red`}
                 >
@@ -69,13 +70,13 @@ const Table = ({ keys, data, headers, itemsPerPage, resetPagination, showEditCol
                       <div className="flex gap-2">
                         <button
                           className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-                          onClick={() => console.log("Eliminar", item)}
+                          onClick={() => deleteRowFunction && deleteRowFunction(item.id)}
                         >
                           Eliminar
                         </button>
                         <button
                           className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-                          onClick={() => console.log("Desactivar", item)}
+                          onClick={() => desactivateRowFunction && desactivateRowFunction(item.id)}
                         >
                           Desactivar
                         </button>

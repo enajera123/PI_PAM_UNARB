@@ -4,10 +4,10 @@ export type UsersState = {
   users: User[];
   setUsers: (users: User[]) => void;
   getUsers: () => void;
-  getUserById: (id: number) => void;
+  getUserById: (id: number) => Promise<User | null>;
   getUserByFirstName: (firstname: string) => void;
-  postUser: (user: User) => void;
-  putUser: (id: number, user: User) => void;
+  postUser: (user: User) => Promise<User | null>;
+  putUser: (id: number, user: User) => Promise<User | null>;
   putUserPassword: (id: number, user: User) => void;
   deleteUser: (id: number) => void;
   authenticateUser: (user: User) => void;

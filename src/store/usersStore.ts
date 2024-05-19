@@ -20,11 +20,13 @@ export const useUsersStore = create<UsersState>((set) => ({
     set({ users });
   },
 
-  getUserById: async (id: number) => {
+  getUserById: async (id: number): Promise<User | null> => {
     const user = await getUserById(id);
+    if (!user) return null;
     set((state) => ({
       users: state.users.map((u) => (u.id === id ? user : u)),
     }));
+    return user;
   },
 
   getUserByFirstName: async (firstName: string) => {
@@ -34,18 +36,27 @@ export const useUsersStore = create<UsersState>((set) => ({
     }));
   },
 
-  postUser: async (user: User) => {
-    const newUser = await createUser(user);
-    if (newUser) {
-      set((state) => ({ users: [...state.users, newUser] }));
+  postUser: async (user: User): Promise<User | null> => {
+    try {
+      const newUser = await createUser(user);
+      if (newUser) {
+        set((state) => ({ users: [...state.users, newUser] }));
+        return newUser;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return null;
     }
   },
 
-  putUser: async (id: number, user: User) => {
+  putUser: async (id: number, user: User): Promise<User | null> => {
     const updatedUser = await updateUser(id, user);
+    if (!updatedUser) return null
     set((state) => ({
       users: state.users.map((u) => (u.id === id ? updatedUser : u)),
     }));
+    return updatedUser
   },
 
   deleteUser: async (id: number) => {

@@ -17,7 +17,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
 export async function POST(req: NextRequest, res: NextResponse) {
     try {
         const user = await req.json();
-
         const existingUser = await prisma.user.findFirst({
             where: {
                 email: user.email
@@ -29,7 +28,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
 
         const hashedPassword = await bcrypt.hash(user.password, 10); 
-
+        console.log(user)
         const newUser = await prisma.user.create({
             data: {
                 ...user,
