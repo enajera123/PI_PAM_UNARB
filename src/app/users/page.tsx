@@ -1,27 +1,24 @@
 "use client"
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Table from "@/components/Table/Table";
-import { getUsers } from "@/services/usersService";
+import { useUsersStore } from "@/store/usersStore";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
 const UsersPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [randomNumber, setRandomNumber] = useState<number>(0);
-    const [data, setData] = useState<User[]>([]);
+    const { getUsers, users } = useUsersStore()
+    getUsers()
     const [filteredData, setFilteredData] = useState<User[]>([]);
     useEffect(() => {
-        const fetchData = async () => {
-            const users = await getUsers();
-            if (users) {
-                setData(users);
-                setFilteredData(users);
-            }
-        };
-        fetchData();
-    }, []);
+        if (users) {
+            setFilteredData(users)
+        }
+    }, [users])
+
 
     const handleSearch = () => {
-        const filtered = data.filter((item) => {
+        const filtered = users.filter((item) => {
             const nameMatch = item.identification.toLowerCase().includes(searchTerm.toLowerCase());
             const fullName = `${item.firstName.toLowerCase()} ${item.firstSurname.toLowerCase()} ${item.secondSurname.toLowerCase()}`;
             const fullNameMatch = fullName.includes(searchTerm.toLowerCase());
