@@ -53,7 +53,7 @@ const UsersPage: React.FC = () => {
                     data={filteredData}
                     headers={["Identificación","Nombre","Primer Apellido","Segundo Apellido","Escolaridad",]}
                     itemsPerPage={6}
-                    actionButtons='none'
+                    actionColumn='none'
                     resetPagination={randomNumber}
                 />
             ) : (

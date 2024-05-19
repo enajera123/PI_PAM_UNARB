@@ -72,8 +72,8 @@ const SearchCoursesPage: React.FC = () => {
                     headers={["Nombre", "Código"]}
                     itemsPerPage={6}
                     resetPagination={randomNumber}
-                    actionButtons="all"
-                    deleteItem={handleDelete}
+                    actionColumn="delete-participants"
+                    deleteRowFunction={handleDelete}
                 />
             ) : (
                 <p>No se encontraron resultados</p>

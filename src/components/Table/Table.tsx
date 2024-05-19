@@ -1,10 +1,12 @@
 "use client"
 
 import React, { useEffect, useState } from "react";
-import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
+import { MdArrowBackIosNew, MdArrowForwardIos, MdDelete } from "react-icons/md";
 import { TableProps } from "./type";
+import Link from "next/link";
+import { showDeleteConfirmation, showDeletionSuccess } from "@/utils/alerts";
 
-const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, headers, itemsPerPage, resetPagination, showEditColumn = false, deleteRowFunction }: TableProps) => {
+const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, headers, itemsPerPage, resetPagination, actionColumn, deleteRowFunction }: TableProps) => {
 
   const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
 
@@ -38,6 +40,68 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
     }
   }, [resetPagination, setCurrentPage]);
 
+  const handleDeleteItem = (id: number) => {
+    showDeleteConfirmation().then((result) => {
+      if (result.isConfirmed) {
+        deleteRowFunction && deleteRowFunction(id);
+        showDeletionSuccess();
+      }
+    });
+  };
+
+  const renderButtons = (item: any) => {
+    const buttonClass = "flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800";
+
+    switch (actionColumn) {
+      case 'delete':
+        return (
+          <>
+            <button
+              className={buttonClass}
+              onClick={() => handleDeleteItem(item.id)}
+            >
+              <MdDelete className="text-medium-red text-xl" />
+            </button>
+          </>
+        );
+      case 'delete-participants':
+        return (
+          <>
+            <button
+              className={buttonClass}
+              onClick={() => handleDeleteItem(item.id)}
+            >
+              <MdDelete className="text-medium-red text-xl" />
+            </button>
+            <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
+              <button className={buttonClass}>
+                Participantes
+              </button>
+            </Link>
+          </>
+        );
+      case 'delete-state':
+        return (
+          <>
+            <button
+              className={buttonClass}
+              onClick={() => handleDeleteItem(item.id)}
+            >
+              <MdDelete className="text-medium-red text-xl" />
+            </button>
+            <button
+              className={buttonClass}
+              onClick={() => desactivateRowFunction && desactivateRowFunction(item.id)}
+            >
+              Desactivar
+            </button>
+          </>
+        );
+      case 'none':
+      default:
+        return null;
+    }
+  };
   return (
     <>
       <div className="flex flex-col">
@@ -50,7 +114,7 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
                     {header}
                   </th>
                 ))}
-                {showEditColumn && <th scope="col" className="px-6 py-3">Actions</th>}
+                {actionColumn !== 'none' && <th scope="col" className="px-6 py-3">Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -65,21 +129,10 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
                       {item[key]}
                     </td>
                   ))}
-                  {showEditColumn && (
+                  {actionColumn !== 'none' && (
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
-                        <button
-                          className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-                          onClick={() => deleteRowFunction && deleteRowFunction(item.id)}
-                        >
-                          Eliminar
-                        </button>
-                        <button
-                          className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-                          onClick={() => desactivateRowFunction && desactivateRowFunction(item.id)}
-                        >
-                          Desactivar
-                        </button>
+                        {renderButtons(item)}
                       </div>
                     </td>
                   )}

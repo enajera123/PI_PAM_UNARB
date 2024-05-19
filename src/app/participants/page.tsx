@@ -81,9 +81,9 @@ const Home = () => {
                         data={filteredData}
                         headers={["Identificación", "Nombre", "Primer Apellido", "Segundo Apellido", "Email", "Teléfono", 'WhatsApp']}
                         itemsPerPage={6}
-                        actionButtons="delete"
+                        actionColumn="delete"
                         resetPagination={randomNumber}
-                        deleteItem={handleDelete}
+                        deleteRowFunction={handleDelete}
                     />
                 ) : (
                     <p>No se encontraron resultados</p>
