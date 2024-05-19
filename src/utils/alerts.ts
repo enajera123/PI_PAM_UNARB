@@ -1,5 +1,7 @@
 import Swal from 'sweetalert2';
 
+type SweetAlertIcon = 'success' | 'error' | 'warning' | 'info' | 'question';
+
 export const buttons = Swal.mixin({
     customClass: {
         confirmButton: '', 
@@ -22,12 +24,12 @@ export const showDeleteConfirmation = () => {
     });
 };
 
-export const showDeletionSuccess = () => {
-    buttons.fire({
-        title: "¡Eliminado!",
+export const showCustomAlert = (title: string, text: string, icon: SweetAlertIcon) => {
+    return buttons.fire({
+        title: title,
         width: '400',
-        text: "El elemento ha sido eliminado.",
-        icon: "success",
+        text: text,
+        icon: icon,
         confirmButtonText: "<span style='color: white; background-color: #D10202; padding: 10px 20px; border-radius: 20px;'>Aceptar</span>"
     });
 };

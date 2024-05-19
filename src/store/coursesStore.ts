@@ -19,25 +19,36 @@ export const useCourseStore = create<CoursesState>((set) => ({
         set({ courses });
     },
 
-    getCourseById: async (id: number) => {
+    getCourseById: async (id: number) : Promise<Course | null> => {
         const course = await getCourseById(id);
+        if (!course) return null;
         set((state) => ({
             courses: state.courses.map((c) => (c.id === id ? course : c)),
         }));
+        return course;
     },
 
-    postCourse: async (course: Course) => {
-        const newCourse = await createCourse(course);
-        if (newCourse) {
-            set((state) => ({ courses: [...state.courses, newCourse] }));
+    postCourse: async (course: Course) : Promise<Course | null> => {
+        try{
+            const newCourse = await createCourse(course);
+            if (newCourse) {
+                set((state) => ({ courses: [...state.courses, newCourse] }));
+                return newCourse;
+            }
+            return null;
+        }catch (error){
+            console.error("Error creating course:", error);
+            return null;
         }
     },
 
-    putCourse: async (id: number, course: Course) => {
+    putCourse: async (id: number, course: Course)  : Promise<Course | null> => {
         const updatedCourse = await updateCourse(id, course);
+        if (!updatedCourse) return null;
         set((state) => ({
             courses: state.courses.map((c) => (c.id === id ? updatedCourse : c)),
         }));
+        return updatedCourse;
     },
 
     deleteCourse: async (id: number) => {

@@ -143,7 +143,7 @@ enum YesOrNo {
 }
 
 interface Course {
-    id: number;
+    id?: number;
     courseNumber: string;
     initialDate: string;
     finalDate: string;
@@ -154,5 +154,5 @@ interface Course {
     description: string | null;
     state: State;
     needMedicalReport: YesOrNo;
-    ParticipantsOnCourses: ParticipantOnCourse[];
+    ParticipantsOnCourses?: ParticipantOnCourse[];
 };

@@ -149,10 +149,10 @@ export type CoursesState = {
   courses: Course[];
   setCourses: (courses: Course[]) => void;
   getCourses: () => void;
-  getCourseById: (id: number) => void;
+  getCourseById: (id: number) => Promise<Course | null>;
   getCourseByCourseNumber: (courseNumber: string) => void;
   getCourseByName: (name: string) => void;
-  postCourse: (courses: Course) => void;
-  putCourse: (id: number, courses: Course) => void;
+  postCourse: (courses: Course) => Promise<Course | null>;
+  putCourse: (id: number, courses: Course) => Promise<Course | null>;
   deleteCourse: (id: number) => void;
 };

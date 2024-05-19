@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos, MdDelete } from "react-icons/md";
 import { TableProps } from "./type";
 import Link from "next/link";
-import { showDeleteConfirmation, showDeletionSuccess } from "@/utils/alerts";
+import { showDeleteConfirmation, showCustomAlert } from "@/utils/alerts";
 
 const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, headers, itemsPerPage, resetPagination, actionColumn, deleteRowFunction }: TableProps) => {
 
@@ -40,11 +40,15 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
     }
   }, [resetPagination, setCurrentPage]);
 
+  const getDeactivateButtonText = (isActive: string) => {
+    return isActive === 'Active' ? 'Desactivar' : 'Activar';
+};
+
   const handleDeleteItem = (id: number) => {
     showDeleteConfirmation().then((result) => {
       if (result.isConfirmed) {
         deleteRowFunction && deleteRowFunction(id);
-        showDeletionSuccess();
+        showCustomAlert("¡Eliminado!", "El elemento ha sido eliminado.", "success")
       }
     });
   };
@@ -90,10 +94,10 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
               <MdDelete className="text-medium-red text-xl" />
             </button>
             <button
-              className={buttonClass}
+              className={`${buttonClass} w-28`}
               onClick={() => desactivateRowFunction && desactivateRowFunction(item.id)}
             >
-              Desactivar
+              {getDeactivateButtonText(item.state)}
             </button>
           </>
         );
@@ -114,7 +118,7 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
                     {header}
                   </th>
                 ))}
-                {actionColumn !== 'none' && <th scope="col" className="px-6 py-3">Actions</th>}
+                {actionColumn !== 'none' && <th scope="col" className="px-6 py-3">Acciones</th>}
               </tr>
             </thead>
             <tbody>
