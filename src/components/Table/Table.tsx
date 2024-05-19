@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
 import React, { useEffect, useState } from "react";
-import { MdArrowBackIosNew, MdArrowForwardIos, MdDelete, MdEdit } from "react-icons/md";
+import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { TableProps } from "./type";
-import Link from "next/link";
-import { showDeleteConfirmation, showDeletionSuccess } from "@/utils/alerts";
 
-const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButtons, deleteItem }: TableProps) => {
+const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, headers, itemsPerPage, resetPagination, showEditColumn = false, deleteRowFunction }: TableProps) => {
 
-  const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer';
-  const currentPageActiveClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-medium-gray dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer';
+  const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
+
+  const currentPageActiveClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-medium-gray dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -38,70 +38,6 @@ const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButto
     }
   }, [resetPagination, setCurrentPage]);
 
-  const handleDeleteItem = (id: number) => {
-    showDeleteConfirmation().then((result) => {
-      if (result.isConfirmed) {
-        deleteItem && deleteItem(id);
-        showDeletionSuccess();
-      }
-    });
-  };
-
-  const renderButtons = (item: any) => {
-    const buttonClass = "flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800";
-
-    switch (actionButtons) {
-      case 'delete':
-        return (
-          <>
-            <button
-              className={buttonClass}
-              onClick={() => handleDeleteItem(item.id)}
-            >
-              <MdDelete className="text-medium-red text-xl" />
-            </button>
-            <button
-              className={buttonClass}
-            >
-              <MdEdit className="text-dark-gray text-xl" />
-            </button>
-          </>
-        );
-      case 'participants':
-        return (
-          <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
-            <button className={buttonClass}>
-              Participantes
-            </button>
-          </Link>
-        );
-      case 'all':
-        return (
-          <>
-            <button
-              className={buttonClass}
-              onClick={() => handleDeleteItem(item.id)}
-            >
-              <MdDelete className="text-medium-red text-xl" />
-            </button>
-            <button
-              className={buttonClass}
-            >
-              <MdEdit className="text-dark-gray text-xl" />
-            </button>
-            <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
-              <button className={buttonClass}>
-                Participantes
-              </button>
-            </Link>
-          </>
-        );
-      case 'none':
-      default:
-        return null;
-    }
-  };
-
   return (
     <>
       <div className="flex flex-col">
@@ -114,24 +50,36 @@ const Table = ({ keys, data, headers, itemsPerPage, resetPagination, actionButto
                     {header}
                   </th>
                 ))}
-                {actionButtons !== 'none' && <th scope="col" className="px-6 py-3">Acciones</th>}
+                {showEditColumn && <th scope="col" className="px-6 py-3">Actions</th>}
               </tr>
             </thead>
             <tbody>
               {getCurrentPageData().map((item, index) => (
                 <tr
+                  onDoubleClick={() => doubleClickRowFunction && doubleClickRowFunction(item.id)}
                   key={index}
-                  className={`odd:bg-white odd:dark:bg-medium-gray even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-medium-red`}
+                  className={`odd:bg-white odd:dark:bg-medium-gray  even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-medium-red`}
                 >
                   {keys.map((key) => (
                     <td key={key} className="px-6 py-4">
                       {item[key]}
                     </td>
                   ))}
-                  {actionButtons !== 'none' && (
+                  {showEditColumn && (
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
-                        {renderButtons(item)}
+                        <button
+                          className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+                          onClick={() => deleteRowFunction && deleteRowFunction(item.id)}
+                        >
+                          Eliminar
+                        </button>
+                        <button
+                          className="bg-white text-dark-gray rounded-xl px-3 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+                          onClick={() => desactivateRowFunction && desactivateRowFunction(item.id)}
+                        >
+                          Desactivar
+                        </button>
                       </div>
                     </td>
                   )}

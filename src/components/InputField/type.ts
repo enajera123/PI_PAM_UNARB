@@ -5,5 +5,7 @@ export type InputFieldProps = {
     placeholder: string,
     type?: string,
     iconStart?: ReactNode,
-    iconEnd?: ReactNode
+    iconEnd?: ReactNode,
+    value?: string,
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
 }

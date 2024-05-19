@@ -6,6 +6,7 @@ const Button: React.FC<ButtonProps> = ({ children, className, ...props }) => {
 
   return (
     <button
+      {...props}
       type="button"
       className={buttonClasses}
     >

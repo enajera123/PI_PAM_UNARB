@@ -10,11 +10,35 @@ import { HiOutlineIdentification } from "react-icons/hi";
 import { GoKey, GoPerson } from "react-icons/go";
 import { FiPhoneCall } from "react-icons/fi";
 import { MdOutlineEmail } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUsersStore } from "@/store/usersStore";
 import { useRouter } from "next/navigation";
 
-export default function userRegister() {
+export default function userRegister({ params }: { params: { id: string } }) {
+    const { getUserById } = useUsersStore()
+    const [user, setUser] = useState<User | null>(null)
+    async function fetchUser() {
+        const response = await getUserById(parseInt(params.id))
+        setUser(response)
+    }
+    useEffect(() => {
+        if (params.id) {
+            fetchUser()
+        }
+    }, [])
+    useEffect(() => {
+        if (user) {
+            setRol(user.role.toString())
+            setIdentification(user.identification)
+            setName(user.firstName)
+            setPassword(user.password)
+            setFirstSurname(user.firstSurname)
+            setSecondSurname(user.secondSurname)
+            setPhone(user.phoneNumber)
+            setEmail(user.email)
+            setDate(user.birthDate)
+        }
+    }, [user])
     const [rol, setRol] = useState("User");
     const [identification, setIdentification] = useState("");
     const [name, setName] = useState("");
@@ -24,7 +48,7 @@ export default function userRegister() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [date, setDate] = useState("");
-    const { postUser } = useUsersStore()
+    const { putUser } = useUsersStore()
     const router = useRouter();
 
     const optionsRol = [
@@ -45,7 +69,7 @@ export default function userRegister() {
             birthDate: date,
             state: "Active" as unknown as State
         }
-        const response = await postUser(user)
+        const response = await putUser(Number(params.id), user)
         if (response) {
             router.push('/users')
         }

@@ -1,7 +1,7 @@
 import React from "react";
 import { SelectProps } from "./type";
 
-const Select = ({ label, placeholder, icon, options }: SelectProps) => {
+const Select = ({ label, placeholder, icon, options, onChange, value }: SelectProps) => {
   return (
     <form className="max-w-sm mx-auto">
       <label
@@ -15,8 +15,9 @@ const Select = ({ label, placeholder, icon, options }: SelectProps) => {
           {icon}
         </div>
         <select
+          onChange={onChange}
           id="countries"
-          defaultValue={placeholder}
+          value={value}
           className="bg-dark-gray border border-white text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5 dark:bg-dark-gray dark:border-white dark:placeholder-gray-400 dark:text-white"
         >
           <option value={placeholder} disabled>{placeholder}</option>

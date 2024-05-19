@@ -3,7 +3,9 @@ export type TableProps = {
     data: Array<any>,
     itemsPerPage: number,
     resetPagination?: number,
-    actionButtons?: 'none' | 'delete' | 'participants' | 'all';
+    showEditColumn?: boolean,
     keys: Array<string>,
-    deleteItem?: (id: number) => void,
+    deleteRowFunction?: (id: number) => void
+    desactivateRowFunction?: (id: number) => void
+    doubleClickRowFunction?: (id: number) => void
 }

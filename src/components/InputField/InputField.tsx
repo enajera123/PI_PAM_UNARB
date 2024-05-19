@@ -5,6 +5,8 @@ import { InputFieldProps } from "./type";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 const InputField = ({
+  value,
+  onChange,
   label,
   placeholder,
   type = "text",
@@ -33,6 +35,8 @@ const InputField = ({
           {iconStart}
         </div>
         <input
+          value={value}
+          onChange={onChange}
           type={typeInput}
           id="input-group-1"
           className="bg-dark-gray border border-gray-300 text-white placeholder:text-white text-sm rounded-lg block w-full p-2.5 pl-10 pr-10"
@@ -45,7 +49,7 @@ const InputField = ({
         ) : null}
         {type.includes("password") ? (
           <div className="absolute inset-y-0 end-0 flex items-center pe-3.5 cursor-pointer" onClick={handleChangeVisibility}>
-            {!visibility ? <MdVisibility color="white"/> : <MdVisibilityOff color="white"/> }
+            {!visibility ? <MdVisibility color="white" /> : <MdVisibilityOff color="white" />}
           </div>
         ) : null}
       </div>

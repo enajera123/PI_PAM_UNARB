@@ -13,7 +13,7 @@ enum State {
 }
 
 interface User {
-    id: number;
+    id?: number;
     firstName: string;
     firstSurname: string;
     secondSurname: string;
