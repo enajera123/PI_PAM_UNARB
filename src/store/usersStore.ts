@@ -52,11 +52,11 @@ export const useUsersStore = create<UsersState>((set) => ({
 
   putUser: async (id: number, user: User): Promise<User | null> => {
     const updatedUser = await updateUser(id, user);
-    if (!updatedUser) return null
+    if (!updatedUser) return null;
     set((state) => ({
       users: state.users.map((u) => (u.id === id ? updatedUser : u)),
     }));
-    return updatedUser
+    return updatedUser;
   },
 
   deleteUser: async (id: number) => {
@@ -72,7 +72,7 @@ export const useUsersStore = create<UsersState>((set) => ({
           u.id === authenticatedUser.id ? authenticatedUser : u
         ),
       }));
-    }
+    }    return authenticatedUser;
   },
 
   putUserPassword: async (id: number, user: User) => {

@@ -12,7 +12,7 @@ enum State {
     Inactive,
 }
 
-interface User {
+ interface User {
     id?: number;
     firstName: string;
     firstSurname: string;
