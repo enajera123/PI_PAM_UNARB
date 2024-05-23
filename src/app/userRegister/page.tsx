@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useUsersStore } from "@/store/usersStore";
 import { useRouter } from "next/navigation";
 
-export default function userRegister() {
+export default function UserRegister() {
     const [rol, setRol] = useState("User");
     const [identification, setIdentification] = useState("");
     const [name, setName] = useState("");

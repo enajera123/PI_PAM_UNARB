@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useUsersStore } from "@/store/usersStore";
 import { useRouter } from "next/navigation";
 
-export default function userRegister({ params }: { params: { id: string } }) {
+export default function UserRegister({ params }: { params: { id: string } }) {
     const { getUserById } = useUsersStore()
     const [user, setUser] = useState<User | null>(null)
     async function fetchUser() {
