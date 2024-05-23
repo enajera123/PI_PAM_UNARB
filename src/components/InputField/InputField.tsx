@@ -12,6 +12,7 @@ const InputField = ({
   type = "text",
   iconStart,
   iconEnd,
+  min,
 }: InputFieldProps) => {
 
   const [typeInput, setTypeInput] = useState(type)
@@ -41,6 +42,7 @@ const InputField = ({
           id="input-group-1"
           className="bg-dark-gray border border-gray-300 text-white placeholder:text-white text-sm rounded-lg block w-full p-2.5 pl-10 pr-10"
           placeholder={placeholder}
+          min = {min}
         />
         {iconEnd ? (
           <div className="absolute inset-y-0 end-0 flex items-center pe-3.5 pointer-events-none">

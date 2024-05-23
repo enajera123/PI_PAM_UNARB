@@ -48,3 +48,25 @@ export async function getParticipantOnCourseByParticipantId(participantId: numbe
     return null;
   }
 }
+
+export async function deleteParticipantsOnCourseByCourseId(courseId: number) {
+  try {
+    const response = await axios.delete(`/api/participantOnCourse/byCourseId/${courseId}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function deleteParticipantOnCourse(participantId: number, courseId: number) {
+  try {
+    const response = await axios.delete(`/api/participantOnCourse`, {
+      data: { participantId, courseId }
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

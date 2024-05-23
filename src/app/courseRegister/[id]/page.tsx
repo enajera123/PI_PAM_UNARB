@@ -6,12 +6,14 @@ import Checkbox from "@/components/Checkbox/Checkbox";
 import { BsFillPersonCheckFill, BsHeartPulse } from "react-icons/bs";
 import { FaHashtag, FaRegCalendarAlt, FaUsers } from "react-icons/fa";
 import { IoNewspaperOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCourseStore } from "@/store/coursesStore";
 import { useRouter } from "next/navigation";
 import { showCustomAlert } from "@/utils/alerts";
 
-export default function CourseRegister() {
+export default function CourseRegister({ params }: { params: { id: string } }) {
+    const { getCourseById } = useCourseStore()
+    const [course, setCourse] = useState<Course | null>(null)
     const [courseNumber, setCourseNumber] = useState("");
     const [quota, setQuota] = useState("");
     const [name, setName] = useState("");
@@ -21,8 +23,31 @@ export default function CourseRegister() {
     const [location, setLocation] = useState("");
     const [description, setDescription] = useState("");
     const [needMedicalReport, setNeedMedicalReport] = useState(false);
-    const { postCourse } = useCourseStore();
+    const { putCourse } = useCourseStore();
     const router = useRouter();
+
+    async function fetchCourse() {
+        const response = await getCourseById(parseInt(params.id))
+        setCourse(response)
+    }
+    useEffect(() => {
+        if (params.id) {
+            fetchCourse()
+        }
+    }, [])
+    useEffect(() => {
+        if (course) {
+            setCourseNumber(course.courseNumber)
+            setQuota(course.quota.toString())
+            setName(course.name)
+            setProfessor(course.professor)
+            setInitialDate(course.initialDate)
+            setFinalDate(course.finalDate)
+            setLocation(course.location || "");
+            setDescription(course.description || "")
+            setNeedMedicalReport(course.needMedicalReport === "Yes" as unknown as YesOrNo ? true : false);
+        }
+    }, [course])
 
     const handleSaveCourse = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -38,9 +63,9 @@ export default function CourseRegister() {
             state: "Active" as unknown as State,
             needMedicalReport: needMedicalReport ? "Yes" as unknown as YesOrNo : "No" as unknown as YesOrNo,
         };
-        const response = await postCourse(course);
+        const response = await putCourse(Number(params.id), course);
         if (response) {
-            showCustomAlert("¡Agregado!", "El curso ha sido agregado correctamente.", "success").then((result) => {
+            showCustomAlert("¡Actualizado!", "El curso ha sido actualizado correctamente.", "success").then((result) => {
             if (result.isConfirmed) {
                 router.push('/courses');
             }

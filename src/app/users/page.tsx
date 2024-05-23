@@ -71,7 +71,7 @@ const UsersPage: React.FC = () => {
                     headers={["Identificación", "Nombre", "Primer Apellido", "Segundo Apellido", 'Estado',]}
                     itemsPerPage={6}
                     resetPagination={randomNumber}
-                    showEditColumn={true}
+                    actionColumn= 'delete-state'
                 />
             ) : (
                 <p>No se encontraron resultados</p>
