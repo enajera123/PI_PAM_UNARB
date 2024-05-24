@@ -15,6 +15,7 @@ import { GoPerson } from 'react-icons/go';
 import { FiPhoneCall } from 'react-icons/fi';
 import { RiGraduationCapLine } from 'react-icons/ri';
 import { MdOutlineEmail } from 'react-icons/md';
+import { useState } from 'react';
 
     const optionsScholarship = [
       { value: "Sin_Estudio", label: "Sin estudio" },
@@ -32,28 +33,23 @@ import { MdOutlineEmail } from 'react-icons/md';
     const data = [
         {
           name: "Curso 1",
-          color: "1232",
-          cat: "Activo",
+          code: "1232",      
         },
         {
           name: "Curso 2",
-          color: "2354",
-          cat: "Activo",
+          code: "2354",       
         },
         {
           name: "Curso 3",
-          color: "5345",
-          cat: "Activo",
+          code: "5345",
         },
         {
           name: "Curso 4",
-          color: "6345",
-          cat: "Activo",
+          code: "6345",
         },
         {
           name: "Curso 5",
-          color: "6345",
-          cat: "Activo",
+          code: "6345",
         },
       ];
       const dataFiles = [
@@ -74,9 +70,16 @@ import { MdOutlineEmail } from 'react-icons/md';
         },
       ];
 
-    const headers = ["Nombre", "Codigo", "Estado", "Action"];
-    const headersFiles = ["Nombre", "Action"];
 export default function Home() {
+    const [documentsData, setDocumentsData] = useState<ParticipantAttachment[]>([]);
+    function deleteDocument(id: number): void {
+
+    }
+
+    function desactivateRowFunction(id: number): void {
+        
+    }
+
     return (
         <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
             <div className='grid grid-cols-3 gap-4'>
@@ -185,7 +188,14 @@ export default function Home() {
             <div className='container bg-white mt-6 p-4 rounded-xl'>
                 <p className="text-3xl font-bold text-dark-gray flex justify-center">Documentos Adjuntos</p>
                 <div className='mt-6'>
-                    <Table keys={[]} data={dataFiles} headers={headersFiles} itemsPerPage={3}/>
+                    <Table
+                    deleteRowFunction={deleteDocument}
+                    keys={['name','']}
+                    data={dataFiles}
+                    headers={["Documento", ""]}
+                    itemsPerPage={3}
+                    actionColumn="delete"
+                    />
                 </div>
                 <div className='flex justify-center mt-6'>
                     <Button className="bg-red-gradient w-1/3">Agregar</Button>
@@ -194,7 +204,15 @@ export default function Home() {
             <div className='container bg-white mt-6 p-4 rounded-xl'>
                 <p className="text-3xl font-bold text-dark-gray flex justify-center">Cursos</p>
                 <div className='mt-6'>
-                    <Table keys={[]} data={data} headers={headers} itemsPerPage={3}/>
+                    <Table
+                    desactivateRowFunction={desactivateRowFunction}
+                    deleteRowFunction={deleteDocument}
+                    keys={['name', 'code']}
+                    data={data}
+                    headers={["Nombre", "Codigo"]}
+                    itemsPerPage={3}
+                    actionColumn="delete-state"
+                    />
                 </div>
                 <div className='flex justify-center mt-6'>
                     <Button className="bg-red-gradient w-1/3">Agregar</Button>
