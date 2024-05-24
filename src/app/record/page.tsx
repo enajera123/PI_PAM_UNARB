@@ -1,3 +1,4 @@
+"use client"
 import Button from '@/components/Button/Button';
 import Checkbox from '@/components/Checkbox/Checkbox';
 import InputField from '@/components/InputField/InputField';
@@ -9,23 +10,25 @@ import Table from "@/components/Table/Table";
 import { FaRegCalendarAlt, FaUsers } from 'react-icons/fa';
 import { HiOutlineIdentification } from 'react-icons/hi';
 import Link from 'next/link';
-import { LuFileEdit } from 'react-icons/lu';
 import { LuUserCircle2 } from "react-icons/lu";
 import { GoPerson } from 'react-icons/go';
 import { FiPhoneCall } from 'react-icons/fi';
 import { RiGraduationCapLine } from 'react-icons/ri';
 import { MdOutlineEmail } from 'react-icons/md';
 
-
     const optionsScholarship = [
-      { value: "NO", label: "Sin estudio" },
-      { value: "PC", label: "Primaria completa" },
-      { value: "PI", label: "Primaria incompleta" },
-      { value: "SC", label: "Secundaria completa" },
-      { value: "SI", label: "Secundaria incompleta"},
-      { value: "UC", label: "Universidad completa" },
-      { value: "UI", label: "Universidad incompleta" },
+      { value: "Sin_Estudio", label: "Sin estudio" },
+      { value: "Primaria_Completa", label: "Primaria completa" },
+      { value: "Primaria_Incompleta", label: "Primaria incompleta" },
+      { value: "Secundaria_Completa", label: "Secundaria completa" },
+      { value: "Secundaria_Incompleta", label: "Secundaria incompleta"},
+      { value: "Universidad_Completa", label: "Universidad completa" },
+      { value: "Universidad_Incompleta", label: "Universidad incompleta" },
     ];
+    const optionsTypeIdentification = [
+        { value: "Nacional", label: "Nacional" },
+        { value: "DIMEX", label: "DIMEX" },
+      ];
     const data = [
         {
           name: "Curso 1",
@@ -83,11 +86,11 @@ export default function Home() {
                         placeholder="Identificación"
                         iconStart={<HiOutlineIdentification color="white" />}
                     />
-                    <InputField
-                        label="Fecha de nacimiento"
-                        placeholder="Fecha de nacimiento"
-                        type="date"
-                        iconStart={<FaRegCalendarAlt color="white" />}
+                    <Select
+                        label="Tipo de identificación"                      
+                        placeholder="Tipo de identificación"
+                        icon={<HiOutlineIdentification color="white" />}
+                        options={optionsTypeIdentification}
                     />
                 </div>
                 <div className="col-span-1">
@@ -158,8 +161,9 @@ export default function Home() {
                     <TextArea
                         label="Dirección"
                         placeholder="Dirección"
-                        rows={6}
-                    />  
+                        rows={6} value={''} onChange={ ()=>void {
+                            
+                        } }/>  
                 </div>
                 <div className="col-span-1">
                     <div className='flex flex-col items-center justify-center'>
