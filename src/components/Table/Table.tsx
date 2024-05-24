@@ -64,7 +64,7 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
               className={buttonClass}
               onClick={() => handleDeleteItem(item.id)}
             >
-              <MdDelete className="text-medium-red text-xl" />
+              Eliminar
             </button>
           </>
         );
@@ -75,7 +75,7 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
               className={buttonClass}
               onClick={() => handleDeleteItem(item.id)}
             >
-              <MdDelete className="text-medium-red text-xl" />
+              Eliminar
             </button>
             <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
               <button className={buttonClass}>
@@ -91,7 +91,7 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
               className={buttonClass}
               onClick={() => handleDeleteItem(item.id)}
             >
-              <MdDelete className="text-medium-red text-xl" />
+              Eliminar
             </button>
             <button
               className={`${buttonClass} w-28`}
@@ -126,7 +126,7 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
                 <tr
                   onDoubleClick={() => doubleClickRowFunction && doubleClickRowFunction(item.id)}
                   key={index}
-                  className={`odd:bg-white odd:dark:bg-medium-gray  even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-medium-red`}
+                  className={`odd:bg-white odd:dark:bg-medium-gray  even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-dark-gray  hover:bg-gray-200`}
                 >
                   {keys.map((key) => (
                     <td key={key} className="px-6 py-4">

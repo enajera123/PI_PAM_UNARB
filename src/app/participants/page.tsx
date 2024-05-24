@@ -17,7 +17,7 @@ const Home = () => {
     const [randomNumber, setRandomNumber] = useState<number>(0);
     const searchParams = useSearchParams();
     const courseId = searchParams.get('courseId');
-    
+
     const fetchData = async () => {
         if (courseId) {
             const participants = await getParticipantOnCourseByCourseId(Number(courseId));
@@ -33,7 +33,7 @@ const Home = () => {
             }
         }
     };
-    
+
     useEffect(() => {
         fetchData()
     }, [])
@@ -62,7 +62,7 @@ const Home = () => {
     };
 
     return (
-        <div className="container mx-auto bg-gray-gradient flex flex-col justify-center items-center h-auto p-10 my-6 rounded-2xl max-w-6xl">
+        <div className="container mx-auto bg-gray-gradient p-10 my-4 rounded-3xl flex flex-col items-center">
             <h1 className="text-white font-bold text-2xl mb-4 mt-0">
                 Participantes de curso
             </h1>
@@ -74,28 +74,29 @@ const Home = () => {
                 handleSearch={handleSearch}
                 showSelect={true}
             />
-            <div className="max-w-5xl">
+            <div className="w-full">
                 {filteredData.length > 0 ? (
                     <Table
-                        keys={['identification', 'firstName', 'firstSurname', 'secondSurname', 'email', 'phoneNumber', 'hasWhatsApp']}
+                        keys={['identification', 'firstName', 'firstSurname', 'secondSurname', '', '', '', '', '']}
                         data={filteredData}
-                        headers={["Identificación", "Nombre", "Primer Apellido", "Segundo Apellido", "Email", "Teléfono", 'WhatsApp']}
+                        headers={["Identificación", "Nombre", "Primer Apellido", "Segundo Apellido", "FecVenCed", "Poliza", "FecVenPoliza", "Dictamen", "FecVenDicta"]}
                         itemsPerPage={6}
                         actionColumn="delete"
                         resetPagination={randomNumber}
                         deleteRowFunction={handleDelete}
                     />
                 ) : (
-                    <p>No se encontraron resultados</p>
+                    <p className="text-center">No se encontraron resultados</p>
                 )}
             </div>
             <div className="mt-6">
-            <Link href="/record">
-              <Button className="bg-red-gradient w-60">Agregar</Button> 
-            </Link>
-           </div>  
+                <Link href="/record">
+                    <Button className="bg-red-gradient w-60">Agregar</Button>
+                </Link>
+            </div>
         </div>
     );
+    
 };
 
 export default Home;
