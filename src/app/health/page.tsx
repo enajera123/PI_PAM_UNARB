@@ -10,7 +10,7 @@ import logoUNAPAM from '@/resources/LogoWhite.png';
 import Image from 'next/image';
 import { BiInjection } from "react-icons/bi";
 
-export default function health() {
+export default function Health() {
     const optionsBloodType = [
         { value: "A+", label: "A+" },
         { value: "A-", label: "A-" },

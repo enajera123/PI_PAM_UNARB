@@ -6,7 +6,7 @@ import { BsFillPersonCheckFill, BsHeartPulse } from "react-icons/bs";
 import { FaHashtag, FaRegCalendarAlt, FaUsers } from "react-icons/fa";
 import { IoNewspaperOutline } from "react-icons/io5";
 
-export default function courseRegister() {
+export default function CourseRegister() {
     return(
         <div className="max-w-5xl my-4 container mx-auto bg-gray-gradient p-10 flex flex-col justify-center items-center h-auto rounded-3xl">
             <p className="text-xl font-bold text-light-gray">Gestión de cursos</p>
