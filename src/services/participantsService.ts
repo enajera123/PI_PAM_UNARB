@@ -13,6 +13,7 @@ export async function getParticipants() {
 export async function getParticipantById(id: number) {
   try {
     const response = await axios.get(`/api/participants/${id}`);
+    console.log("participant: ", response.data);
     return response.data;
   } catch (error) {
     console.error(error);

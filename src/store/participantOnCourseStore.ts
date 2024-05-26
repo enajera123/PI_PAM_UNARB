@@ -30,16 +30,23 @@ export const useParticipantOnCourseStore = create<ParticipantOnCourseState>(
     postParticipantOnCourse: async (
       participantOnCourse: ParticipantOnCourse
     ) => {
-      const newParticipantOnCourse = await createParticipantOnCourse(
-        participantOnCourse
-      );
-      if (newParticipantOnCourse) {
-        set((state) => ({
-          participantsOnCourse: [
-            ...state.participantsOnCourse,
-            newParticipantOnCourse,
-          ],
-        }));
+      try {
+        const newParticipantOnCourse = await createParticipantOnCourse(
+          participantOnCourse
+        );
+        if (newParticipantOnCourse) {
+          set((state) => ({
+            participantsOnCourse: [
+              ...state.participantsOnCourse,
+              newParticipantOnCourse,
+            ],
+          }));
+          return newParticipantOnCourse;
+        }
+        return null;
+      } catch (error) {
+        console.error("Error al crear el participante en el curso:", error);
+        return null;
       }
     },
 

@@ -28,21 +28,29 @@ export const useParticipantMedicineStore = create<ParticipantMedicineState>(
           p.id === id ? participantMedicine : p
         ),
       }));
+      return participantMedicine;
     },
 
     postParticipantMedicine: async (
       participantMedicine: ParticipantMedicine
     ) => {
-      const newParticipantMedicine = await createParticipantMedicine(
-        participantMedicine
-      );
-      if (newParticipantMedicine) {
-        set((state) => ({
-          participantsMedicine: [
-            ...state.participantsMedicine,
-            newParticipantMedicine,
-          ],
-        }));
+      try {
+        const newParticipantMedicine = await createParticipantMedicine(
+          participantMedicine
+        );
+        if (newParticipantMedicine) {
+          set((state) => ({
+            participantsMedicine: [
+              ...state.participantsMedicine,
+              newParticipantMedicine,
+            ],
+          }));
+          return newParticipantMedicine;
+        }
+        return null;
+      } catch (error) {
+        console.error("Error al crear el participante en la medicina:", error);
+        return null;
       }
     },
 
@@ -59,6 +67,7 @@ export const useParticipantMedicineStore = create<ParticipantMedicineState>(
           p.id === id ? updatedParticipantMedicine : p
         ),
       }));
+      return updatedParticipantMedicine;
     },
 
     deleteParticipantMedicine: async (id: number) => {
@@ -90,6 +99,7 @@ export const useParticipantMedicineStore = create<ParticipantMedicineState>(
           p.participantHealthId === participantId ? participantMedicine : p
         ),
       }));
+      return participantMedicine;
     },
   })
 );

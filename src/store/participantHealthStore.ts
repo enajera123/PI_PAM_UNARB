@@ -27,19 +27,27 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
           p.id === id ? participantHealth : p
         ),
       }));
+      return participantHealth;
     },
 
     postParticipantHealth: async (participantHealth: ParticipantHealth) => {
-      const newParticipantHealth = await createParticipantHealth(
-        participantHealth
-      );
-      if (newParticipantHealth) {
-        set((state) => ({
-          participantsHealth: [
-            ...state.participantsHealth,
-            newParticipantHealth,
-          ],
-        }));
+      try {
+        const newParticipantHealth = await createParticipantHealth(
+          participantHealth
+        );
+        if (newParticipantHealth) {
+          set((state) => ({
+            participantsHealth: [
+              ...state.participantsHealth,
+              newParticipantHealth,
+            ],
+          }));
+          return newParticipantHealth;
+        }
+        return null;
+      } catch (error) {
+        console.error("Error al crear el participante en salud:", error);
+        return null;
       }
     },
 
@@ -56,6 +64,7 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
           p.id === id ? updatedParticipantHealth : p
         ),
       }));
+      return updatedParticipantHealth;
     },
 
     deleteParticipantHealth: async (id: number) => {
@@ -74,6 +83,7 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
           p.bloodType === bloodType ? participantHealth : p
         ),
       }));
+      return participantHealth;
     },
 
     getParticipantHealthByParticipantId: async (participantId: number) => {
@@ -85,6 +95,7 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
           p.participantId === participantId ? participantHealth : p
         ),
       }));
+      return participantHealth;
     },
   })
 );

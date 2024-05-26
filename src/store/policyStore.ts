@@ -22,12 +22,20 @@ export const usePolicyStore = create<PolicyState>((set) => ({
     set((state) => ({
       policys: state.policys.map((p) => (p.id === id ? policy : p)),
     }));
+    return policy;
   },
 
   postPolicy: async (policy: Policy) => {
-    const newPolicy = await createPolicy(policy);
-    if (newPolicy) {
-      set((state) => ({ policys: [...state.policys, newPolicy] }));
+    try {
+      const newPolicy = await createPolicy(policy);
+      if (newPolicy) {
+        set((state) => ({ policys: [...state.policys, newPolicy] }));
+        return newPolicy;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error al crear la póliza:", error);
+      return null;
     }
   },
 
@@ -36,6 +44,7 @@ export const usePolicyStore = create<PolicyState>((set) => ({
     set((state) => ({
       policys: state.policys.map((p) => (p.id === id ? updatedPolicy : p)),
     }));
+    return updatedPolicy;
   },
 
   deletePolicy: async (id: number) => {

@@ -22,11 +22,13 @@ export const useParticipantsStore = create<ParticipantState>((set) => ({
 
   getParticipantById: async (id: number) => {
     const participant = await getParticipantById(id);
+    console.log("Valor de participant:", participant);
     set((state) => ({
       participants: state.participants.map((p) =>
         p.id === id ? participant : p
       ),
     }));
+    return participant;
   },
 
   postParticipant: async (participant: Participant) => {
@@ -52,6 +54,7 @@ export const useParticipantsStore = create<ParticipantState>((set) => ({
         p.id === id ? updatedParticipant : p
       ),
     }));
+    return updatedParticipant;
   },
 
   deleteParticipant: async (id: number) => {

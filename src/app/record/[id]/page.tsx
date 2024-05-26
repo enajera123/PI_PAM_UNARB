@@ -20,12 +20,11 @@ import { usePolicyStore } from "@/store/policyStore";
 import { useParticipantOnCourseStore } from "@/store/participantOnCourseStore";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ParticipantRegister({ params }: { params: { id: string } }) {
-  const { getParticipantById, putParticipant } = useParticipantsStore();
-  const { getParticipantOnCourseByParticipantId } = useParticipantOnCourseStore();
-  const { getPolicys, policys, postPolicy, putPolicy } = usePolicyStore();
-  const [participant, setParticipant] = useState(null);
-  const [courses, setCourses] = useState([]);
+export default function ParticipantRegister({
+  params,
+}: {
+  params: { id: string };
+}) {
   const [identification, setIdentification] = useState("");
   const [name, setName] = useState("");
   const [firstSurname, setFirstSurname] = useState("");
@@ -34,70 +33,83 @@ export default function ParticipantRegister({ params }: { params: { id: string }
   const [email, setEmail] = useState("");
   const [grade, setGrade] = useState("Sin_Estudio");
   const [date, setBirthDate] = useState("");
-  const [photo, setPhoto] = useState("");
   const [typeID, setTypeID] = useState("Nacional");
+  const [hasWhatsApp, setHasWhatsApp] = useState("Yes");
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  const { getParticipantById, putParticipant } = useParticipantsStore();
+  const { getParticipantOnCourseByParticipantId } =
+    useParticipantOnCourseStore();
+  const { getPolicys, policys, postPolicy, putPolicy } = usePolicyStore();
+  const [participant, setParticipant] = useState<Participant | null>(null);
+  const [courses, setCourses] = useState([]);
   const [policy, setPolicy] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const participantId = searchParams.get("participantId");
 
-  useEffect(() => {
-    const fetchParticipant = async () => {
-      const response = await getParticipantById(parseInt(params.id));
-      if (response) {
-        setParticipant(response);
-        setIdentification(response.identification);
-        setName(response.firstName);
-        setFirstSurname(response.firstSurname);
-        setSecondSurname(response.secondSurname);
-        setPhoneNumber(response.phoneNumber);
-        setEmail(response.email);
-        setGrade(response.grade.toString());
-        setBirthDate(response.birthDate);
-        setPhoto(response.photo ?? "");
-        setTypeID(response.typeIdentification.toString());
-      }
-    };
-    if (params.id) {
-      fetchParticipant();
+  async function fetchParticipant() {
+    const id = parseInt(params.id);
+    if (!id) {
+      console.error("No ID provided in params.");
+      return;
     }
-  }, [params.id, getParticipantById]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      if (participantId) {
-        try {
-          const coursesResponse = await getParticipantOnCourseByParticipantId(Number(participantId));
-          if (coursesResponse) {
-            setCourses(coursesResponse);
-          }
-        } catch (error) {
-          console.error("Error fetching courses:", error);
-        }
-      }
-    };
-    fetchCourses();
-  }, [participantId, getParticipantOnCourseByParticipantId]);
-
-  const handleUpdateParticipant = async (e) => {
-    e.preventDefault();
-    const participantData = {
-      grade,
-      identification,
-      firstName: name,
-      firstSurname,
-      secondSurname,
-      phoneNumber: phone,
-      email,
-      typeID,
-      birthDate: date,
-      state: "Active",
-    };
-    const response = await putParticipant(Number(params.id), participantData);
+    console.log(`Fetching participant with ID: ${id}`);
+    const response = await getParticipantById(id);
+    console.log("Fetched participant data:", response);
     if (response) {
-      router.push("/participants");
+      setParticipant(response);
+    } else {
+      console.error(`Participant with ID ${id} not found.`);
     }
-  };
+  }
+
+  useEffect(() => {
+    fetchParticipant();
+  }, [params.id]);
+
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      if (participant && participant.photo && participant.photo.data) {
+        try {
+          const buffer = participant.photo.data;
+          const arrayBuffer = new Uint8Array(buffer).buffer;
+          
+          const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+  
+          const file = new File([blob], "photo.jpg", { type: blob.type });
+          
+          setPhotoFile(file);
+        } catch (error) {
+          console.error("Error al cargar la foto:", error);
+        }
+      } else {
+        console.error("No se encontraron datos de foto en el objeto participant.");
+      }
+    };
+  
+    fetchPhoto();
+  }, [participant]);
+  
+  
+  
+
+  useEffect(() => {
+    console.log("Participant state updated:", participant);
+    if (participant) {
+      setIdentification(participant.identification);
+      setPhoneNumber(participant.phoneNumber);
+      setName(participant.firstName);
+      setFirstSurname(participant.firstSurname);
+      setSecondSurname(participant.secondSurname);
+      setGrade(participant.grade.toString());
+      setEmail(participant.email);
+      setHasWhatsApp(participant.hasWhatsApp);
+      setTypeID(participant.typeIdentification.toString());
+      setBirthDate(participant.birthDate);
+      //setPhotoFile(participant.photo ?? null);
+    }
+  }, [participant]);
 
   const optionsGrade = [
     { value: "Sin_Estudio", label: "Sin estudio" },
@@ -112,6 +124,56 @@ export default function ParticipantRegister({ params }: { params: { id: string }
     { value: "Nacional", label: "Nacional" },
     { value: "DIMEX", label: "DIMEX" },
   ];
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file instanceof File) {
+      setPhotoFile(file);
+    } else {
+      console.error("Error: Archivo inválido seleccionado.");
+      setPhotoFile(null);
+    }
+  };
+
+  const handleUpdateParticipant = async (e) => {
+    e.preventDefault();
+
+    const createParticipant = async (photoUrl = null) => {
+      const participant = {
+        identification,
+        firstName: name,
+        firstSurname,
+        secondSurname,
+        phoneNumber: phone,
+        email,
+        hasWhatsApp: hasWhatsApp as YesOrNo,
+        grade: grade as Grade,
+        birthDate: date,
+        typeIdentification: typeID as TypeIdentification,
+        photo: photoUrl,
+      };
+
+      try {
+        const response = await putParticipant(Number(params.id), participant);
+        console.log("participant", participant);
+        if (response) {
+          router.push("/searches");
+        }
+      } catch (error) {
+        console.error("Error al actualizar participante:", error);
+      }
+    };
+
+    if (photoFile) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        await createParticipant(reader.result);
+      };
+      reader.readAsDataURL(photoFile);
+    } else {
+      await createParticipant();
+    }
+  };
 
   const headers = ["Nombre", "Codigo", "Estado", "Action"];
   const headersFiles = ["Nombre", "Action"];
@@ -158,13 +220,13 @@ export default function ParticipantRegister({ params }: { params: { id: string }
         </div>
         <div className="col-span-1">
           <div className="mt-7">
-            <Button className="bg-red-gradient">Agregar Poliza Estudiantil</Button>
+            <Button className="bg-red-gradient">
+              Agregar Poliza Estudiantil
+            </Button>
           </div>
         </div>
         <div className="col-span-1">
           <InputField
-            value={policy}
-            onChange={(e) => setPolicy(e.target.value)}
             label="Vencimiento de Poliza"
             placeholder="Fecha de Vencimiento"
             type="date"
@@ -222,48 +284,76 @@ export default function ParticipantRegister({ params }: { params: { id: string }
           />
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-4">
-        <div className="col-span-3">
-          <TextArea
-            label="Dirección"
-            placeholder="Dirección"
-            rows={6}
-            value={""}
-            onChange={() => void {}}
-          />
-        </div>
-        <div className="col-span-1">
+      <div className="flex items-center justify-center ">
+        <div>
           <div className="flex flex-col items-center justify-center">
-            <LuUserCircle2 className="w-32 h-auto text-white" />
-            <Button className="bg-red-gradient">Foto</Button>
+            {photoFile ? (
+              <img
+                src={URL.createObjectURL(photoFile)}
+                alt="Foto"
+                className="w-32 h-auto"
+              />
+            ) : (
+              <LuUserCircle2 className="w-32 h-auto text-white" />
+            )}
+            <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+              Foto
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+            </label>
           </div>
         </div>
       </div>
+
       <div className="flex justify-between mt-4">
         <Link href="/health">
           <Button className="bg-red-gradient w-52">Salud</Button>
         </Link>
-        <Button className="bg-red-gradient w-52">Desactivar</Button>
-        <Button className="bg-red-gradient w-52">Eliminar</Button>
-      </div>
-      <div className="flex justify-center mt-6">
-        <Button onClick={handleUpdateParticipant} className="bg-red-gradient w-1/3">
+        <Button
+          onClick={(e) => handleUpdateParticipant(e)}
+          className="bg-red-gradient w-1/3"
+        >
           Registrar
         </Button>
+        <Button className="bg-red-gradient w-52">Eliminar</Button>
       </div>
       <div className="container bg-white mt-6 p-4 rounded-xl">
-        <p className="text-3xl font-bold text-dark-gray flex justify-center">Documentos Adjuntos</p>
+        <p className="text-3xl font-bold text-dark-gray flex justify-center">
+          Documentos Adjuntos
+        </p>
         <div className="mt-6">
-          <Table keys={[]} data={dataFiles} headers={headersFiles} itemsPerPage={3} />
+          <Table
+            //deleteRowFunction={deleteDocument}
+            keys={["name", ""]}
+            data={dataFiles}
+            headers={["Documento", ""]}
+            itemsPerPage={3}
+            actionColumn="delete"
+          />
         </div>
         <div className="flex justify-center mt-6">
           <Button className="bg-red-gradient w-1/3">Agregar</Button>
         </div>
       </div>
       <div className="container bg-white mt-6 p-4 rounded-xl">
-        <p className="text-3xl font-bold text-dark-gray flex justify-center">Cursos</p>
+        <p className="text-3xl font-bold text-dark-gray flex justify-center">
+          Cursos
+        </p>
         <div className="mt-6">
-          <Table keys={[]} data={courses} headers={headers} itemsPerPage={3} />
+          <Table
+            //desactivateRowFunction={desactivateRowFunction}
+            //deleteRowFunction={deleteDocument}
+            //doubleClickRowFunction={updateCourse}
+            keys={["name", "courseNumber"]}
+            data={dataFiles}
+            headers={["Nombre", "Código"]}
+            itemsPerPage={3}
+            actionColumn="add-participant"
+          />
         </div>
         <div className="flex justify-center mt-6">
           <Button className="bg-red-gradient w-1/3">Agregar</Button>
@@ -272,9 +362,6 @@ export default function ParticipantRegister({ params }: { params: { id: string }
     </div>
   );
 }
-
-
-
 
 /*"use client";
 import React, { useState, useEffect } from "react";
@@ -430,7 +517,7 @@ export default function ParticipantRegister({
     },
   ];*/
 
-  /*const handleUpdateParticipant = async (
+/*const handleUpdateParticipant = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();

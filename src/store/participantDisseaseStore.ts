@@ -28,19 +28,27 @@ export const useParticipantDisseaseStore = create<ParticipantDisseaseState>(
           p.id === id ? participantDisease : p
         ),
       }));
+      return participantDisease;
     },
 
     postParticipantDisease: async (participantDisease: ParticipantDissease) => {
-      const newParticipantDisease = await createParticipantDissease(
-        participantDisease
-      );
-      if (newParticipantDisease) {
-        set((state) => ({
-          participantsDisease: [
-            ...state.participantsDisease,
-            newParticipantDisease,
-          ],
-        }));
+      try {
+        const newParticipantDisease = await createParticipantDissease(
+          participantDisease
+        );
+        if (newParticipantDisease) {
+          set((state) => ({
+            participantsDisease: [
+              ...state.participantsDisease,
+              newParticipantDisease,
+            ],
+          }));
+          return newParticipantDisease;
+        }
+        return null;
+      } catch (error) {
+        console.error("Error al crear el participante con enfermedad:", error);
+        return null;
       }
     },
 
@@ -57,6 +65,7 @@ export const useParticipantDisseaseStore = create<ParticipantDisseaseState>(
           p.id === id ? updatedParticipantDisease : p
         ),
       }));
+      return updatedParticipantDisease;
     },
 
     deleteParticipantDisease: async (id: number) => {
@@ -75,6 +84,7 @@ export const useParticipantDisseaseStore = create<ParticipantDisseaseState>(
           p.disease === disease ? participantDisease : p
         ),
       }));
+      return participantDisease;
     },
 
     getParticipantDiseaseByParticipantHealthtId: async (
@@ -87,6 +97,7 @@ export const useParticipantDisseaseStore = create<ParticipantDisseaseState>(
           p.participantHealthId === participantHealthId ? participantDisease : p
         ),
       }));
+      return participantDisease;
     },
   })
 );

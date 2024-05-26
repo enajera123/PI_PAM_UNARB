@@ -26,12 +26,20 @@ export const useReferenceContactStore = create<ReferenceContactState>(
           rc.id === id ? referenceContact : rc
         ),
       }));
+      return referenceContact;
     },
 
     postContact: async (reference: ReferenceContact) => {
-      const newReference = await createReference(reference);
-      if (newReference) {
-        set((state) => ({ contacts: [...state.contacts, newReference] }));
+      try {
+        const newReference = await createReference(reference);
+        if (newReference) {
+          set((state) => ({ contacts: [...state.contacts, newReference] }));
+          return newReference;
+        }
+        return null;
+      } catch (error) {
+        console.error("Error al crear el contacto:", error);
+        return null;
       }
     },
 
@@ -42,6 +50,7 @@ export const useReferenceContactStore = create<ReferenceContactState>(
           rc.id === id ? updatedReference : rc
         ),
       }));
+      return updatedReference;
     },
 
     deleteContact: async (id: number) => {

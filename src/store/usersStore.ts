@@ -80,5 +80,6 @@ export const useUsersStore = create<UsersState>((set) => ({
     set((state) => ({
       users: state.users.map((u) => (u.id === id ? updatedUser : u)),
     }));
+    return updatedUser;
   },
 }));

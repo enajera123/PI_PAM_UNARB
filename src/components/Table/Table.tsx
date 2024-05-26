@@ -54,6 +54,10 @@ const Table = ({
     return isActive === "Active" ? "Desactivar" : "Activar";
   };
 
+  const getAddedParticipantText = (isAdded: string) => {
+    return isAdded === "Agregar al curso" ? "Agregado" : "Agregar al curso";
+  };
+
   const handleDeleteItem = (id: number) => {
     showDeleteConfirmation().then((result) => {
       if (result.isConfirmed) {
@@ -115,6 +119,25 @@ const Table = ({
               }
             >
               {getDeactivateButtonText(item.state)}
+            </button>
+          </>
+        );
+      case "add-participant":
+        return (
+          <>
+            <button
+              className={buttonClass}
+              onClick={() => handleDeleteItem(item.id)}
+            >
+              Eliminar
+            </button>
+            <button
+              className={`${buttonClass} w-28`}
+              onClick={() =>
+                desactivateRowFunction && desactivateRowFunction(item.id)
+              }
+            >
+              {getAddedParticipantText(item.state)}
             </button>
           </>
         );
