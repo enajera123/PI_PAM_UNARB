@@ -6,6 +6,7 @@ import { deleteParticipant } from "@/services/participantsService";
 import { getParticipantOnCourseByCourseId, deleteParticipantOnCourse } from "@/services/participantOnCourseService";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
@@ -17,6 +18,7 @@ const Home = () => {
     const [randomNumber, setRandomNumber] = useState<number>(0);
     const searchParams = useSearchParams();
     const courseId = searchParams.get('courseId');
+    const router = useRouter();
 
     const fetchData = async () => {
         if (courseId) {
@@ -61,6 +63,10 @@ const Home = () => {
         }
     };
 
+    const updateParticipant = (id: number) => {
+        router.push(`/record/${id}`)
+    }
+
     return (
         <div className="container mx-auto bg-gray-gradient p-10 my-4 rounded-3xl flex flex-col items-center">
             <h1 className="text-white font-bold text-2xl mb-4 mt-0">
@@ -84,6 +90,7 @@ const Home = () => {
                         actionColumn="delete"
                         resetPagination={randomNumber}
                         deleteRowFunction={handleDelete}
+                        doubleClickRowFunction={updateParticipant}
                     />
                 ) : (
                     <p className="text-center">No se encontraron resultados</p>

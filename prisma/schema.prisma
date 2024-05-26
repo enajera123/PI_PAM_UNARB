@@ -65,7 +65,7 @@ model Participant {
   birthDate              String
   identification         String
   hasWhatsApp            YesOrNo
-  photo                  String?
+  photo                  Bytes?
   grade                  Grade
   Policy                 Policy?
   MedicalReport          MedicalReport?

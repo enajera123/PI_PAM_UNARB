@@ -23,9 +23,9 @@ export async function getParticipantById(id: number) {
 export async function createParticipant(participant: Participant) {
   try {
     const response = await axios.post<Participant>(
-      "/api/participants",
-      participant
+      "/api/participants",participant
     );
+    console.log("service", participant);
     return response.data;
   } catch (error) {
     console.error(error);

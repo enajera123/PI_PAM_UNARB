@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos, MdDelete } from "react-icons/md";
@@ -6,12 +6,22 @@ import { TableProps } from "./type";
 import Link from "next/link";
 import { showDeleteConfirmation, showCustomAlert } from "@/utils/alerts";
 
-const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, headers, itemsPerPage, resetPagination, actionColumn, deleteRowFunction }: TableProps) => {
+const Table = ({
+  keys,
+  desactivateRowFunction,
+  doubleClickRowFunction,
+  data,
+  headers,
+  itemsPerPage,
+  resetPagination,
+  actionColumn,
+  deleteRowFunction,
+}: TableProps) => {
+  const currentPageClass =
+    "flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer";
 
-  const currentPageClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
-
-  const currentPageActiveClass = 'flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-medium-gray dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer'
-
+  const currentPageActiveClass =
+    "flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-medium-gray dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer";
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -41,23 +51,28 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
   }, [resetPagination, setCurrentPage]);
 
   const getDeactivateButtonText = (isActive: string) => {
-    return isActive === 'Active' ? 'Desactivar' : 'Activar';
-};
+    return isActive === "Active" ? "Desactivar" : "Activar";
+  };
 
   const handleDeleteItem = (id: number) => {
     showDeleteConfirmation().then((result) => {
       if (result.isConfirmed) {
         deleteRowFunction && deleteRowFunction(id);
-        showCustomAlert("¡Eliminado!", "El elemento ha sido eliminado.", "success")
+        showCustomAlert(
+          "¡Eliminado!",
+          "El elemento ha sido eliminado.",
+          "success"
+        );
       }
     });
   };
 
   const renderButtons = (item: any) => {
-    const buttonClass = "flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800";
+    const buttonClass =
+      "flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800";
 
     switch (actionColumn) {
-      case 'delete':
+      case "delete":
         return (
           <>
             <button
@@ -68,7 +83,7 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
             </button>
           </>
         );
-      case 'delete-participants':
+      case "delete-participants":
         return (
           <>
             <button
@@ -77,14 +92,14 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
             >
               Eliminar
             </button>
-            <Link href={{ pathname: '/participants', query: { courseId: item.id } }}>
-              <button className={buttonClass}>
-                Participantes
-              </button>
+            <Link
+              href={{ pathname: "/participants", query: { courseId: item.id } }}
+            >
+              <button className={buttonClass}>Participantes</button>
             </Link>
           </>
         );
-      case 'delete-state':
+      case "delete-state":
         return (
           <>
             <button
@@ -95,13 +110,15 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
             </button>
             <button
               className={`${buttonClass} w-28`}
-              onClick={() => desactivateRowFunction && desactivateRowFunction(item.id)}
+              onClick={() =>
+                desactivateRowFunction && desactivateRowFunction(item.id)
+              }
             >
               {getDeactivateButtonText(item.state)}
             </button>
           </>
         );
-      case 'none':
+      case "none":
       default:
         return null;
     }
@@ -118,26 +135,30 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
                     {header}
                   </th>
                 ))}
-                {actionColumn !== 'none' && <th scope="col" className="px-6 py-3">Acciones</th>}
+                {actionColumn !== "none" && (
+                  <th scope="col" className="px-6 py-3">
+                    Acciones
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
               {getCurrentPageData().map((item, index) => (
                 <tr
-                  onDoubleClick={() => doubleClickRowFunction && doubleClickRowFunction(item.id)}
+                  onDoubleClick={() =>
+                    doubleClickRowFunction && doubleClickRowFunction(item.id)
+                  }
                   key={index}
-                  className={`odd:bg-white odd:dark:bg-medium-gray  even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-dark-gray  hover:bg-gray-200`}
+                  className={`odd:bg-white odd:dark:bg-medium-gray even:bg-gray-50 even:dark:bg-white border-b dark:border-gray-700 text-dark-gray hover:bg-gray-200 hover:cursor-pointer hover:scale-105 transition-transform duration-200`}
                 >
                   {keys.map((key) => (
                     <td key={key} className="px-6 py-4">
                       {item[key]}
                     </td>
                   ))}
-                  {actionColumn !== 'none' && (
+                  {actionColumn !== "none" && (
                     <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        {renderButtons(item)}
-                      </div>
+                      <div className="flex gap-2">{renderButtons(item)}</div>
                     </td>
                   )}
                 </tr>
@@ -165,7 +186,11 @@ const Table = ({ keys, desactivateRowFunction, doubleClickRowFunction, data, hea
               .map((_, index) => (
                 <li key={index}>
                   <span
-                    className={index + 1 === currentPage ? currentPageActiveClass : currentPageClass}
+                    className={
+                      index + 1 === currentPage
+                        ? currentPageActiveClass
+                        : currentPageClass
+                    }
                     onClick={() => setCurrentPage(index + 1)}
                   >
                     {index + 1}

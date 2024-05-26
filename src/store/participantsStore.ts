@@ -30,13 +30,20 @@ export const useParticipantsStore = create<ParticipantState>((set) => ({
   },
 
   postParticipant: async (participant: Participant) => {
-    const newParticipant = await createParticipant(participant);
-    if (newParticipant) {
-      set((state) => ({
-        participants: [...state.participants, newParticipant],
-      }));
+    try {
+      const newParticipant = await createParticipant(participant);
+      if (newParticipant) {
+        set((state) => ({
+          participants: [...state.participants, newParticipant],
+        }));
+        console.log("Nuevo participante agregado:", newParticipant);
+        return newParticipant;
+      }
+    } catch (error) {
+      console.error("Error al crear participante:", error);
+      throw error;
     }
-  },
+  },  
 
   putParticipant: async (id: number, participant: Participant) => {
     const updatedParticipant = await updateParticipant(id, participant);

@@ -2,7 +2,7 @@
 
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Table from "@/components/Table/Table";
-import { deleteParticipant, getParticipants } from "@/services/participantsService";
+import { getParticipants } from "@/services/participantsService";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
 import Link from 'next/link';

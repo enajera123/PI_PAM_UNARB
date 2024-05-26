@@ -1,26 +1,31 @@
 "use client";
-import { useState } from "react";
-import { useParticipantsStore } from "@/store/participantsStore";
-import { useRouter } from "next/navigation";
-import { Grade, TypeIdentification, YesOrNo } from "@prisma/client";
-import { HiOutlineIdentification } from "react-icons/hi";
-import { RiGraduationCapLine } from "react-icons/ri";
-import { GoPerson } from "react-icons/go";
-import { FiPhoneCall } from "react-icons/fi";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { MdOutlineEmail } from "react-icons/md";
+import React, { useState, useEffect } from "react";
 import Button from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import Select from "@/components/Select/Select";
 import TextArea from "@/components/TextArea/TextArea";
-import Table from "@/components/Table/Table";
-import Link from "next/link";
-import Image from "next/image";
-import sizeOf from "image-size";
 import logoUNAPAM from "@/resources/LogoWhite.png";
+import Image from "next/image";
+import Table from "@/components/Table/Table";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import { HiOutlineIdentification } from "react-icons/hi";
+import Link from "next/link";
 import { LuUserCircle2 } from "react-icons/lu";
+import { GoPerson } from "react-icons/go";
+import { FiPhoneCall } from "react-icons/fi";
+import { RiGraduationCapLine } from "react-icons/ri";
+import { MdOutlineEmail } from "react-icons/md";
+import { useParticipantsStore } from "@/store/participantsStore";
+import { usePolicyStore } from "@/store/policyStore";
+import { useParticipantOnCourseStore } from "@/store/participantOnCourseStore";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ParticipantRegister() {
+export default function ParticipantRegister({ params }: { params: { id: string } }) {
+  const { getParticipantById, putParticipant } = useParticipantsStore();
+  const { getParticipantOnCourseByParticipantId } = useParticipantOnCourseStore();
+  const { getPolicys, policys, postPolicy, putPolicy } = usePolicyStore();
+  const [participant, setParticipant] = useState(null);
+  const [courses, setCourses] = useState([]);
   const [identification, setIdentification] = useState("");
   const [name, setName] = useState("");
   const [firstSurname, setFirstSurname] = useState("");
@@ -29,59 +34,72 @@ export default function ParticipantRegister() {
   const [email, setEmail] = useState("");
   const [grade, setGrade] = useState("Sin_Estudio");
   const [date, setBirthDate] = useState("");
+  const [photo, setPhoto] = useState("");
   const [typeID, setTypeID] = useState("Nacional");
-  const [hasWhatsApp, setHasWhatsApp] = useState("Yes");
-  const [address, setAddress] = useState("");
-  const [photoFile, setPhotoFile] = useState(null);
-  const { postParticipant } = useParticipantsStore();
+  const [policy, setPolicy] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const participantId = searchParams.get("participantId");
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setPhotoFile(file); // Almacena el objeto Blob en el estado
-  };
-
-  const handleSaveParticipant = async (e) => {
-    e.preventDefault();
-
-    const createParticipant = async (photoUrl = null) => {
-      const participant = {
-        identification,
-        firstName: name,
-        firstSurname,
-        secondSurname,
-        phoneNumber: phone,
-        email,
-        hasWhatsApp: hasWhatsApp as YesOrNo,
-        grade: grade as Grade,
-        birthDate: date,
-        typeIdentification: typeID as TypeIdentification,
-        photo: photoUrl,
-      };
-
-      try {
-        const response = await postParticipant(participant);
-        console.log("participant", participant);
-        if (response) {
-          router.push("/searches");
-        }
-      } catch (error) {
-        console.error("Error al registrar participante:", error);
+  useEffect(() => {
+    const fetchParticipant = async () => {
+      const response = await getParticipantById(parseInt(params.id));
+      if (response) {
+        setParticipant(response);
+        setIdentification(response.identification);
+        setName(response.firstName);
+        setFirstSurname(response.firstSurname);
+        setSecondSurname(response.secondSurname);
+        setPhoneNumber(response.phoneNumber);
+        setEmail(response.email);
+        setGrade(response.grade.toString());
+        setBirthDate(response.birthDate);
+        setPhoto(response.photo ?? "");
+        setTypeID(response.typeIdentification.toString());
       }
     };
+    if (params.id) {
+      fetchParticipant();
+    }
+  }, [params.id, getParticipantById]);
 
-    if (photoFile) {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        await createParticipant(reader.result);
-      };
-      reader.readAsDataURL(photoFile);
-    } else {
-      await createParticipant();
+  useEffect(() => {
+    const fetchCourses = async () => {
+      if (participantId) {
+        try {
+          const coursesResponse = await getParticipantOnCourseByParticipantId(Number(participantId));
+          if (coursesResponse) {
+            setCourses(coursesResponse);
+          }
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        }
+      }
+    };
+    fetchCourses();
+  }, [participantId, getParticipantOnCourseByParticipantId]);
+
+  const handleUpdateParticipant = async (e) => {
+    e.preventDefault();
+    const participantData = {
+      grade,
+      identification,
+      firstName: name,
+      firstSurname,
+      secondSurname,
+      phoneNumber: phone,
+      email,
+      typeID,
+      birthDate: date,
+      state: "Active",
+    };
+    const response = await putParticipant(Number(params.id), participantData);
+    if (response) {
+      router.push("/participants");
     }
   };
 
-  const optionsScholarship = [
+  const optionsGrade = [
     { value: "Sin_Estudio", label: "Sin estudio" },
     { value: "Primaria_Completa", label: "Primaria completa" },
     { value: "Primaria_Incompleta", label: "Primaria incompleta" },
@@ -90,20 +108,13 @@ export default function ParticipantRegister() {
     { value: "Universidad_Completa", label: "Universidad completa" },
     { value: "Universidad_Incompleta", label: "Universidad incompleta" },
   ];
-
   const optionsTypeIdentification = [
     { value: "Nacional", label: "Nacional" },
     { value: "DIMEX", label: "DIMEX" },
   ];
 
-  const data = [
-    { name: "Curso 1", code: "1232" },
-    { name: "Curso 2", code: "2354" },
-    { name: "Curso 3", code: "5345" },
-    { name: "Curso 4", code: "6345" },
-    { name: "Curso 5", code: "6345" },
-  ];
-
+  const headers = ["Nombre", "Codigo", "Estado", "Action"];
+  const headersFiles = ["Nombre", "Action"];
   const dataFiles = [
     { name: "Documento" },
     { name: "Documento" },
@@ -111,9 +122,6 @@ export default function ParticipantRegister() {
     { name: "Documento" },
     { name: "Documento" },
   ];
-
-  const deleteDocument = (id: number) => {};
-  const desactivateRowFunction = (id: number) => {};
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -142,7 +150,7 @@ export default function ParticipantRegister() {
             label="Escolaridad"
             placeholder="Escolaridad"
             icon={<RiGraduationCapLine color="white" />}
-            options={optionsScholarship}
+            options={optionsGrade}
           />
         </div>
         <div className="col-span-1 flex justify-center items-center">
@@ -150,13 +158,13 @@ export default function ParticipantRegister() {
         </div>
         <div className="col-span-1">
           <div className="mt-7">
-            <Button className="bg-red-gradient">
-              Agregar Poliza Estudiantil
-            </Button>
+            <Button className="bg-red-gradient">Agregar Poliza Estudiantil</Button>
           </div>
         </div>
         <div className="col-span-1">
           <InputField
+            value={policy}
+            onChange={(e) => setPolicy(e.target.value)}
             label="Vencimiento de Poliza"
             placeholder="Fecha de Vencimiento"
             type="date"
@@ -220,30 +228,14 @@ export default function ParticipantRegister() {
             label="Dirección"
             placeholder="Dirección"
             rows={6}
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={""}
+            onChange={() => void {}}
           />
         </div>
         <div className="col-span-1">
           <div className="flex flex-col items-center justify-center">
-            {photoFile ? (
-              <img
-                src={URL.createObjectURL(photoFile)}
-                alt="Foto"
-                className="w-32 h-auto"
-              />
-            ) : (
-              <LuUserCircle2 className="w-32 h-auto text-white" />
-            )}
-            <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
-              Foto
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: "none" }}
-              />
-            </label>
+            <LuUserCircle2 className="w-32 h-auto text-white" />
+            <Button className="bg-red-gradient">Foto</Button>
           </div>
         </div>
       </div>
@@ -255,45 +247,23 @@ export default function ParticipantRegister() {
         <Button className="bg-red-gradient w-52">Eliminar</Button>
       </div>
       <div className="flex justify-center mt-6">
-        <Button
-          onClick={(e) => handleSaveParticipant(e)}
-          className="bg-red-gradient w-1/3"
-        >
+        <Button onClick={handleUpdateParticipant} className="bg-red-gradient w-1/3">
           Registrar
         </Button>
       </div>
       <div className="container bg-white mt-6 p-4 rounded-xl">
-        <p className="text-3xl font-bold text-dark-gray flex justify-center">
-          Documentos Adjuntos
-        </p>
+        <p className="text-3xl font-bold text-dark-gray flex justify-center">Documentos Adjuntos</p>
         <div className="mt-6">
-          <Table
-            deleteRowFunction={deleteDocument}
-            keys={["name", ""]}
-            data={dataFiles}
-            headers={["Documento", ""]}
-            itemsPerPage={3}
-            actionColumn="delete"
-          />
+          <Table keys={[]} data={dataFiles} headers={headersFiles} itemsPerPage={3} />
         </div>
         <div className="flex justify-center mt-6">
           <Button className="bg-red-gradient w-1/3">Agregar</Button>
         </div>
       </div>
       <div className="container bg-white mt-6 p-4 rounded-xl">
-        <p className="text-3xl font-bold text-dark-gray flex justify-center">
-          Cursos
-        </p>
+        <p className="text-3xl font-bold text-dark-gray flex justify-center">Cursos</p>
         <div className="mt-6">
-          <Table
-            desactivateRowFunction={desactivateRowFunction}
-            deleteRowFunction={deleteDocument}
-            keys={["name", "code"]}
-            data={data}
-            headers={["Nombre", "Codigo"]}
-            itemsPerPage={3}
-            actionColumn="delete-state"
-          />
+          <Table keys={[]} data={courses} headers={headers} itemsPerPage={3} />
         </div>
         <div className="flex justify-center mt-6">
           <Button className="bg-red-gradient w-1/3">Agregar</Button>
@@ -302,7 +272,12 @@ export default function ParticipantRegister() {
     </div>
   );
 }
+
+
+
+
 /*"use client";
+import React, { useState, useEffect } from "react";
 import Button from "@/components/Button/Button";
 import Checkbox from "@/components/Checkbox/Checkbox";
 import InputField from "@/components/InputField/InputField";
@@ -319,48 +294,74 @@ import { GoPerson } from "react-icons/go";
 import { FiPhoneCall } from "react-icons/fi";
 import { RiGraduationCapLine } from "react-icons/ri";
 import { MdOutlineEmail } from "react-icons/md";
-import { useState } from "react";
 import { useParticipantsStore } from "@/store/participantsStore";
+import {
+  Participant,
+  ParticipantOnCourse,
+  Policy,
+  TypeIdentification,
+} from "@prisma/client";
+import { usePolicyStore } from "@/store/policyStore";
+import { useMedicalReportStore } from "@/store/medicalReportStore";
+import { useParticipantAttachmentStore } from "@/store/participantAttachmentStore";
 import { useRouter } from "next/navigation";
-import { Grade, TypeIdentification } from "@prisma/client";
+import { useParticipantOnCourseStore } from "@/store/participantOnCourseStore";
+import { useSearchParams } from "next/navigation";
 
-export default function ParticipantRegister() {
+export default function ParticipantRegister({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { getParticipantById, participants } = useParticipantsStore();
+  const { getParticipantOnCourseByParticipantId } =
+    useParticipantOnCourseStore();
+  const { getPolicys, policys, postPolicy, putPolicy } = usePolicyStore();
+  const [participant, setParticipant] = useState<Participant | null>(null);
+  const [filteredData, setFilteredData] = useState<ParticipantOnCourse[]>([]);
+  const [data, setData] = useState<ParticipantOnCourse[]>([]);
+  const [participantOnCourse, setParticipantOnCourse] =
+    useState<ParticipantOnCourse | null>(null);
+  const [policy, setPolicy] = useState<Policy | null>(null);
+  async function fetchParticipant() {
+    const response = await getParticipantById(parseInt(params.id));
+    setParticipant(response);
+  }
+  useEffect(() => {
+    if (params.id) {
+      fetchParticipant();
+    }
+  }, []);
+  useEffect(() => {
+    if (participant) {
+      setIdentification(participant.identification);
+      setPhoneNumber(participant.phoneNumber);
+      setName(participant.firstName);
+      setFirstSurname(participant.firstSurname);
+      setSecondSurname(participant.secondSurname);
+      setGrade(participant.grade.toString());
+      setEmail(participant.email);
+      setTypeID(participant.typeIdentification.toString());
+      setBirthDate(participant.birthDate);
+      setPhoto(participant.photo ?? "");
+      setPolicy(policy);
+    }
+  }, [participant]);
+
   const [identification, setIdentification] = useState("");
   const [name, setName] = useState("");
   const [firstSurname, setFirstSurname] = useState("");
   const [secondSurname, setSecondSurname] = useState("");
   const [phone, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [grade, setGrade] = useState("Sin_Estudio");
+  const [grade, setGrade] = useState("Participant");
   const [date, setBirthDate] = useState("");
   const [photo, setPhoto] = useState("");
-  const [typeID, setTypeID] = useState("Nacional");
-  const { postParticipant } = useParticipantsStore();
+  const [typeID, setTypeID] = useState("Participant");
+  const { putParticipant } = useParticipantsStore();
   const router = useRouter();
 
-  const handleSaveParticipant = async (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    e.preventDefault();
-    const participant = {
-      typeID: typeID as unknown as TypeIdentification,
-      identification,
-      firstName: name,
-      firstSurname,
-      secondSurname,
-      phoneNumber: phone,
-      email,
-      grade: grade as unknown as Grade,
-      birthDate: date,
-      state: "Active" as unknown as State,
-    };
-    const response = await postParticipant(participant);
-    if (response) {
-      router.push("/searches");
-    }
-  };
-
-  const optionsScholarship = [
+  const optionsGrade = [
     { value: "Sin_Estudio", label: "Sin estudio" },
     { value: "Primaria_Completa", label: "Primaria completa" },
     { value: "Primaria_Incompleta", label: "Primaria incompleta" },
@@ -373,28 +374,83 @@ export default function ParticipantRegister() {
     { value: "Nacional", label: "Nacional" },
     { value: "DIMEX", label: "DIMEX" },
   ];
-  const data = [
+
+  const searchParams = useSearchParams();
+  const participantId = searchParams.get("participantId");
+  const fetchData = async () => {
+    if (participantId) {
+      // Cambia courseId a participantId
+      try {
+        const courses = await getParticipantOnCourseByParticipantId(
+          Number(participantId)
+        ); // Llama a la nueva función
+        console.log("Participant ID:", participantId);
+        if (courses) {
+          const transformedCourses = courses.map((course) => ({
+            ...course,
+          }));
+          setData(transformedCourses);
+          setFilteredData(transformedCourses);
+          console.log("Courses: ", transformedCourses);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  /*const data = [
     {
       name: "Curso 1",
-      code: "1232",
+      color: "1232",
+      cat: "Activo",
     },
     {
       name: "Curso 2",
-      code: "2354",
+      color: "2354",
+      cat: "Activo",
     },
     {
       name: "Curso 3",
-      code: "5345",
+      color: "5345",
+      cat: "Activo",
     },
     {
       name: "Curso 4",
-      code: "6345",
+      color: "6345",
+      cat: "Activo",
     },
     {
       name: "Curso 5",
-      code: "6345",
+      color: "6345",
+      cat: "Activo",
     },
-  ];
+  ];*/
+
+  /*const handleUpdateParticipant = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    const participant = {
+      grade: grade as unknown as Grade,
+      identification,
+      firstName: name,
+      firstSurname,
+      secondSurname,
+      phoneNumber: phone,
+      email,
+      typeID: typeID as unknown as TypeIdentification,
+      birthDate: date,
+      state: "Active" as unknown as State,
+    };
+    const response = await putParticipant(Number(params.id), participant);
+    if (response) {
+      router.push("/participants");
+    }
+  };
   const dataFiles = [
     {
       name: "Documento",
@@ -413,12 +469,8 @@ export default function ParticipantRegister() {
     },
   ];
 
-  const [documentsData, setDocumentsData] = useState<ParticipantAttachment[]>(
-    []
-  );
-  function deleteDocument(id: number): void {}
-
-  function desactivateRowFunction(id: number): void {}
+  const headers = ["Nombre", "Codigo", "Estado", "Action"];
+  const headersFiles = ["Nombre", "Action"];
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -447,7 +499,7 @@ export default function ParticipantRegister() {
             label="Escolaridad"
             placeholder="Escolaridad"
             icon={<RiGraduationCapLine color="white" />}
-            options={optionsScholarship}
+            options={optionsGrade}
           />
         </div>
         <div className="col-span-1 flex justify-center items-center">
@@ -462,6 +514,8 @@ export default function ParticipantRegister() {
         </div>
         <div className="col-span-1">
           <InputField
+            value={policy}
+            onChange={(e) => setPolicy(e.target.value)}
             label="Vencimiento de Poliza"
             placeholder="Fecha de Vencimiento"
             type="date"
@@ -545,7 +599,7 @@ export default function ParticipantRegister() {
       </div>
       <div className="flex justify-center mt-6">
         <Button
-          onClick={(e) => handleSaveParticipant(e)}
+          onClick={(e) => handleUpdateParticipant(e)}
           className="bg-red-gradient w-1/3"
         >
           Registrar
@@ -557,12 +611,10 @@ export default function ParticipantRegister() {
         </p>
         <div className="mt-6">
           <Table
-            deleteRowFunction={deleteDocument}
-            keys={["name", ""]}
+            keys={[]}
             data={dataFiles}
-            headers={["Documento", ""]}
+            headers={headersFiles}
             itemsPerPage={3}
-            actionColumn="delete"
           />
         </div>
         <div className="flex justify-center mt-6">
@@ -574,15 +626,7 @@ export default function ParticipantRegister() {
           Cursos
         </p>
         <div className="mt-6">
-          <Table
-            desactivateRowFunction={desactivateRowFunction}
-            deleteRowFunction={deleteDocument}
-            keys={["name", "code"]}
-            data={data}
-            headers={["Nombre", "Codigo"]}
-            itemsPerPage={3}
-            actionColumn="delete-state"
-          />
+          <Table keys={[]} data={data} headers={headers} itemsPerPage={3} />
         </div>
         <div className="flex justify-center mt-6">
           <Button className="bg-red-gradient w-1/3">Agregar</Button>

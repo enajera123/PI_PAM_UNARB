@@ -5,7 +5,7 @@ import logoUNAPAM from '@/resources/LogoColorful.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GoKey } from 'react-icons/go';
-import { HiOutlineIdentification } from 'react-icons/hi';
+import { MdOutlineEmail } from "react-icons/md";
 import { useUsersStore } from '@/store/usersStore';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
@@ -72,9 +72,9 @@ export default function logIn() {
                         <InputField
                             value={data.email || ""}
                             onChange={handleEmailChange}
-                            label="Identificación"
-                            placeholder="Identificación"
-                            iconStart={<HiOutlineIdentification color="white" />} />
+                            label="Email"
+                            placeholder="Email"
+                            iconStart={<MdOutlineEmail color="white" />} />
                         <InputField
                             value={data.password || ""}
                             onChange={handlePasswordChange}
