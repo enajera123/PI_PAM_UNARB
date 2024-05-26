@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import Button from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import Select from "@/components/Select/Select";
-import TextArea from "@/components/TextArea/TextArea";
 import logoUNAPAM from "@/resources/LogoWhite.png";
 import Image from "next/image";
 import Table from "@/components/Table/Table";
@@ -155,7 +154,7 @@ export default function ParticipantRegister({
 
       try {
         const response = await putParticipant(Number(params.id), participant);
-        console.log("participant", participant);
+        console.log("updated participant", participant);
         if (response) {
           router.push("/searches");
         }

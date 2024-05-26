@@ -31,7 +31,7 @@ export default function ParticipantRegister() {
   const [typeID, setTypeID] = useState("Nacional");
   const [hasWhatsApp, setHasWhatsApp] = useState("Yes");
   const [photoFile, setPhotoFile] = useState(null);
-  
+
   const [filteredData, setFilteredData] = useState<Course[]>([]);
   const { getCourses, courses } = useCourseStore();
   const { postParticipant } = useParticipantsStore();
@@ -246,7 +246,7 @@ export default function ParticipantRegister() {
         </div>
       </div>
 
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-center mt-6">
         <Link href="/health">
           <Button className="bg-red-gradient w-52">Salud</Button>
         </Link>
@@ -256,7 +256,7 @@ export default function ParticipantRegister() {
         >
           Registrar
         </Button>
-        <Button className="bg-red-gradient w-52">Eliminar</Button>
+        {/*<Button className="bg-red-gradient w-52">Eliminar</Button>*/}
       </div>
       <div className="container bg-white mt-6 p-4 rounded-xl">
         <p className="text-3xl font-bold text-dark-gray flex justify-center">
