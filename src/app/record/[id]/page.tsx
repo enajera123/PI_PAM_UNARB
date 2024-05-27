@@ -8,6 +8,7 @@ import Image from "next/image";
 import Table from "@/components/Table/Table";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { HiOutlineIdentification } from "react-icons/hi";
+import Swal from "sweetalert2";
 import Link from "next/link";
 import { LuUserCircle2 } from "react-icons/lu";
 import { GoPerson } from "react-icons/go";
@@ -16,6 +17,7 @@ import { RiGraduationCapLine } from "react-icons/ri";
 import { MdOutlineEmail } from "react-icons/md";
 import { useParticipantsStore } from "@/store/participantsStore";
 import { usePolicyStore } from "@/store/policyStore";
+import { useCourseStore } from "@/store/coursesStore";
 import { useMedicalReportStore } from "@/store/medicalReportStore";
 import { useParticipantOnCourseStore } from "@/store/participantOnCourseStore";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -42,12 +44,14 @@ export default function ParticipantRegister({
 
   const { getParticipantById, putParticipant, deleteParticipant } =
     useParticipantsStore();
-  const { getParticipantOnCourseByParticipantId } =
+  const { postParticipantOnCourse } =
     useParticipantOnCourseStore();
   const { putPolicy } = usePolicyStore();
   const { putMedicalReport } = useMedicalReportStore();
   const [participant, setParticipant] = useState<Participant | null>(null);
-  const [courses, setCourses] = useState([]);
+  const { getCourses, courses } = useCourseStore();
+  const [filteredData, setFilteredData] = useState<Course[]>([]);
+  const [data, setData] = useState([]);
   const [policy, setPolicy] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -214,6 +218,52 @@ export default function ParticipantRegister({
       console.error("Error deleting participant:", error);
     }
   };
+
+  useEffect(() => {
+    async function fetch() {
+      await getCourses();
+    }
+    fetch();
+  }, []);
+  useEffect(() => {
+    if (courses) {
+      setFilteredData(courses);
+    }
+  }, [courses]);
+
+  const addParticipantOnCourse = async (courseId: number) => {
+    try {
+      // Obtener el ID del participante del parámetro y el ID del curso pasado como argumento
+      const participantId = parseInt(params.id);
+      // Llamar a la función para agregar participante en el curso
+      const newParticipantOnCourse = await postParticipantOnCourse({
+        participantId,
+        courseId,
+        state: 'Registered' as unknown as StateParticipantOnCourse,
+      });
+      if (newParticipantOnCourse) {
+        // Actualizar el estado del botón a "Agregado" inmediatamente después de agregar el participante
+        const updatedData = data.map((item: any) => {
+          if (item.id === courseId) {
+            return { ...item, state: 'Agregado' }; // Actualiza el estado del curso a "Agregado"
+          }
+          return item;
+        });
+        setData(updatedData); // Actualiza el estado de los datos en tu componente
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "Participante agregado al curso correctamente.",
+        });
+        return;
+      } else {
+        console.error("Error al agregar participante en el curso.");
+      }
+    } catch (error) {
+      console.error("Error al agregar participante en el curso:", error);
+    }
+  }
+  
 
   const headers = ["Nombre", "Codigo", "Estado", "Action"];
   const headersFiles = ["Nombre", "Action"];
@@ -402,16 +452,20 @@ export default function ParticipantRegister({
           Cursos
         </p>
         <div className="mt-6">
-          <Table
-            //desactivateRowFunction={desactivateRowFunction}
-            //deleteRowFunction={deleteDocument}
-            //doubleClickRowFunction={updateCourse}
-            keys={["name", "courseNumber"]}
-            data={dataFiles}
-            headers={["Nombre", "Código"]}
-            itemsPerPage={3}
-            actionColumn="add-participant"
-          />
+          {filteredData.length > 0 ? (
+            <Table
+              desactivateRowFunction={addParticipantOnCourse}
+              //deleteRowFunction={deleteCourse}
+              //doubleClickRowFunction={updateCourse}
+              keys={["name", "courseNumber"]}
+              data={filteredData}
+              headers={["Nombre", "Código"]}
+              itemsPerPage={3}
+              actionColumn="add-participant"
+            />
+          ) : (
+            <p>No se encontraron resultados</p>
+          )}
         </div>
         <div className="flex justify-center mt-6">
           <Button className="bg-red-gradient w-1/3">Agregar</Button>

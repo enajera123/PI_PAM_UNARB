@@ -1,8 +1,8 @@
-
-
 export type UsersState = {
   users: User[];
+  currentUser: User | null;
   setUsers: (users: User[]) => void;
+  setCurrentUser: (user: User | null) => void;
   getUsers: () => void;
   getUserById: (id: number) => Promise<User | null>;
   getUserByFirstName: (firstname: string) => void;

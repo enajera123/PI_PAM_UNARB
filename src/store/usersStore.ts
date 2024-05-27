@@ -13,7 +13,10 @@ import {
 
 export const useUsersStore = create<UsersState>((set) => ({
   users: [] as User[],
+  currentUser: null,
+
   setUsers: (users) => set({ users }),
+  setCurrentUser: (user) => set({ currentUser: user }),
 
   getUsers: async () => {
     const users = await getUsers();
@@ -67,12 +70,9 @@ export const useUsersStore = create<UsersState>((set) => ({
   authenticateUser: async (user: User) => {
     const authenticatedUser = await authenticateUser(user);
     if (authenticatedUser) {
-      set((state) => ({
-        users: state.users.map((u) =>
-          u.id === authenticatedUser.id ? authenticatedUser : u
-        ),
-      }));
-    }    return authenticatedUser;
+      set({ currentUser: authenticatedUser });
+    }
+    return authenticatedUser;
   },
 
   putUserPassword: async (id: number, user: User) => {

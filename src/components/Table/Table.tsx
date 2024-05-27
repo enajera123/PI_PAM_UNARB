@@ -54,6 +54,15 @@ const Table = ({
     return isActive === "Active" ? "Desactivar" : "Activar";
   };
 
+  const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
+
+  const handleAddParticipantClick = (id: any) => {
+    if (desactivateRowFunction) {
+      desactivateRowFunction(id);
+    }
+    setIsDeleteDisabled(false);
+  };
+
   const getAddedParticipantText = (isAdded: string) => {
     return isAdded === "Agregar al curso" ? "Agregado" : "Agregar al curso";
   };
@@ -128,14 +137,13 @@ const Table = ({
             <button
               className={buttonClass}
               onClick={() => handleDeleteItem(item.id)}
+              disabled={isDeleteDisabled}
             >
               Eliminar
             </button>
             <button
               className={`${buttonClass} w-28`}
-              onClick={() =>
-                desactivateRowFunction && desactivateRowFunction(item.id)
-              }
+              onClick={() => handleAddParticipantClick(item.id)}
             >
               {getAddedParticipantText(item.state)}
             </button>

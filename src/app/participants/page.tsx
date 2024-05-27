@@ -33,6 +33,7 @@ const Home = () => {
         const transformedParticipants = participants.map((participant) => ({
           ...participant,
           hasWhatsApp: participant.hasWhatsApp === "Yes" ? "Si" : "No",
+          
         }));
         setData(transformedParticipants);
         setFilteredData(transformedParticipants);
