@@ -8,19 +8,57 @@ export async function PUT(
   try {
     const fetchedId = parseInt(params.id);
     const body = await req.json();
-    const { photo, ...rest } = body;
+    const { photo, Policy, MedicalReport, ...rest } = body;
 
-    const updatedParticipant = await prisma.participant.update({
-      where: {
-        id: fetchedId,
-      },
-      data: {
-        ...rest,
-        photo: photo ? Buffer.from(photo.split(",")[1], "base64") : null,
-      },
+    const updatedParticipant = await prisma.$transaction(async (prisma) => {
+      const participantUpdate = await prisma.participant.update({
+        where: {
+          id: fetchedId,
+        },
+        data: {
+          ...rest,
+          photo: photo ? Buffer.from(photo.split(",")[1], "base64") : null,
+        },
+      });
+
+      if (Policy) {
+        await prisma.policy.upsert({
+          where: { participantId: fetchedId },
+          update: { expirationDate: Policy.expirationDate },
+          create: {
+            expirationDate: Policy.expirationDate,
+            participantId: fetchedId,
+          },
+        });
+      }
+
+      if (MedicalReport) {
+        await prisma.medicalReport.upsert({
+          where: { participantId: fetchedId },
+          update: { expirationDate: MedicalReport.expirationDate },
+          create: {
+            expirationDate: MedicalReport.expirationDate,
+            participantId: fetchedId,
+          },
+        });
+      }
+
+      return participantUpdate;
     });
 
-    return NextResponse.json(updatedParticipant, { status: 200 });
+    const updatedParticipantWithRelations = await prisma.participant.findUnique(
+      {
+        where: {
+          id: updatedParticipant.id,
+        },
+        include: {
+          Policy: true,
+          MedicalReport: true,
+        },
+      }
+    );
+
+    return NextResponse.json(updatedParticipantWithRelations, { status: 200 });
   } catch (error) {
     console.error("Error al actualizar participante:", error);
     return NextResponse.json(
@@ -29,6 +67,7 @@ export async function PUT(
     );
   }
 }
+
 export async function DELETE(req: NextRequest, { params }: ParameterId) {
   try {
     const fetchedId = parseInt(params.id);
@@ -52,6 +91,10 @@ export async function GET(req: NextRequest, { params }: ParameterId) {
     const participant = await prisma.participant.findUnique({
       where: {
         id: fetchedId,
+      },
+      include: {
+        Policy: true,
+        MedicalReport: true,
       },
     });
 

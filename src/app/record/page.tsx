@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useParticipantsStore } from "@/store/participantsStore";
+import { usePolicyStore } from "@/store/policyStore";
+import { useMedicalReportStore } from "@/store/medicalReportStore";
 import { useRouter } from "next/navigation";
-import { useCourseStore } from "@/store/coursesStore";
 import { Grade, TypeIdentification, YesOrNo } from "@prisma/client";
 import { HiOutlineIdentification } from "react-icons/hi";
 import { RiGraduationCapLine } from "react-icons/ri";
@@ -31,10 +32,12 @@ export default function ParticipantRegister() {
   const [typeID, setTypeID] = useState("Nacional");
   const [hasWhatsApp, setHasWhatsApp] = useState("Yes");
   const [photoFile, setPhotoFile] = useState(null);
+  const [expirationDatePolicy, setExpirationDatePolicy] = useState("");
+  const [expirationDateReport, setExpirationDateReport] = useState("");
 
-  const [filteredData, setFilteredData] = useState<Course[]>([]);
-  const { getCourses, courses } = useCourseStore();
   const { postParticipant } = useParticipantsStore();
+  const { postPolicy } = usePolicyStore();
+  const { postMedicalReport } = useMedicalReportStore();
   const router = useRouter();
 
   const handleImageChange = (e) => {
@@ -46,24 +49,43 @@ export default function ParticipantRegister() {
     e.preventDefault();
 
     const createParticipant = async (photoUrl = null) => {
-      const participant = {
-        identification,
-        firstName: name,
-        firstSurname,
-        secondSurname,
-        phoneNumber: phone,
-        email,
-        hasWhatsApp: hasWhatsApp as YesOrNo,
-        grade: grade as Grade,
-        birthDate: date,
-        typeIdentification: typeID as TypeIdentification,
-        photo: photoUrl,
-      };
-
       try {
-        const response = await postParticipant(participant);
-        console.log("participant", participant);
+        const participantData = {
+          identification,
+          firstName: name,
+          firstSurname,
+          secondSurname,
+          phoneNumber: phone,
+          email,
+          hasWhatsApp: hasWhatsApp as YesOrNo,
+          grade: grade as Grade,
+          birthDate: date,
+          typeIdentification: typeID as TypeIdentification,
+          photo: photoUrl,
+        };
+
+        const response = await postParticipant(participantData);
+        console.log("participant", participantData);
+
         if (response) {
+          const participantId = response.id;
+
+          if (expirationDatePolicy) {
+            const policyData = {
+              participantId,
+              expirationDate: expirationDatePolicy,
+            };
+            await postPolicy(policyData);
+          }
+
+          if (expirationDateReport) {
+            const reportData = {
+              participantId,
+              expirationDate: expirationDateReport,
+            };
+            await postMedicalReport(reportData);
+          }
+
           router.push("/searches");
         }
       } catch (error) {
@@ -96,19 +118,6 @@ export default function ParticipantRegister() {
     { value: "Nacional", label: "Nacional" },
     { value: "DIMEX", label: "DIMEX" },
   ];
-
-  useEffect(() => {
-    async function fetch() {
-      await getCourses();
-    }
-    fetch();
-  }, []);
-
-  useEffect(() => {
-    if (courses) {
-      setFilteredData(courses);
-    }
-  }, [courses]);
 
   const dataFiles = [
     { name: "Documento" },
@@ -161,10 +170,23 @@ export default function ParticipantRegister() {
               Agregar Poliza Estudiantil
             </Button>
           </div>
+          <div className="mt-7">
+            <Button className="bg-red-gradient">Agregar Dictamen Médico</Button>
+          </div>
         </div>
         <div className="col-span-1">
           <InputField
+            value={expirationDatePolicy}
+            onChange={(e) => setExpirationDatePolicy(e.target.value)}
             label="Vencimiento de Poliza"
+            placeholder="Fecha de Vencimiento"
+            type="date"
+            iconStart={<FaRegCalendarAlt color="white" />}
+          />
+          <InputField
+            value={expirationDateReport}
+            onChange={(e) => setExpirationDateReport(e.target.value)}
+            label="Vencimiento del Dictamen"
             placeholder="Fecha de Vencimiento"
             type="date"
             iconStart={<FaRegCalendarAlt color="white" />}
@@ -271,30 +293,6 @@ export default function ParticipantRegister() {
             itemsPerPage={3}
             actionColumn="delete"
           />
-        </div>
-        <div className="flex justify-center mt-6">
-          <Button className="bg-red-gradient w-1/3">Agregar</Button>
-        </div>
-      </div>
-      <div className="container bg-white mt-6 p-4 rounded-xl">
-        <p className="text-3xl font-bold text-dark-gray flex justify-center">
-          Cursos
-        </p>
-        <div className="mt-6">
-          {filteredData.length > 0 ? (
-            <Table
-              desactivateRowFunction={desactivateRowFunction}
-              deleteRowFunction={deleteDocument}
-              //doubleClickRowFunction={updateCourse}
-              keys={["name", "courseNumber"]}
-              data={filteredData}
-              headers={["Nombre", "Código"]}
-              itemsPerPage={3}
-              actionColumn="add-participant"
-            />
-          ) : (
-            <p>No se encontraron resultados</p>
-          )}
         </div>
         <div className="flex justify-center mt-6">
           <Button className="bg-red-gradient w-1/3">Agregar</Button>

@@ -23,6 +23,7 @@ export async function getPolicyById(id: number) {
 export async function createPolicy(policy: Policy) {
   try {
     const response = await axios.post<Policy>("/api/policy", policy);
+    console.log("service policy:", policy);
     return response.data;
   } catch (error) {
     console.error(error);

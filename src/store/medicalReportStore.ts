@@ -30,6 +30,7 @@ export const useMedicalReportStore = create<MedicalReportState>((set) => ({
       const newReport = await createMedicalReport(report);
       if (newReport) {
         set((state) => ({ reports: [...state.reports, newReport] }));
+        console.log("Nuevo dictamen agregado:", newReport);
         return newReport;
       }
       return null;

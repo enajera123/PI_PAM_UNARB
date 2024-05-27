@@ -30,6 +30,7 @@ export const usePolicyStore = create<PolicyState>((set) => ({
       const newPolicy = await createPolicy(policy);
       if (newPolicy) {
         set((state) => ({ policys: [...state.policys, newPolicy] }));
+        console.log("Nuevo poliza agregado:", newPolicy);
         return newPolicy;
       }
       return null;

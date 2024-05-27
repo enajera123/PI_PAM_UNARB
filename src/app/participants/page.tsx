@@ -96,9 +96,6 @@ const Home = () => {
               "secondSurname",
               "",
               "",
-              "",
-              "",
-              "",
             ]}
             data={filteredData}
             headers={[
@@ -106,11 +103,8 @@ const Home = () => {
               "Nombre",
               "Primer Apellido",
               "Segundo Apellido",
-              "FecVenCed",
-              "Poliza",
-              "FecVenPoliza",
-              "Dictamen",
-              "FecVenDicta",
+              "Fec_Venc_Poliza",
+              "Fec_Venc_Dictamen",
             ]}
             itemsPerPage={6}
             actionColumn="delete"

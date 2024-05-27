@@ -26,6 +26,7 @@ export async function createMedicalReport(report: MedicalReport) {
             "/api/medicalReport",
             report
         );
+        console.log("service medical report:", report);
         return response.data;
     } catch (error) {
         console.error(error);

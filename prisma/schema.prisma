@@ -79,12 +79,14 @@ model Participant {
 model MedicalReport {
   id             Int         @id @default(autoincrement())
   expirationDate String
+  participantId  Int?
   participant    Participant @relation(fields: [id], references: [id])
 }
 
 model Policy {
   id             Int         @id @default(autoincrement())
   expirationDate String
+  participantId  Int?
   participant    Participant @relation(fields: [id], references: [id])
 }
 
