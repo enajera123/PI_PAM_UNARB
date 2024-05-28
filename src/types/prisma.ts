@@ -88,9 +88,8 @@ interface ParticipantAttachment {
 };
 
 enum StateParticipantOnCourse {
-    Retired,
+    NoRegistered,
     Registered,
-    Finished,
 }
 
 interface ParticipantOnCourse {

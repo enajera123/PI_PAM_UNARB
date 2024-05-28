@@ -7,6 +7,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       include: {
         Policy: true,
         MedicalReport: true,
+        ParticipantAttachments: true,
       },
     });
     return NextResponse.json(participants, { status: 200 });
@@ -18,7 +19,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const body = await req.json();
-    const { photo, Policy, MedicalReport, ...rest } = body;
+    const { photo, Policy, MedicalReport, ParticipantAttachments, ...rest } =
+      body;
 
     const participantData: any = {
       ...rest,
@@ -29,6 +31,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
       const createdParticipant = await prisma.participant.create({
         data: participantData,
       });
+
+      if (ParticipantAttachments) {
+        await prisma.participantAttachment.create({
+          data: {
+            attachmentUrl: ParticipantAttachments.attachmentUrl,
+            name: ParticipantAttachments.name,
+            participantId: createdParticipant.id,
+          },
+        });
+      }
 
       if (Policy) {
         await prisma.policy.create({
@@ -58,6 +70,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       include: {
         Policy: true,
         MedicalReport: true,
+        ParticipantAttachments: true,
       },
     });
 

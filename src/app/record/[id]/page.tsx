@@ -44,11 +44,11 @@ export default function ParticipantRegister({
 
   const { getParticipantById, putParticipant, deleteParticipant } =
     useParticipantsStore();
-  const { postParticipantOnCourse } =
-    useParticipantOnCourseStore();
+  const { postParticipantOnCourse } = useParticipantOnCourseStore();
   const { putPolicy } = usePolicyStore();
   const { putMedicalReport } = useMedicalReportStore();
   const [participant, setParticipant] = useState<Participant | null>(null);
+  const [participants, setParticipants] = useState<ParticipantOnCourse[]>([]);
   const { getCourses, courses } = useCourseStore();
   const [filteredData, setFilteredData] = useState<Course[]>([]);
   const [data, setData] = useState([]);
@@ -155,10 +155,10 @@ export default function ParticipantRegister({
         secondSurname,
         phoneNumber: phone,
         email,
-        hasWhatsApp: hasWhatsApp as YesOrNo,
-        grade: grade as Grade,
+        hasWhatsApp: hasWhatsApp as unknown as YesOrNo,
+        grade: grade as unknown as Grade,
         birthDate: date,
-        typeIdentification: typeID as TypeIdentification,
+        typeIdentification: typeID as unknown as TypeIdentification,
         photo: photoUrl,
       };
 
@@ -233,23 +233,28 @@ export default function ParticipantRegister({
 
   const addParticipantOnCourse = async (courseId: number) => {
     try {
-      // Obtener el ID del participante del parámetro y el ID del curso pasado como argumento
       const participantId = parseInt(params.id);
-      // Llamar a la función para agregar participante en el curso
+
+      const participant = participants.find((p) => p.id === participantId);
+      if (
+        participant &&
+        participant.state ===
+          ("Registered" as unknown as StateParticipantOnCourse)
+      ) {
+        Swal.fire({
+          icon: "info",
+          title: "Información",
+          text: "El participante ya está registrado en el curso.",
+        });
+        return;
+      }
+
       const newParticipantOnCourse = await postParticipantOnCourse({
         participantId,
         courseId,
-        state: 'Registered' as unknown as StateParticipantOnCourse,
+        state: "Registered" as unknown as StateParticipantOnCourse,
       });
       if (newParticipantOnCourse) {
-        // Actualizar el estado del botón a "Agregado" inmediatamente después de agregar el participante
-        const updatedData = data.map((item: any) => {
-          if (item.id === courseId) {
-            return { ...item, state: 'Agregado' }; // Actualiza el estado del curso a "Agregado"
-          }
-          return item;
-        });
-        setData(updatedData); // Actualiza el estado de los datos en tu componente
         Swal.fire({
           icon: "success",
           title: "Éxito",
@@ -262,8 +267,7 @@ export default function ParticipantRegister({
     } catch (error) {
       console.error("Error al agregar participante en el curso:", error);
     }
-  }
-  
+  };
 
   const headers = ["Nombre", "Codigo", "Estado", "Action"];
   const headersFiles = ["Nombre", "Action"];
@@ -413,7 +417,7 @@ export default function ParticipantRegister({
       </div>
 
       <div className="flex justify-between mt-4">
-        <Link href="/health">
+        <Link href={`/health?participantId=${params.id}`}>
           <Button className="bg-red-gradient w-52">Salud</Button>
         </Link>
         <Button

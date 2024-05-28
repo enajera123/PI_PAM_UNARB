@@ -85,7 +85,7 @@ export default function logIn() {
               type="password"
               iconStart={<GoKey color="white" />}
             />
-            <Link href="/updatePassword">
+            <Link href="/">
               <div className="text-white text-lg text-right">
                 ¿Recuperar contraseña?
               </div>

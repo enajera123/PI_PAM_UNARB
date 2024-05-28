@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useParticipantsStore } from "@/store/participantsStore";
 import { usePolicyStore } from "@/store/policyStore";
 import { useMedicalReportStore } from "@/store/medicalReportStore";
+import { useParticipantAttachmentStore } from "@/store/participantAttachmentStore";
 import { useRouter } from "next/navigation";
 import { Grade, TypeIdentification, YesOrNo } from "@prisma/client";
 import { HiOutlineIdentification } from "react-icons/hi";
@@ -32,10 +33,15 @@ export default function ParticipantRegister() {
   const [typeID, setTypeID] = useState("Nacional");
   const [hasWhatsApp, setHasWhatsApp] = useState("Yes");
   const [photoFile, setPhotoFile] = useState(null);
+  const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [attachmentUrl, setAttachmentUrl] = useState(null);
   const [expirationDatePolicy, setExpirationDatePolicy] = useState("");
   const [expirationDateReport, setExpirationDateReport] = useState("");
+  const [attachments, setAttachments] = useState([]);
 
   const { postParticipant } = useParticipantsStore();
+  const { postParticipantAttachment } = useParticipantAttachmentStore();
   const { postPolicy } = usePolicyStore();
   const { postMedicalReport } = useMedicalReportStore();
   const router = useRouter();
@@ -45,10 +51,25 @@ export default function ParticipantRegister() {
     setPhotoFile(file);
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const attachmentUrl = reader.result;
+      setAttachments((prevAttachments) => [
+        ...prevAttachments,
+        { name: file.name, attachmentUrl },
+      ]);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSaveParticipant = async (e) => {
     e.preventDefault();
 
-    const createParticipant = async (photoUrl = null) => {
+    const createParticipant = async (photoUrl = null, attachment = null) => {
       try {
         const participantData = {
           identification,
@@ -84,6 +105,20 @@ export default function ParticipantRegister() {
               expirationDate: expirationDateReport,
             };
             await postMedicalReport(reportData);
+          }
+
+          if (attachmentUrl) {
+            for (const attachment of attachments) {
+              const attachmentData = {
+                participantId,
+                name: attachment.name,
+                attachmentUrl: Buffer.from(
+                  attachment.attachmentUrl.split(",")[1],
+                  "base64"
+                ),
+              };
+              await postParticipantAttachment(attachmentData);
+            }
           }
 
           router.push("/searches");
@@ -166,12 +201,30 @@ export default function ParticipantRegister() {
         </div>
         <div className="col-span-1">
           <div className="mt-7">
-            <Button className="bg-red-gradient">
+            <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
               Agregar Poliza Estudiantil
-            </Button>
+              <input
+                type="file"
+                accept=".pdf,.docx,.jpg,.png"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+            </label>
+            {/*<Button className="bg-red-gradient">
+              Agregar Poliza Estudiantil
+            </Button>*/}
           </div>
           <div className="mt-7">
-            <Button className="bg-red-gradient">Agregar Dictamen Médico</Button>
+            <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+              Agregar Dictamen Médico
+              <input
+                type="file"
+                accept=".pdf,.docx,.jpg,.png"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+            </label>
+            {/*<Button className="bg-red-gradient">Agregar Dictamen Médico</Button>*/}
           </div>
         </div>
         <div className="col-span-1">
@@ -287,15 +340,24 @@ export default function ParticipantRegister() {
         <div className="mt-6">
           <Table
             deleteRowFunction={deleteDocument}
-            keys={["name", ""]}
-            data={dataFiles}
-            headers={["Documento", ""]}
+            keys={["name", "url", "view"]}
+            data={attachments}
+            headers={["Documento", "URL", "Acción"]}
             itemsPerPage={3}
             actionColumn="delete"
           />
         </div>
         <div className="flex justify-center mt-6">
-          <Button className="bg-red-gradient w-1/3">Agregar</Button>
+          <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+            Agregar
+            <input
+              type="file"
+              accept=".pdf,.docx,.jpg,.png"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
+          </label>
+          {/*<Button className="bg-red-gradient w-1/3">Agregar</Button>*/}
         </div>
       </div>
     </div>

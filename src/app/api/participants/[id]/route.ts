@@ -8,7 +8,8 @@ export async function PUT(
   try {
     const fetchedId = parseInt(params.id);
     const body = await req.json();
-    const { photo, Policy, MedicalReport, ...rest } = body;
+    const { photo, Policy, MedicalReport, ParticipantAttachments, ...rest } =
+      body;
 
     const updatedParticipant = await prisma.$transaction(async (prisma) => {
       const participantUpdate = await prisma.participant.update({
@@ -20,6 +21,27 @@ export async function PUT(
           photo: photo ? Buffer.from(photo.split(",")[1], "base64") : null,
         },
       });
+
+      if (ParticipantAttachments) {
+        await prisma.participantAttachment.upsert({
+          where: { participantId: fetchedId },
+          update: {
+            attachmentUrl: Buffer.from(
+              ParticipantAttachments.attachmentUrl.split(",")[1],
+              "base64"
+            ),
+            name: ParticipantAttachments.name,
+          },
+          create: {
+            attachmentUrl: Buffer.from(
+              ParticipantAttachments.attachmentUrl.split(",")[1],
+              "base64"
+            ),
+            name: ParticipantAttachments.name,
+            participantId: fetchedId,
+          },
+        });
+      }
 
       if (Policy) {
         await prisma.policy.upsert({
@@ -54,6 +76,7 @@ export async function PUT(
         include: {
           Policy: true,
           MedicalReport: true,
+          ParticipantAttachments: true,
         },
       }
     );
@@ -95,6 +118,7 @@ export async function GET(req: NextRequest, { params }: ParameterId) {
       include: {
         Policy: true,
         MedicalReport: true,
+        ParticipantAttachments: true,
       },
     });
 

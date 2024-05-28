@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { MdArrowBackIosNew, MdArrowForwardIos, MdDelete } from "react-icons/md";
-import { TableProps } from "./type";
+import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
 import { showDeleteConfirmation, showCustomAlert } from "@/utils/alerts";
 
@@ -16,7 +15,7 @@ const Table = ({
   resetPagination,
   actionColumn,
   deleteRowFunction,
-}: TableProps) => {
+}) => {
   const currentPageClass =
     "flex items-center justify-center px-3 h-8 leading-tight text-medium-red bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-white dark:border-gray-700 dark:text-medium-red dark:hover:bg-gray-700 dark:hover:text-white cursor-pointer";
 
@@ -50,24 +49,24 @@ const Table = ({
     }
   }, [resetPagination, setCurrentPage]);
 
-  const getDeactivateButtonText = (isActive: string) => {
+  const getDeactivateButtonText = (isActive) => {
     return isActive === "Active" ? "Desactivar" : "Activar";
   };
 
   const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
 
-  const handleAddParticipantClick = (id: any) => {
+  const handleAddParticipantClick = (id) => {
     if (desactivateRowFunction) {
       desactivateRowFunction(id);
     }
     setIsDeleteDisabled(false);
   };
 
-  const getAddedParticipantText = (isAdded: string) => {
-    return isAdded === "Agregar al curso" ? "Agregado" : "Agregar al curso";
+  const getAddedParticipantText = (isAdded) => {
+    return isAdded === "Registered" ? "Agregado" : "Agregar al curso";
   };
 
-  const handleDeleteItem = (id: number) => {
+  const handleDeleteItem = (id) => {
     showDeleteConfirmation().then((result) => {
       if (result.isConfirmed) {
         deleteRowFunction && deleteRowFunction(id);
@@ -80,7 +79,16 @@ const Table = ({
     });
   };
 
-  const renderButtons = (item: any) => {
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const renderButtons = (item) => {
     const buttonClass =
       "flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 py-1 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800";
 
@@ -154,6 +162,7 @@ const Table = ({
         return null;
     }
   };
+
   return (
     <>
       <div className="flex flex-col">
@@ -184,7 +193,22 @@ const Table = ({
                 >
                   {keys.map((key) => (
                     <td key={key} className="px-6 py-4">
-                      {item[key]}
+                      {key === "view" ? (
+                        isValidUrl(item.attachmentUrl) ? (
+                          <a
+                            href={item.attachmentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline"
+                          >
+                            Ver archivo
+                          </a>
+                        ) : (
+                          "URL no válida"
+                        )
+                      ) : (
+                        item[key]
+                      )}
                     </td>
                   ))}
                   {actionColumn !== "none" && (

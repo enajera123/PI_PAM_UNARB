@@ -93,15 +93,14 @@ model Policy {
 model ParticipantAttachment {
   id            Int         @id @default(autoincrement())
   name          String
-  attachmentUrl String
+  attachmentUrl Bytes
   participantId Int
   Participant   Participant @relation(fields: [participantId], references: [id])
 }
 
 enum StateParticipantOnCourse {
-  Retired
   Registered
-  Finished
+  NoRegistered
 }
 
 model ParticipantOnCourse {

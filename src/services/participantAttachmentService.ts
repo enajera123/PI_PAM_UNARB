@@ -28,6 +28,7 @@ export async function createParticipantAttachment(
             "/api/participantAttachment",
             participant
         );
+        console.log("service participant attachment:", participant);
         return response.data;
     } catch (error) {
         console.error(error);
