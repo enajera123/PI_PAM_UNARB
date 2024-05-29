@@ -56,6 +56,7 @@ export type ParticipantOnCourseState = {
   getParticipantOnCourseByCourseId: (id: number) => void;
   getParticipantOnCourseByParticipantId: (participantId: number) => void;
   postParticipantOnCourse: (participantOnCourse: ParticipantOnCourse) => void;
+  deleteParticipantsOnCourseByCourseId: (courseId: number) => void;
 };
 
 export type ParticipantMedicineState = {

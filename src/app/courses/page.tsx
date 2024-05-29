@@ -5,12 +5,14 @@ import Table from "@/components/Table/Table";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
 import { useCourseStore } from "@/store/coursesStore";
+import { useParticipantOnCourseStore } from "@/store/participantOnCourseStore";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const SearchCoursesPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const { getCourses, deleteCourse, courses, putCourse } = useCourseStore()
+    const { getCourses, deleteCourse, courses, putCourse } = useCourseStore();
+    const { deleteParticipantsOnCourseByCourseId } = useParticipantOnCourseStore();
     const [filteredData, setFilteredData] = useState<Course[]>([]);
     const [randomNumber, setRandomNumber] = useState<number>(0);
     const router = useRouter();
@@ -49,6 +51,15 @@ const SearchCoursesPage: React.FC = () => {
         setRandomNumber(generateRandomNumber());
     };
 
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteParticipantsOnCourseByCourseId(id);
+            await deleteCourse(id);
+        }
+        catch (error) {
+            console.error('Error deleting course and participants', error);
+        }
+    };
     return (
         <div className="container mx-auto bg-gray-gradient flex flex-col justify-center items-center h-auto py-10 px-20 my-6 rounded-2xl max-w-2xl">
             <h1 className="text-white font-bold text-2xl mb-4 mt-0">
@@ -63,7 +74,7 @@ const SearchCoursesPage: React.FC = () => {
             {filteredData.length > 0 ? (
                 <Table
                     desactivateRowFunction={desactivateRowFunction}
-                    deleteRowFunction={deleteCourse}
+                    deleteRowFunction={handleDelete}
                     doubleClickRowFunction={updateCourse}
                     keys={['name', 'courseNumber']}
                     data={filteredData}

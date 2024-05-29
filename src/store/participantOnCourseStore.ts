@@ -5,6 +5,7 @@ import {
   getParticipantOnCourseByCourseId,
   createParticipantOnCourse,
   getParticipantOnCourseByParticipantId,
+  deleteParticipantsOnCourseByCourseId
 } from "@/services/participantOnCourseService";
 
 export const useParticipantOnCourseStore = create<ParticipantOnCourseState>(
@@ -57,6 +58,15 @@ export const useParticipantOnCourseStore = create<ParticipantOnCourseState>(
       set((state) => ({
         participantsOnCourse: state.participantsOnCourse.map((p) =>
           p.participantId === participantId ? participantOnCourse : p
+        ),
+      }));
+    },
+
+    deleteParticipantsOnCourseByCourseId: async (courseId: number) => {
+      await deleteParticipantsOnCourseByCourseId(courseId);
+      set((state) => ({
+        participantsOnCourse: state.participantsOnCourse.filter(
+          (p) => p.courseId !== courseId
         ),
       }));
     },
