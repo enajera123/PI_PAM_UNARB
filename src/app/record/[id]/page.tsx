@@ -6,6 +6,7 @@ import Select from "@/components/Select/Select";
 import logoUNAPAM from "@/resources/LogoWhite.png";
 import Image from "next/image";
 import Table from "@/components/Table/Table";
+import TableFile from "@/components/TableFile/TableFile";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { HiOutlineIdentification } from "react-icons/hi";
 import Swal from "sweetalert2";
@@ -43,6 +44,7 @@ export default function ParticipantRegister({
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
   const [fileUrl, setFileUrl] = useState<File>();
+  const [courseRegistrations, setCourseRegistrations] = useState<{ [key: number]: boolean }>({});
 
   const { getParticipantById, putParticipant, deleteParticipant } =
     useParticipantsStore();
@@ -70,22 +72,47 @@ export default function ParticipantRegister({
     console.log("Fetched participant data:", response);
     if (response) {
       setParticipant(response);
+      if (response.ParticipantAttachments) {
+        setAttachments(response.ParticipantAttachments);
+      }
     } else {
       console.error(`Participant with ID ${id} not found.`);
     }
   }
+  
 
   useEffect(() => {
     fetchParticipant();
   }, [params.id]);
+  
+  useEffect(() => {
+    fetchDocuments();
+  }, [attachments]);
+  
+  const fetchDocuments = async () => {
+    if (attachments && attachments.length > 0) {
+      try {
+        const fileList = attachments.map((attachment) => {
+          const mimeType = "application/octet-stream"; // Cambia esto si tienes el tipo MIME correcto
+          const blob = new Blob([attachment.attachmentUrl], { type: mimeType });
+          const file = new File([blob], attachment.name, { type: mimeType });
+  
+          return { name: attachment.name, url: URL.createObjectURL(file) };
+        });
+        setDataFiles(fileList);
+      } catch (error) {
+        console.error("Error loading documents:", error);
+      }
+    } else {
+      console.error("No documents found in participant object.");
+    }
+  };
+  
+  
 
   useEffect(() => {
     const fetchDocuments = async () => {
-      if (
-        attachments &&
-        attachments.attachmentUrl &&
-        attachments.attachmentUrl.data
-      ) {
+      if (attachments && attachments.attachmentUrl && attachments.attachmentUrl.data) {
         try {
           const buffer = attachments.attachmentUrl.data;
           const arrayBuffer = new Uint8Array(buffer).buffer;
@@ -94,8 +121,9 @@ export default function ParticipantRegister({
           if (fileName.endsWith(".pdf")) {
             mimeType = "application/pdf";
           } else if (fileName.endsWith(".docx")) {
-            mimeType =
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+          } else if (fileName.endsWith(".doc")) {
+            mimeType = "application/msword";
           } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
             mimeType = "image/jpeg";
           } else if (fileName.endsWith(".png")) {
@@ -113,44 +141,18 @@ export default function ParticipantRegister({
           setFileUrl(file);
   
           // Actualizar el estado dataFiles
-          setDataFiles([{ name: fileName, url: file }]);
+          setDataFiles([{ name: fileName, url: URL.createObjectURL(file) }]);
         } catch (error) {
           console.error("Error al cargar los documentos:", error);
         }
       } else {
-        console.error(
-          "No se encontraron documentos en el objeto participant."
-        );
+        console.error("No se encontraron documentos en el objeto participant.");
       }
     };
   
     fetchDocuments();
   }, [attachments]);
-
-  useEffect(() => {
-    const fetchPhoto = async () => {
-      if (participant && participant.photo && participant.photo.data) {
-        try {
-          const buffer = participant.photo.data;
-          const arrayBuffer = new Uint8Array(buffer).buffer;
-
-          const blob = new Blob([arrayBuffer], { type: "image/jpeg" });
-
-          const file = new File([blob], "photo.jpg", { type: blob.type });
-
-          setPhotoFile(file);
-        } catch (error) {
-          console.error("Error al cargar la foto:", error);
-        }
-      } else {
-        console.error(
-          "No se encontraron datos de foto en el objeto participant."
-        );
-      }
-    };
-
-    fetchPhoto();
-  }, [participant]);
+  
 
   useEffect(() => {
     console.log("Participant state updated:", participant);
@@ -168,9 +170,14 @@ export default function ParticipantRegister({
       setExpirationDatePolicy(participant.Policy?.expirationDate);
       setExpirationDateReport(participant.MedicalReport?.expirationDate);
       setFileName(participant.ParticipantAttachments.name);
+  
+      // Set attachments state
+      if (participant.ParticipantAttachments) {
+        setAttachments(participant.ParticipantAttachments);
+      }
     }
   }, [participant]);
-
+  
   const optionsGrade = [
     { value: "Sin_Estudio", label: "Sin estudio" },
     { value: "Primaria_Completa", label: "Primaria completa" },
@@ -287,7 +294,7 @@ export default function ParticipantRegister({
       const participantId = parseInt(params.id);
 
       const participant = participants.find((p) => p.id === participantId);
-      if (
+      /*if (
         participant &&
         participant.state ===
           ("Registered" as unknown as StateParticipantOnCourse)
@@ -298,7 +305,7 @@ export default function ParticipantRegister({
           text: "El participante ya está registrado en el curso.",
         });
         return;
-      }
+      }*/
 
       const newParticipantOnCourse = await postParticipantOnCourse({
         participantId,
@@ -320,15 +327,17 @@ export default function ParticipantRegister({
     }
   };
 
-  const tableHeaders = ["Nombre del archivo", "Enlace"];
+  const tableHeaders = ["Documento", "Link"];
   const tableData = dataFiles.map((file) => ({
-    "Nombre del archivo": file.name,
-    Enlace: (
-      <Link href={file.url} target="_blank">
-        Ver documento
+    "Documento": file.name,
+    Link: (
+      <Link href={file.url} target="_blank" rel="noopener noreferrer">
+        Ver Documento
       </Link>
     ),
   }));
+  
+  
 
   const headers = ["Nombre", "Codigo", "Estado", "Action"];
   const headersFiles = ["Nombre", "Action"];
@@ -339,6 +348,35 @@ export default function ParticipantRegister({
     { name: "Documento" },
     { name: "Documento" },
   ];*/
+
+  /*const TableFile = ({ headers, data }) => {
+    return (
+      <table className="min-w-full bg-white">
+        <thead>
+          <tr>
+            {headers.map((header, index) => (
+              <th key={index} className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase tracking-wider">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, rowIndex) => (
+            <tr key={rowIndex} className="even:bg-gray-50">
+              {headers.map((header, colIndex) => (
+                <td key={colIndex} className="py-2 px-4 border-b border-gray-200">
+                  {row[header]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      
+    );
+  };*/
+  
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -499,13 +537,13 @@ export default function ParticipantRegister({
           Documentos Adjuntos
         </p>
         <div className="mt-6">
-          <Table
+          <TableFile
             //deleteRowFunction={deleteDocument}
             keys={["name", "url", "view"]}
             data={tableData}
             headers={tableHeaders}
             itemsPerPage={3}
-            actionColumn="delete"
+            //actionColumn="delete"
           />
         </div>
         <div className="flex justify-center mt-6">

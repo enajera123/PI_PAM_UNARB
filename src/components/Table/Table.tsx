@@ -66,7 +66,7 @@ const Table = ({
   };
 
   const getAddedParticipantText = (isAdded: string) => {
-    return isAdded === "Registered" ? "Agregado" : "Agregar al curso";
+    return isAdded === "NoRegistered" ? "Agregado" : "Agregar al curso";
   };
 
   const handleDeleteItem = (id: number) => {
@@ -76,15 +76,6 @@ const Table = ({
         showCustomAlert("¡Eliminado!", "El elemento ha sido eliminado.", "success");
       }
     });
-  };
-
-  const isValidUrl = (url: string) => {
-    try {
-      new URL(url);
-      return true;
-    } catch (_) {
-      return false;
-    }
   };
 
   const renderButtons = (item: any) => {
@@ -184,7 +175,7 @@ const Table = ({
                   doubleClickRowFunction && doubleClickRowFunction(item.id)
                 }
                 key={index}
-                className="grid bg-white dark:bg-medium-gray border-2 border-dark-gray dark:border-gray-700 text-dark-gray hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full my-3 items-center"
+                className="hover:cursor-pointer grid bg-white dark:bg-medium-gray border-2 border-dark-gray dark:border-gray-700 text-dark-gray hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full my-3 items-center"
                 style={{ gridTemplateColumns }}
               >
                 {keys.map((key, index) => (
@@ -193,7 +184,6 @@ const Table = ({
                     className="col-span-1 px-4 py-2 overflow-hidden whitespace-nowrap"
                   >
                     {key === "view" ? (
-                      isValidUrl(item.attachmentUrl) ? (
                         <a
                           href={item.attachmentUrl}
                           target="_blank"
@@ -202,9 +192,6 @@ const Table = ({
                         >
                           Ver archivo
                         </a>
-                      ) : (
-                        "URL no válida"
-                      )
                     ) : (
                       <div className="overflow-hidden">{item[key]}</div>
                     )}

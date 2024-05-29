@@ -13,8 +13,16 @@ export async function getParticipants() {
 export async function getParticipantById(id: number) {
   try {
     const response = await axios.get(`/api/participants/${id}`);
-    console.log("participant: ", response.data);
-    return response.data;
+    const participant = response.data;
+
+    if (participant.ParticipantAttachments) {
+      participant.ParticipantAttachments = participant.ParticipantAttachments.map(attachment => ({
+        ...attachment,
+        attachmentUrl: `data:application/octet-stream;base64,${attachment.attachmentUrl}`,
+      }));
+    }
+
+    return participant;
   } catch (error) {
     console.error(error);
     return null;
