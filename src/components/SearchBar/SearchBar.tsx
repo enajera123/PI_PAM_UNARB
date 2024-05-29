@@ -55,7 +55,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, selectedOption, setSelectedOptio
                 </select>
             )}
             <button
-                className="text-white bg-dark-red flex items-center justify-center rounded-lg h-10 px-12"
+                className="text-white bg-dark-red flex items-center justify-center rounded-lg h-10 px-12 hover:bg-red-gradient"
                 onClick={handleSearch}
             >
                 <AiOutlineSearch size={24} />

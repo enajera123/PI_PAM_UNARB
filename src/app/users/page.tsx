@@ -1,5 +1,4 @@
 "use client"
-import Button from "@/components/Button/Button";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Table from "@/components/Table/Table";
 import { useUsersStore } from "@/store/usersStore";
@@ -46,6 +45,16 @@ const UsersPage: React.FC = () => {
             await putUser(id, user)
         }
     }
+    const mapStateToSpanish = (state: string): string => {
+        switch (state) {
+            case 'Active':
+                return 'Activo';
+            case 'Inactive':
+                return 'Inactivo';
+            default:
+                return state;
+        }
+    };
 
     return (
         <div className="container mx-auto bg-gray-gradient flex flex-col justify-center items-center h-auto my-6 py-10 px-20 rounded-2xl max-w-4xl">
@@ -59,7 +68,6 @@ const UsersPage: React.FC = () => {
                     handleSearch={handleSearch}
                     showSelect={false}
                 />
-                <Link href={'/userRegister'}><Button className="bg-red-gradient">Crear Usuario</Button></Link>
             </div>
             {filteredData.length > 0 ? (
                 <Table
@@ -67,14 +75,24 @@ const UsersPage: React.FC = () => {
                     deleteRowFunction={deleteUser}
                     doubleClickRowFunction={updateUser}
                     keys={["identification", "firstName", "firstSurname", "secondSurname", 'state']}
-                    data={filteredData}
+                    data={filteredData.map(user => ({ ...user, state: mapStateToSpanish(user.state.toString()) }))}
                     headers={["Identificación", "Nombre", "Primer Apellido", "Segundo Apellido", 'Estado',]}
                     itemsPerPage={6}
                     resetPagination={randomNumber}
-                    actionColumn= 'delete-state'
+                    actionColumn='delete-state'
+                    addButtonUrl="/userRegister"
                 />
             ) : (
-                <p>No se encontraron resultados</p>
+                <>
+            <p className="text-center">No se encontraron resultados</p>
+            <div className="flex justify-end mt-4">
+              <Link href={"/userRegister"}>
+                <button className="flex text-white items-center px-6 py-2 rounded-lg bg-dark-red hover:bg-red-gradient">
+                  Agregar
+                </button>
+              </Link>
+            </div>
+          </>
             )}
         </div>
     );
