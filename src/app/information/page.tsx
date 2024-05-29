@@ -1,12 +1,14 @@
+'use client'
 import React from 'react';
 import imagenFondo from '@/resources/InformationPageBackgroundImage.jpg';
 import Image from 'next/image';
+import ImageCarousel from '@/components/imageCarousel/imageCarousel';
 
 export default function InformationPage() {
   return (
     <div className="flex flex-col h-screen items-center">
       <div>
-        <Image src={imagenFondo}  alt="Background image for information page"/>
+        <ImageCarousel/>
       </div>
       <div className="max-w-xl">
         <div className="bg-medium-red rounded-full w-20 h-20 my-3 mx-auto"></div>
