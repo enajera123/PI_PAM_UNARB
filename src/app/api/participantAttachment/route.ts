@@ -18,21 +18,36 @@ export async function GET(req: NextRequest, res: NextResponse) {
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const participantAttachmentData = await req.json();
-    const { attachmentUrl, ...rest } = participantAttachmentData;
+    const { attachmentUrl, participantId, name } = participantAttachmentData;
+
+    if (!participantId || !name || !attachmentUrl) {
+      return res
+        .status(400)
+        .json({ message: "Todos los campos son obligatorios" });
+    }
+
+    const buffer = Buffer.from(attachmentUrl, "base64");
 
     const newParticipantAttachment = await prisma.participantAttachment.create({
       data: {
-        ...rest,
-        attachmentUrl: Buffer.from(attachmentUrl.split(",")[1], "base64"),
+        participantId,
+        name,
+        attachmentUrl: buffer,
       },
     });
 
-    return NextResponse.json(newParticipantAttachment, { status: 201 });
+    return res.status(201).json(newParticipantAttachment);
   } catch (error) {
     console.error("Error al registrar participantAttachment:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === "POST") {
+    return POST(req, res);
+  } else {
+    res.setHeader("Allow", ["POST"]);
+    return res.status(405).end(`Método ${req.method} no permitido`);
   }
 }

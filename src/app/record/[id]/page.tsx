@@ -20,7 +20,7 @@ import { usePolicyStore } from "@/store/policyStore";
 import { useCourseStore } from "@/store/coursesStore";
 import { useMedicalReportStore } from "@/store/medicalReportStore";
 import { useParticipantOnCourseStore } from "@/store/participantOnCourseStore";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { showDeleteConfirmation, showCustomAlert } from "@/utils/alerts";
 
 export default function ParticipantRegister({
@@ -41,6 +41,8 @@ export default function ParticipantRegister({
   const [expirationDatePolicy, setExpirationDatePolicy] = useState("");
   const [expirationDateReport, setExpirationDateReport] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState("");
+  const [fileUrl, setFileUrl] = useState<File>();
 
   const { getParticipantById, putParticipant, deleteParticipant } =
     useParticipantsStore();
@@ -48,14 +50,14 @@ export default function ParticipantRegister({
   const { putPolicy } = usePolicyStore();
   const { putMedicalReport } = useMedicalReportStore();
   const [participant, setParticipant] = useState<Participant | null>(null);
+  const [attachments, setAttachments] = useState<ParticipantAttachment | null>(
+    null
+  );
   const [participants, setParticipants] = useState<ParticipantOnCourse[]>([]);
   const { getCourses, courses } = useCourseStore();
   const [filteredData, setFilteredData] = useState<Course[]>([]);
-  const [data, setData] = useState([]);
-  const [policy, setPolicy] = useState("");
+  const [dataFiles, setDataFiles] = useState([]);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const participantId = searchParams.get("participantId");
 
   async function fetchParticipant() {
     const id = parseInt(params.id);
@@ -76,6 +78,54 @@ export default function ParticipantRegister({
   useEffect(() => {
     fetchParticipant();
   }, [params.id]);
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      if (
+        attachments &&
+        attachments.attachmentUrl &&
+        attachments.attachmentUrl.data
+      ) {
+        try {
+          const buffer = attachments.attachmentUrl.data;
+          const arrayBuffer = new Uint8Array(buffer).buffer;
+  
+          let mimeType = "";
+          if (fileName.endsWith(".pdf")) {
+            mimeType = "application/pdf";
+          } else if (fileName.endsWith(".docx")) {
+            mimeType =
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+          } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
+            mimeType = "image/jpeg";
+          } else if (fileName.endsWith(".png")) {
+            mimeType = "image/png";
+          } else {
+            console.error("Tipo de archivo no admitido:", fileName);
+            return;
+          }
+  
+          const blob = new Blob([arrayBuffer], { type: mimeType });
+  
+          // Cambiar el nombre del archivo aquí, si es necesario
+          const file = new File([blob], fileName, { type: mimeType });
+  
+          setFileUrl(file);
+  
+          // Actualizar el estado dataFiles
+          setDataFiles([{ name: fileName, url: file }]);
+        } catch (error) {
+          console.error("Error al cargar los documentos:", error);
+        }
+      } else {
+        console.error(
+          "No se encontraron documentos en el objeto participant."
+        );
+      }
+    };
+  
+    fetchDocuments();
+  }, [attachments]);
 
   useEffect(() => {
     const fetchPhoto = async () => {
@@ -117,6 +167,7 @@ export default function ParticipantRegister({
       setBirthDate(participant.birthDate);
       setExpirationDatePolicy(participant.Policy?.expirationDate);
       setExpirationDateReport(participant.MedicalReport?.expirationDate);
+      setFileName(participant.ParticipantAttachments.name);
     }
   }, [participant]);
 
@@ -269,15 +320,25 @@ export default function ParticipantRegister({
     }
   };
 
+  const tableHeaders = ["Nombre del archivo", "Enlace"];
+  const tableData = dataFiles.map((file) => ({
+    "Nombre del archivo": file.name,
+    Enlace: (
+      <Link href={file.url} target="_blank">
+        Ver documento
+      </Link>
+    ),
+  }));
+
   const headers = ["Nombre", "Codigo", "Estado", "Action"];
   const headersFiles = ["Nombre", "Action"];
-  const dataFiles = [
+  /*const dataFiles = [
     { name: "Documento" },
     { name: "Documento" },
     { name: "Documento" },
     { name: "Documento" },
     { name: "Documento" },
-  ];
+  ];*/
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -440,9 +501,9 @@ export default function ParticipantRegister({
         <div className="mt-6">
           <Table
             //deleteRowFunction={deleteDocument}
-            keys={["name", ""]}
-            data={dataFiles}
-            headers={["Documento", ""]}
+            keys={["name", "url", "view"]}
+            data={tableData}
+            headers={tableHeaders}
             itemsPerPage={3}
             actionColumn="delete"
           />

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParticipantsStore } from "@/store/participantsStore";
 import { usePolicyStore } from "@/store/policyStore";
 import { useMedicalReportStore } from "@/store/medicalReportStore";
@@ -12,6 +12,7 @@ import { GoPerson } from "react-icons/go";
 import { FiPhoneCall } from "react-icons/fi";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
+import { FaWhatsapp } from "react-icons/fa";
 import Button from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import Select from "@/components/Select/Select";
@@ -53,8 +54,6 @@ export default function ParticipantRegister() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFile(file);
-
     const reader = new FileReader();
     reader.onload = () => {
       const attachmentUrl = reader.result;
@@ -69,7 +68,7 @@ export default function ParticipantRegister() {
   const handleSaveParticipant = async (e) => {
     e.preventDefault();
 
-    const createParticipant = async (photoUrl = null, attachment = null) => {
+    const createParticipant = async (photoUrl = null) => {
       try {
         const participantData = {
           identification,
@@ -107,7 +106,7 @@ export default function ParticipantRegister() {
             await postMedicalReport(reportData);
           }
 
-          if (attachmentUrl) {
+          if (attachments.length > 0) {
             for (const attachment of attachments) {
               const attachmentData = {
                 participantId,
@@ -117,6 +116,7 @@ export default function ParticipantRegister() {
                   "base64"
                 ),
               };
+              console.log("attachmentData", attachmentData);
               await postParticipantAttachment(attachmentData);
             }
           }
@@ -195,6 +195,17 @@ export default function ParticipantRegister() {
             icon={<RiGraduationCapLine color="white" />}
             options={optionsScholarship}
           />
+          <Select
+            value={hasWhatsApp}
+            onChange={(e) => setHasWhatsApp(e.target.value)}
+            label="Tiene WhatsApp"
+            placeholder="Tiene WhatsApp"
+            icon={<FaWhatsapp color="white" />}
+            options={[
+              { value: "Yes", label: "Sí" },
+              { value: "No", label: "No" },
+            ]}
+          />
         </div>
         <div className="col-span-1 flex justify-center items-center">
           <Image src={logoUNAPAM} alt="logoUNAPAM" className="w-44 h-auto" />
@@ -210,9 +221,6 @@ export default function ParticipantRegister() {
                 style={{ display: "none" }}
               />
             </label>
-            {/*<Button className="bg-red-gradient">
-              Agregar Poliza Estudiantil
-            </Button>*/}
           </div>
           <div className="mt-7">
             <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
@@ -224,7 +232,6 @@ export default function ParticipantRegister() {
                 style={{ display: "none" }}
               />
             </label>
-            {/*<Button className="bg-red-gradient">Agregar Dictamen Médico</Button>*/}
           </div>
         </div>
         <div className="col-span-1">
@@ -331,7 +338,6 @@ export default function ParticipantRegister() {
         >
           Registrar
         </Button>
-        {/*<Button className="bg-red-gradient w-52">Eliminar</Button>*/}
       </div>
       <div className="container bg-white mt-6 p-4 rounded-xl">
         <p className="text-3xl font-bold text-dark-gray flex justify-center">
@@ -357,9 +363,9 @@ export default function ParticipantRegister() {
               style={{ display: "none" }}
             />
           </label>
-          {/*<Button className="bg-red-gradient w-1/3">Agregar</Button>*/}
         </div>
       </div>
     </div>
   );
 }
+

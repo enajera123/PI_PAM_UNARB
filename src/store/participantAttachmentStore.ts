@@ -44,6 +44,7 @@ export const useParticipantAttachmentStore = create<ParticipantAttachmentState>(
               newParticipantAttachment,
             ],
           }));
+          console.log("store participant attachment:", newParticipantAttachment);
           return newParticipantAttachment;
         }
         return null;

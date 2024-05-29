@@ -32,14 +32,19 @@ export async function POST(req: NextRequest, res: NextResponse) {
         data: participantData,
       });
 
-      if (ParticipantAttachments) {
-        await prisma.participantAttachment.create({
-          data: {
-            attachmentUrl: ParticipantAttachments.attachmentUrl,
-            name: ParticipantAttachments.name,
-            participantId: createdParticipant.id,
-          },
-        });
+      if (ParticipantAttachments && ParticipantAttachments.length > 0) {
+        for (const attachment of ParticipantAttachments) {
+          await prisma.participantAttachment.create({
+            data: {
+              attachmentUrl: Buffer.from(
+                attachment.attachmentUrl.split(",")[1],
+                "base64"
+              ),
+              name: attachment.name,
+              participantId: createdParticipant.id,
+            },
+          });
+        }
       }
 
       if (Policy) {
@@ -64,9 +69,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
 
     const updatedParticipant = await prisma.participant.findUnique({
-      where: {
-        id: newParticipant.id,
-      },
+      where: { id: newParticipant.id },
       include: {
         Policy: true,
         MedicalReport: true,
