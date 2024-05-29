@@ -25,15 +25,14 @@ const Home = () => {
 
   const fetchData = async () => {
     if (courseId) {
-      const participants = await getParticipantOnCourseByCourseId(
-        Number(courseId)
-      );
+      const participants = await getParticipantOnCourseByCourseId(Number(courseId));
       console.log("Curso ID:", courseId);
       if (participants) {
         const transformedParticipants = participants.map((participant) => ({
           ...participant,
           hasWhatsApp: participant.hasWhatsApp === "Yes" ? "Si" : "No",
-
+          policyExpirationDate: participant.Policy ? participant.Policy.expirationDate : "N/A",
+          medicalReportExpirationDate: participant.MedicalReport ? participant.MedicalReport.expirationDate : "N/A",
         }));
         setData(transformedParticipants);
         setFilteredData(transformedParticipants);
@@ -95,8 +94,8 @@ const Home = () => {
               "firstName",
               "firstSurname",
               "secondSurname",
-              "",
-              "",
+              "policyExpirationDate",
+              "medicalReportExpirationDate",
             ]}
             data={filteredData}
             headers={[
@@ -112,18 +111,11 @@ const Home = () => {
             resetPagination={randomNumber}
             deleteRowFunction={handleDelete}
             doubleClickRowFunction={updateParticipant}
-            addButtonUrl="/record"
+            //addButtonUrl="/record"
           />
         ) : (
           <>
             <p className="text-center">No se encontraron resultados</p>
-            <div className="flex justify-end mt-4">
-              <Link href={"/record"}>
-                <button className="flex text-white items-center px-6 py-2 rounded-lg bg-dark-red hover:bg-red-gradient">
-                  Agregar
-                </button>
-              </Link>
-            </div>
           </>
         )}
       </div>
