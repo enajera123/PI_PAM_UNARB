@@ -33,7 +33,7 @@ const Home = () => {
         const transformedParticipants = participants.map((participant) => ({
           ...participant,
           hasWhatsApp: participant.hasWhatsApp === "Yes" ? "Si" : "No",
-          
+
         }));
         setData(transformedParticipants);
         setFilteredData(transformedParticipants);
@@ -112,15 +112,20 @@ const Home = () => {
             resetPagination={randomNumber}
             deleteRowFunction={handleDelete}
             doubleClickRowFunction={updateParticipant}
+            addButtonUrl="/record"
           />
         ) : (
-          <p className="text-center">No se encontraron resultados</p>
+          <>
+            <p className="text-center">No se encontraron resultados</p>
+            <div className="flex justify-end mt-4">
+              <Link href={"/record"}>
+                <button className="flex text-white items-center px-6 py-2 rounded-lg bg-dark-red hover:bg-red-gradient">
+                  Agregar
+                </button>
+              </Link>
+            </div>
+          </>
         )}
-      </div>
-      <div className="mt-6">
-        <Link href="/record">
-          <Button className="bg-red-gradient w-60">Agregar</Button>
-        </Link>
       </div>
     </div>
   );

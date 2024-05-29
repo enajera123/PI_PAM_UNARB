@@ -8,4 +8,5 @@ export type TableProps = {
     deleteRowFunction?: (id: number) => void
     desactivateRowFunction?: (id: number) => void
     doubleClickRowFunction?: (id: number) => void
+    addButtonUrl?: string
 }

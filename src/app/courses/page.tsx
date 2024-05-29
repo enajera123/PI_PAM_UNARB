@@ -2,14 +2,11 @@
 
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Table from "@/components/Table/Table";
-import { getCourses, deleteCourse } from "@/services/coursesService";
-import { deleteParticipantsOnCourseByCourseId } from "@/services/participantOnCourseService";
 import { generateRandomNumber } from "@/utils/numbers";
 import { useEffect, useState } from "react";
-import Button from "@/components/Button/Button";
-import Link from 'next/link';
 import { useCourseStore } from "@/store/coursesStore";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const SearchCoursesPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -29,11 +26,11 @@ const SearchCoursesPage: React.FC = () => {
             setFilteredData(courses)
         }
     }, [courses])
-    
+
     const updateCourse = (id: number) => {
         router.push(`/courseRegister/${id}`)
     }
-    
+
     const desactivateRowFunction = async (id: number) => {
         const course = courses.find((u) => u.id === id);
         if (course) {
@@ -41,7 +38,7 @@ const SearchCoursesPage: React.FC = () => {
             await putCourse(id, course)
         }
     }
-    
+
     const handleSearch = () => {
         const filtered = courses.filter((item) => {
             const nameMatch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -68,21 +65,26 @@ const SearchCoursesPage: React.FC = () => {
                     desactivateRowFunction={desactivateRowFunction}
                     deleteRowFunction={deleteCourse}
                     doubleClickRowFunction={updateCourse}
-                    keys={['name', 'courseNumber']} 
+                    keys={['name', 'courseNumber']}
                     data={filteredData}
                     headers={["Nombre", "Código"]}
                     itemsPerPage={6}
                     resetPagination={randomNumber}
                     actionColumn="delete-participants"
+                    addButtonUrl="/courseRegister"
                 />
             ) : (
-                <p>No se encontraron resultados</p>
+                <>
+                    <p className="text-center">No se encontraron resultados</p>
+                    <div className="flex justify-end mt-4">
+                        <Link href={"/courseRegister"}>
+                            <button className="flex text-white items-center px-6 py-2 rounded-lg bg-dark-red hover:bg-red-gradient">
+                                Agregar
+                            </button>
+                        </Link>
+                    </div>
+                </>
             )}
-            <div className="mt-6">
-                <Link href="/courseRegister">
-                    <Button className="bg-red-gradient w-60">Agregar</Button>
-                </Link>
-            </div>
         </div>
     );
 };
