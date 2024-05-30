@@ -12,6 +12,7 @@ import { HiOutlineIdentification } from "react-icons/hi";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { LuUserCircle2 } from "react-icons/lu";
+import { FaWhatsapp } from "react-icons/fa";
 import { GoPerson } from "react-icons/go";
 import { FiPhoneCall } from "react-icons/fi";
 import { RiGraduationCapLine } from "react-icons/ri";
@@ -19,6 +20,7 @@ import { MdOutlineEmail } from "react-icons/md";
 import { useParticipantsStore } from "@/store/participantsStore";
 import { usePolicyStore } from "@/store/policyStore";
 import { useCourseStore } from "@/store/coursesStore";
+import { useParticipantAttachmentStore } from "@/store/participantAttachmentStore";
 import { useMedicalReportStore } from "@/store/medicalReportStore";
 import { useParticipantOnCourseStore } from "@/store/participantOnCourseStore";
 import { useRouter } from "next/navigation";
@@ -45,19 +47,19 @@ export default function ParticipantRegister({
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
   const [fileUrl, setFileUrl] = useState<File>();
-  const [courseRegistrations, setCourseRegistrations] = useState<{
-    [key: number]: boolean;
-  }>({});
 
   const { getParticipantById, putParticipant, deleteParticipant } =
     useParticipantsStore();
   const { postParticipantOnCourse } = useParticipantOnCourseStore();
   const { putPolicy } = usePolicyStore();
   const { putMedicalReport } = useMedicalReportStore();
+  const { postParticipantAttachment, deleteParticipantAttachment } =
+    useParticipantAttachmentStore();
   const [participant, setParticipant] = useState<Participant | null>(null);
   const [attachments, setAttachments] = useState<ParticipantAttachment | null>(
     null
   );
+  const [participantAttachments, setParticipantAttachments] = useState([]);
   const [participants, setParticipants] = useState<ParticipantOnCourse[]>([]);
   const { getCourses, courses } = useCourseStore();
   const [filteredData, setFilteredData] = useState<Course[]>([]);
@@ -86,6 +88,7 @@ export default function ParticipantRegister({
   useEffect(() => {
     fetchParticipant();
   }, [params.id]);
+
 
   useEffect(() => {
     fetchDocuments();
@@ -156,6 +159,12 @@ export default function ParticipantRegister({
     fetchDocuments();
   }, [attachments]);
 
+  /*useEffect(() => {
+    if (participant && participant.ParticipantAttachments) {
+      setParticipantAttachments(participant.ParticipantAttachments);
+    }
+  }, [participant]);*/
+
   useEffect(() => {
     const fetchPhoto = async () => {
       if (participant && participant.photo && participant.photo.data) {
@@ -194,7 +203,7 @@ export default function ParticipantRegister({
       setSecondSurname(participant.secondSurname);
       setGrade(participant.grade.toString());
       setEmail(participant.email);
-      setHasWhatsApp(participant.hasWhatsApp);
+      setHasWhatsApp(participant.hasWhatsApp.toString());
       setTypeID(participant.typeIdentification.toString());
       setBirthDate(participant.birthDate);
       setExpirationDatePolicy(participant.Policy?.expirationDate);
@@ -235,7 +244,7 @@ export default function ParticipantRegister({
     const reader = new FileReader();
     reader.onload = () => {
       const attachmentUrl = reader.result;
-      setAttachments((prevAttachments) => [
+      setParticipantAttachments((prevAttachments) => [
         ...prevAttachments,
         { name: file.name, attachmentUrl },
       ]);
@@ -283,6 +292,21 @@ export default function ParticipantRegister({
             await putMedicalReport(Number(params.id), reportData);
           }
 
+          if (participantAttachments.length > 0) {
+            for (const attachment of participantAttachments) {
+              const attachmentData = {
+                participantId,
+                name: attachment.name,
+                attachmentUrl: Buffer.from(
+                  attachment.attachmentUrl.split(",")[1],
+                  "base64"
+                ),
+              };
+              console.log("attachmentData", attachmentData);
+              await postParticipantAttachment(attachmentData);
+            }
+          }
+
           router.push("/searches");
         }
       } catch (error) {
@@ -301,7 +325,7 @@ export default function ParticipantRegister({
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDeleteParticipant = async (id: number) => {
     try {
       const result = await showDeleteConfirmation();
       if (result.isConfirmed) {
@@ -333,21 +357,6 @@ export default function ParticipantRegister({
   const addParticipantOnCourse = async (courseId: number) => {
     try {
       const participantId = parseInt(params.id);
-
-      const participant = participants.find((p) => p.id === participantId);
-      /*if (
-        participant &&
-        participant.state ===
-          ("Registered" as unknown as StateParticipantOnCourse)
-      ) {
-        Swal.fire({
-          icon: "info",
-          title: "Información",
-          text: "El participante ya está registrado en el curso.",
-        });
-        return;
-      }*/
-
       const newParticipantOnCourse = await postParticipantOnCourse({
         participantId,
         courseId,
@@ -370,10 +379,22 @@ export default function ParticipantRegister({
 
   const tableHeaders = ["Documento", "Link"];
 
-  const tableData = dataFiles.map((file) => ({
+  const combinedFiles = [
+    ...dataFiles.map((file) => ({
+      name: file.name,
+      url: file.url,
+    })),
+    ...participantAttachments.map((attachment) => ({
+      name: attachment.name,
+      url: attachment.attachmentUrl,
+    })),
+  ];
+
+  const tableData = combinedFiles.map((file) => ({
     Documento: file.name,
     Link: (
       <button
+        className="flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
         onClick={() => {
           getDownloadDocument(params.id, file.name);
         }}
@@ -383,6 +404,17 @@ export default function ParticipantRegister({
     ),
   }));
   console.log("descarga", dataFiles);
+
+  const handleDeleteAttachment = async (id: number) => {
+    try {
+      await deleteParticipantAttachment(id);
+      setParticipantAttachments((prevAttachments) =>
+        prevAttachments.filter((attachment) => attachment.id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting attachment", error);
+    }
+  };
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -412,6 +444,17 @@ export default function ParticipantRegister({
             placeholder="Escolaridad"
             icon={<RiGraduationCapLine color="white" />}
             options={optionsGrade}
+          />
+          <Select
+            value={hasWhatsApp}
+            onChange={(e) => setHasWhatsApp(e.target.value)}
+            label="Tiene WhatsApp"
+            placeholder="Tiene WhatsApp"
+            icon={<FaWhatsapp color="white" />}
+            options={[
+              { value: "Yes", label: "Sí" },
+              { value: "No", label: "No" },
+            ]}
           />
         </div>
         <div className="col-span-1 flex justify-center items-center">
@@ -546,7 +589,7 @@ export default function ParticipantRegister({
           Registrar
         </Button>
         <Button
-          onClick={() => handleDelete(Number(params.id))}
+          onClick={() => handleDeleteParticipant(Number(params.id))}
           className="bg-red-gradient w-52"
         >
           Eliminar
@@ -558,12 +601,11 @@ export default function ParticipantRegister({
         </p>
         <div className="mt-6">
           <TableFile
-            //deleteRowFunction={deleteDocument}
+            deleteFunction={handleDeleteAttachment}
             keys={["name", "url", "view"]}
             data={tableData}
             headers={tableHeaders}
             itemsPerPage={3}
-            //actionColumn="delete"
           />
         </div>
         <div className="flex justify-center mt-6">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
+import { showDeleteConfirmation, showCustomAlert } from "@/utils/alerts";
 
 export type TableProps = {
   headers: Array<string>;
@@ -9,6 +10,7 @@ export type TableProps = {
   resetPagination?: number;
   keys: Array<string>;
   addButtonUrl?: string;
+  deleteFunction: (id: number) => void;
 };
 
 const TableFile = ({
@@ -17,6 +19,7 @@ const TableFile = ({
   itemsPerPage,
   resetPagination,
   addButtonUrl,
+  deleteFunction,
 }: TableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -39,7 +42,18 @@ const TableFile = ({
     }
   }, [resetPagination, setCurrentPage]);
 
-  const handleDelete = (id: number) => {};
+  const handleDelete = (id: number) => {
+    showDeleteConfirmation().then((result) => {
+      if (result.isConfirmed) {
+        deleteFunction && deleteFunction(id);
+        showCustomAlert(
+          "¡Eliminado!",
+          "El elemento ha sido eliminado.",
+          "success"
+        );
+      }
+    });
+  };
 
   return (
     <>
@@ -49,28 +63,31 @@ const TableFile = ({
             {headers.map((header, index) => (
               <th
                 key={index}
-                className="py-2 px-4 border-b-2 border-gray-200 bg-dark-red dark:bg-medium-red dark:text-white text-left text-sm leading-4 text-white-600 uppercase tracking-wider"
+                className="py-2 px-4 border-b-2 border-gray-200 bg-dark-red text-left text-sm leading-4 text-white uppercase tracking-wider"
               >
                 {header}
               </th>
             ))}
-            <th className="py-2 px-4 border-b-2 border-gray-200 bg-dark-red dark:bg-medium-red dark:text-white text-left text-sm leading-4 text-white-600 uppercase tracking-wider">
+            <th className="py-2 px-4 border-b-2 border-gray-200 bg-dark-red text-left text-sm leading-4 text-white uppercase tracking-wider">
               Acciones
             </th>
           </tr>
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="even:bg-gray-50">
+            <tr
+              key={rowIndex}
+              className="even:bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100"
+            >
               {headers.map((header, colIndex) => (
                 <td
                   key={colIndex}
-                  className="py-2 px-4 border-b border-gray-200"
+                  className="py-2 px-4 border-b border-gray-200 rounded-lg"
                 >
                   {row[header]}
                 </td>
               ))}
-              <td className="py-2 px-4 border-b border-gray-200">
+              <td className="py-2 px-4 border-b border-gray-200 rounded-lg">
                 <button
                   className="flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
                   onClick={() => handleDelete(rowIndex)}
