@@ -47,7 +47,7 @@ enum Grade {
 }
 
 interface Participant {
-    id: number;
+    id?: number;
     firstName: string;
     firstSurname: string;
     secondSurname: string;
@@ -55,10 +55,11 @@ interface Participant {
     phoneNumber: string;
     birthDate: string;
     identification: string;
+    typeIdentification: string;
     hasWhatsApp: YesOrNo;
     photo: string | null;
     grade: Grade;
-    Policy: Policy | null;
+    Policy?: Policy | null;
     MedicalReport: MedicalReport | null;
     ReferenceContacts: ReferenceContact[];
     ParticipantAttachments: ParticipantAttachment[];

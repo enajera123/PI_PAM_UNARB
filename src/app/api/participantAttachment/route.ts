@@ -43,7 +43,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   }
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default function handler(req: NextRequest, res: NextResponse) {
   if (req.method === "POST") {
     return POST(req, res);
   } else {

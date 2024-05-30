@@ -61,7 +61,7 @@ export default function ParticipantRegister({
   );
   const [participantAttachments, setParticipantAttachments] = useState([]);
   const [participants, setParticipants] = useState<ParticipantOnCourse[]>([]);
-  const { getCourses, courses } = useCourseStore();
+  const { getCourses, courses, getCourseById } = useCourseStore();
   const [filteredData, setFilteredData] = useState<Course[]>([]);
   const [dataFiles, setDataFiles] = useState([]);
   const router = useRouter();
@@ -88,7 +88,6 @@ export default function ParticipantRegister({
   useEffect(() => {
     fetchParticipant();
   }, [params.id]);
-
 
   useEffect(() => {
     fetchDocuments();
@@ -357,10 +356,16 @@ export default function ParticipantRegister({
   const addParticipantOnCourse = async (courseId: number) => {
     try {
       const participantId = parseInt(params.id);
+
+      const participant = await getParticipantById(participantId);
+      const course = await getCourseById(courseId);
+
       const newParticipantOnCourse = await postParticipantOnCourse({
         participantId,
         courseId,
         state: "Registered" as unknown as StateParticipantOnCourse,
+        Participants: participant,
+        Course: course,
       });
       if (newParticipantOnCourse) {
         Swal.fire({

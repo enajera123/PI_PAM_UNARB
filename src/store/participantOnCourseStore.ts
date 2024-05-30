@@ -19,18 +19,19 @@ export const useParticipantOnCourseStore = create<ParticipantOnCourseState>(
       set({ participantsOnCourse });
     },
 
-    getParticipantOnCourseByCourseId: async (id: number) => {
+    getParticipantOnCourseByCourseId: async (id: number): Promise<ParticipantOnCourse | null> => {
       const participantOnCourse = await getParticipantOnCourseByCourseId(id);
       set((state) => ({
         participantsOnCourse: state.participantsOnCourse.map((p) =>
           p.courseId === id ? participantOnCourse : p
         ),
       }));
+      return participantOnCourse;
     },
 
     postParticipantOnCourse: async (
       participantOnCourse: ParticipantOnCourse
-    ) => {
+    ): Promise<ParticipantOnCourse | null> => {
       try {
         const newParticipantOnCourse = await createParticipantOnCourse(
           participantOnCourse
@@ -51,7 +52,7 @@ export const useParticipantOnCourseStore = create<ParticipantOnCourseState>(
       }
     },
 
-    getParticipantOnCourseByParticipantId: async (participantId: number) => {
+    getParticipantOnCourseByParticipantId: async (participantId: number): Promise<ParticipantOnCourse | null> => {
       const participantOnCourse = await getParticipantOnCourseByParticipantId(
         participantId
       );
@@ -60,6 +61,7 @@ export const useParticipantOnCourseStore = create<ParticipantOnCourseState>(
           p.participantId === participantId ? participantOnCourse : p
         ),
       }));
+      return participantOnCourse;
     },
 
     deleteParticipantsOnCourseByCourseId: async (courseId: number) => {
