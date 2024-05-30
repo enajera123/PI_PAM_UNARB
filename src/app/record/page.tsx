@@ -34,9 +34,6 @@ export default function ParticipantRegister() {
   const [typeID, setTypeID] = useState("Nacional");
   const [hasWhatsApp, setHasWhatsApp] = useState("Yes");
   const [photoFile, setPhotoFile] = useState(null);
-  const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState("");
-  const [attachmentUrl, setAttachmentUrl] = useState(null);
   const [expirationDatePolicy, setExpirationDatePolicy] = useState("");
   const [expirationDateReport, setExpirationDateReport] = useState("");
   const [attachments, setAttachments] = useState([]);
@@ -163,8 +160,6 @@ export default function ParticipantRegister() {
   ];
 
   const deleteDocument = (id: number) => {};
-
-  const desactivateRowFunction = (id: number) => {};
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -368,4 +363,3 @@ export default function ParticipantRegister() {
     </div>
   );
 }
-

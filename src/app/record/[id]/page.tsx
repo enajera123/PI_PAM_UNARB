@@ -230,6 +230,19 @@ export default function ParticipantRegister({
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      const attachmentUrl = reader.result;
+      setAttachments((prevAttachments) => [
+        ...prevAttachments,
+        { name: file.name, attachmentUrl },
+      ]);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleUpdateParticipant = async (e) => {
     e.preventDefault();
 
@@ -554,7 +567,15 @@ export default function ParticipantRegister({
           />
         </div>
         <div className="flex justify-center mt-6">
-          <Button className="bg-red-gradient w-1/3">Agregar</Button>
+          <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+            Agregar
+            <input
+              type="file"
+              accept=".pdf,.docx,.jpg,.png"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
+          </label>
         </div>
       </div>
       <div className="container bg-white mt-6 p-4 rounded-xl">
