@@ -12,7 +12,7 @@ enum State {
     Inactive,
 }
 
- interface User {
+interface User {
     id?: number;
     firstName: string;
     firstSurname: string;
@@ -101,7 +101,7 @@ interface ParticipantOnCourse {
 };
 
 interface ReferenceContact {
-    id: number;
+    id?: number;
     firstName: string;
     firstSurname: string;
     phoneNumber: string;
@@ -111,28 +111,28 @@ interface ReferenceContact {
     secondPhoneNumber: string;
     secondRelationship: string;
     participantId: number;
-    Participant: Participant;
+    Participant?: Participant;
 };
 
 interface ParticipantHealth {
-    id: number;
+    id?: number;
     bloodType: string;
-    ParticipantDisseases: ParticipantDissease[];
-    ParticipantMedicines: ParticipantMedicine[];
+    ParticipantDisseases?: ParticipantDissease[];
+    ParticipantMedicines?: ParticipantMedicine[];
     participantId: number;
-    Participant: Participant;
+    Participant?: Participant;
 };
 
 interface ParticipantDissease {
-    id: number;
+    id?: number;
     disease: string;
     description: string | null;
-    ParticipantHealth: ParticipantHealth;
+    ParticipantHealth?: ParticipantHealth;
     participantHealthId: number;
 };
 
 interface ParticipantMedicine {
-    id: number;
+    id?: number;
     medicine: string;
     description: string | null;
     ParticipantHealth: ParticipantHealth;

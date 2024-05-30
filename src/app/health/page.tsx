@@ -58,29 +58,26 @@ export default function Health() {
 
   const fetchContacts = async (id: number) => {
     const response = await getContactByParticipantId(id);
-    if (response && response.length > 0) {
-      setContact(response[0]);
-    }
+    setContact(response);
   };
 
   const fetchParticipantHealthData = async (id: number) => {
     try {
       const response = await getParticipantHealthByParticipantId(id);
+      if (response == null) return
       console.log('getParticipantHealthByParticipantId', response);
-      if (response && response.length > 0) {
-        setParticipantHealth(response[0]);
+      setParticipantHealth(response);
 
-        // Actualizar los estados de las enfermedades y medicamentos si están disponibles
-        const diseases = response[0].ParticipantDisseases || [];
-        const medicines = response[0].ParticipantMedicines || [];
-        if (diseases.length > 0) {
-          setDiseaseName(diseases[0].disease || "");
-          setDiseaseDescription(diseases[0].description || "");
-        }
-        if (medicines.length > 0) {
-          setMedicineName(medicines[0].medicine || "");
-          setMedicineDescription(medicines[0].description || "");
-        }
+      // Actualizar los estados de las enfermedades y medicamentos si están disponibles
+      const diseases = response.ParticipantDisseases || [];
+      const medicines = response.ParticipantMedicines || [];
+      if (diseases.length > 0) {
+        setDiseaseName(diseases[0].disease || "");
+        setDiseaseDescription(diseases[0].description || "");
+      }
+      if (medicines.length > 0) {
+        setMedicineName(medicines[0].medicine || "");
+        setMedicineDescription(medicines[0].description || "");
       }
     } catch (error) {
       console.error("Error fetching participant health data:", error);
@@ -115,17 +112,17 @@ export default function Health() {
       // Verifica si ParticipantDisseases y ParticipantMedicines existen y no están vacíos
       if (participantHealth.ParticipantDisseases && participantHealth.ParticipantDisseases.length > 0) {
         setDiseaseName(participantHealth.ParticipantDisseases[0].disease);
-        setDiseaseDescription(participantHealth.ParticipantDisseases[0].description);
+        setDiseaseDescription(participantHealth.ParticipantDisseases[0].description ?? '');
       }
 
       if (participantHealth.ParticipantMedicines && participantHealth.ParticipantMedicines.length > 0) {
         setMedicineName(participantHealth.ParticipantMedicines[0].medicine);
-        setMedicineDescription(participantHealth.ParticipantMedicines[0].description);
+        setMedicineDescription(participantHealth.ParticipantMedicines[0].description ?? '');
       }
     }
   }, [participantHealth]);
 
-  const handleSaveParticipantHealth = async (e) => {
+  const handleSaveParticipantHealth = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const createParticipantHealth = async () => {
@@ -178,7 +175,7 @@ export default function Health() {
     await createParticipantHealth();
   };
 
-  const handleUpdateParticipantHealth = async (e) => {
+  const handleUpdateParticipantHealth = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const updateParticipantHealth = async () => {
@@ -230,7 +227,7 @@ export default function Health() {
     await updateParticipantHealth();
   };
 
-  const handleSaveContact = async (e) => {
+  const handleSaveContact = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const participantContact = {
       firstName,
@@ -249,7 +246,7 @@ export default function Health() {
     }
   };
 
-  const handleUpdateContact = async (e) => {
+  const handleUpdateContact = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const participantContact = {
       firstName,

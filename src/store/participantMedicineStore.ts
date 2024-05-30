@@ -33,7 +33,7 @@ export const useParticipantMedicineStore = create<ParticipantMedicineState>(
 
     postParticipantMedicine: async (
       participantMedicine: ParticipantMedicine
-    ) => {
+    ): Promise<ParticipantMedicine | null> => {
       try {
         const newParticipantMedicine = await createParticipantMedicine(
           participantMedicine
@@ -57,7 +57,7 @@ export const useParticipantMedicineStore = create<ParticipantMedicineState>(
     putParticipantMedicine: async (
       id: number,
       participantMedicine: ParticipantMedicine
-    ) => {
+    ): Promise<ParticipantMedicine | null> => {
       const updatedParticipantMedicine = await updateParticipantMedicine(
         id,
         participantMedicine

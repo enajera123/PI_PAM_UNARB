@@ -31,7 +31,7 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
       return participantHealth;
     },
 
-    postParticipantHealth: async (participantHealth: ParticipantHealth) => {
+    postParticipantHealth: async (participantHealth: ParticipantHealth): Promise<ParticipantHealth | null> => {
       try {
         const newParticipantHealth = await createParticipantHealth(
           participantHealth
@@ -88,7 +88,7 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
       return participantHealth;
     },
 
-    getParticipantHealthByParticipantId: async (participantId: number) => {
+    getParticipantHealthByParticipantId: async (participantId: number): Promise<ParticipantHealth | null> => {
       const participantHealth = await getParticipantHealthByParticipantId(
         participantId
       );
@@ -103,7 +103,7 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
     putParticipantHealthByParticipantId: async (
       id: number,
       participantHealth: ParticipantHealth
-    ) => {
+    ): Promise<ParticipantHealth | null> => {
       const updatedParticipantHealth =
         await updateParticipantHealthByParticipantId(id, participantHealth);
       set((state) => ({

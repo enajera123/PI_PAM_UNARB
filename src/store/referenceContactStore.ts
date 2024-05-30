@@ -31,7 +31,7 @@ export const useReferenceContactStore = create<ReferenceContactState>(
       return referenceContact;
     },
 
-    postContact: async (reference: ReferenceContact) => {
+    postContact: async (reference: ReferenceContact): Promise<ReferenceContact | null> => {
       try {
         const newReference = await createReference(reference);
         if (newReference) {
@@ -67,7 +67,7 @@ export const useReferenceContactStore = create<ReferenceContactState>(
       set({ contacts: searchedContacts });
     },
 
-    getContactByParticipantId: async (participantId: number) => {
+    getContactByParticipantId: async (participantId: number): Promise<ReferenceContact | null> => {
       const contact = await getreferenceContactByParticipantId(participantId);
       set((state) => ({
         contacts: state.contacts.map((p) =>
@@ -80,7 +80,7 @@ export const useReferenceContactStore = create<ReferenceContactState>(
     putContactByParticipantId: async (
       participantId: number,
       contact: ReferenceContact
-    ) => {
+    ): Promise<ReferenceContact | null> => {
       const updatedReference = await updatereferenceContactByParticipantId(
         participantId,
         contact

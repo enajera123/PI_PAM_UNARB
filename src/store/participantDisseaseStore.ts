@@ -31,7 +31,7 @@ export const useParticipantDisseaseStore = create<ParticipantDisseaseState>(
       return participantDisease;
     },
 
-    postParticipantDisease: async (participantDisease: ParticipantDissease) => {
+    postParticipantDisease: async (participantDisease: ParticipantDissease): Promise<ParticipantDissease | null> => {
       try {
         const newParticipantDisease = await createParticipantDissease(
           participantDisease
@@ -55,7 +55,7 @@ export const useParticipantDisseaseStore = create<ParticipantDisseaseState>(
     putParticipantDisease: async (
       id: number,
       participantDisease: ParticipantDissease
-    ) => {
+    ): Promise<ParticipantDissease | null> => {
       const updatedParticipantDisease = await updateParticipantDissease(
         id,
         participantDisease
