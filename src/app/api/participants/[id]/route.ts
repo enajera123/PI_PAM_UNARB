@@ -122,14 +122,17 @@ export async function GET(req: NextRequest, { params }: ParameterId) {
       },
     });
 
-    if (participant?.ParticipantAttachments) {
+   if (participant?.ParticipantAttachments) {
       participant.ParticipantAttachments = participant.ParticipantAttachments.map(attachment => ({
         ...attachment,
         attachmentUrl: `data:application/octet-stream;base64,${attachment.attachmentUrl.toString('base64')}`,
       }));
     }
 
-    return NextResponse.json(participant, { status: 200 });
+   
+
+
+   return NextResponse.json(participant, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },

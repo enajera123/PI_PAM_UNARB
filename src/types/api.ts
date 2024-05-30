@@ -44,3 +44,10 @@ export type ParameterDisease = {
 export type ParameterMedicine = {
   params: { medicine: string };
 };
+
+export type ParametersId = {
+  params: {
+    id:string;
+    name:string;
+  };
+};

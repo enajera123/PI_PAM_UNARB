@@ -23,6 +23,7 @@ import { useMedicalReportStore } from "@/store/medicalReportStore";
 import { useParticipantOnCourseStore } from "@/store/participantOnCourseStore";
 import { useRouter } from "next/navigation";
 import { showDeleteConfirmation, showCustomAlert } from "@/utils/alerts";
+import { getDownloadDocument } from "@/services/participantsService";
 
 export default function ParticipantRegister({
   params,
@@ -79,24 +80,24 @@ export default function ParticipantRegister({
       console.error(`Participant with ID ${id} not found.`);
     }
   }
-  
+
 
   useEffect(() => {
     fetchParticipant();
   }, [params.id]);
-  
+
   useEffect(() => {
     fetchDocuments();
   }, [attachments]);
-  
+
   const fetchDocuments = async () => {
     if (attachments && attachments.length > 0) {
       try {
         const fileList = attachments.map((attachment) => {
-          const mimeType = "application/octet-stream"; // Cambia esto si tienes el tipo MIME correcto
+          const mimeType = "application/octet-stream";
           const blob = new Blob([attachment.attachmentUrl], { type: mimeType });
           const file = new File([blob], attachment.name, { type: mimeType });
-  
+
           return { name: attachment.name, url: URL.createObjectURL(file) };
         });
         setDataFiles(fileList);
@@ -107,8 +108,8 @@ export default function ParticipantRegister({
       console.error("No documents found in participant object.");
     }
   };
-  
-  
+
+
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -116,7 +117,7 @@ export default function ParticipantRegister({
         try {
           const buffer = attachments.attachmentUrl.data;
           const arrayBuffer = new Uint8Array(buffer).buffer;
-  
+
           let mimeType = "";
           if (fileName.endsWith(".pdf")) {
             mimeType = "application/pdf";
@@ -132,15 +133,13 @@ export default function ParticipantRegister({
             console.error("Tipo de archivo no admitido:", fileName);
             return;
           }
-  
+
           const blob = new Blob([arrayBuffer], { type: mimeType });
-  
-          // Cambiar el nombre del archivo aquí, si es necesario
+
           const file = new File([blob], fileName, { type: mimeType });
-  
+
           setFileUrl(file);
-  
-          // Actualizar el estado dataFiles
+
           setDataFiles([{ name: fileName, url: URL.createObjectURL(file) }]);
         } catch (error) {
           console.error("Error al cargar los documentos:", error);
@@ -149,10 +148,39 @@ export default function ParticipantRegister({
         console.error("No se encontraron documentos en el objeto participant.");
       }
     };
-  
+
     fetchDocuments();
   }, [attachments]);
-  
+
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      if (participant && participant.photo && participant.photo.data) {
+        try {
+          const buffer = participant.photo.data;
+          const arrayBuffer = new Uint8Array(buffer).buffer;
+
+          const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+
+          const file = new File([blob], "photo.jpg", { type: blob.type });
+
+
+          setPhotoFile(file);
+        } catch (error) {
+          console.error("Error al cargar la foto:", error);
+        }
+      } else {
+        console.error("No se encontraron datos de foto en el objeto participant.");
+        console.error(
+          "No se encontraron datos de foto en el objeto participant."
+        );
+      }
+    };
+
+
+    fetchPhoto();
+  }, [participant]);
+
+
 
   useEffect(() => {
     console.log("Participant state updated:", participant);
@@ -170,14 +198,14 @@ export default function ParticipantRegister({
       setExpirationDatePolicy(participant.Policy?.expirationDate);
       setExpirationDateReport(participant.MedicalReport?.expirationDate);
       setFileName(participant.ParticipantAttachments.name);
-  
+
       // Set attachments state
       if (participant.ParticipantAttachments) {
         setAttachments(participant.ParticipantAttachments);
       }
     }
   }, [participant]);
-  
+
   const optionsGrade = [
     { value: "Sin_Estudio", label: "Sin estudio" },
     { value: "Primaria_Completa", label: "Primaria completa" },
@@ -328,16 +356,20 @@ export default function ParticipantRegister({
   };
 
   const tableHeaders = ["Documento", "Link"];
+
   const tableData = dataFiles.map((file) => ({
     "Documento": file.name,
     Link: (
-      <Link href={file.url} target="_blank" rel="noopener noreferrer">
+      <button onClick={()=>{getDownloadDocument(params.id,file.name)}}>
         Ver Documento
-      </Link>
-    ),
-  }));
-  
-  
+      </button>
+    ),  
+  })
+);
+console.log("descarga",dataFiles)
+
+
+
 
   const headers = ["Nombre", "Codigo", "Estado", "Action"];
   const headersFiles = ["Nombre", "Action"];
@@ -376,7 +408,7 @@ export default function ParticipantRegister({
       
     );
   };*/
-  
+
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -543,7 +575,7 @@ export default function ParticipantRegister({
             data={tableData}
             headers={tableHeaders}
             itemsPerPage={3}
-            //actionColumn="delete"
+          //actionColumn="delete"
           />
         </div>
         <div className="flex justify-center mt-6">
