@@ -136,7 +136,7 @@ interface ParticipantMedicine {
     id?: number;
     medicine: string;
     description: string | null;
-    ParticipantHealth: ParticipantHealth;
+    ParticipantHealth?: ParticipantHealth;
     participantHealthId: number;
 };
 
