@@ -8,6 +8,7 @@ import {
   deleteParticipantHealth,
   getParticipantHealthByBloodType,
   getParticipantHealthByParticipantId,
+  updateParticipantHealthByParticipantId,
 } from "@/services/participantHealthService";
 
 export const useParticipantHealthStore = create<ParticipantHealthState>(
@@ -42,7 +43,7 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
               newParticipantHealth,
             ],
           }));
-          console.log('storehealth', newParticipantHealth);
+          console.log("storehealth", newParticipantHealth);
           return newParticipantHealth;
         }
         return null;
@@ -97,6 +98,20 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
         ),
       }));
       return participantHealth;
+    },
+
+    putParticipantHealthByParticipantId: async (
+      id: number,
+      participantHealth: ParticipantHealth
+    ) => {
+      const updatedParticipantHealth =
+        await updateParticipantHealthByParticipantId(id, participantHealth);
+      set((state) => ({
+        participantsHealth: state.participantsHealth.map((p) =>
+          p.id === id ? updatedParticipantHealth : p
+        ),
+      }));
+      return updatedParticipantHealth;
     },
   })
 );

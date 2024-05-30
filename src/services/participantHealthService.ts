@@ -84,3 +84,19 @@ export async function getParticipantHealthByParticipantId(
     return null;
   }
 }
+
+export async function updateParticipantHealthByParticipantId(
+  participantId: number,
+  participantHealthData: ParticipantHealth
+) {
+  try {
+    const response = await axios.put(
+      `/api/participantHealth/byParticipantId/${participantId}`,
+      participantHealthData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating participant health:", error);
+    throw error;
+  }
+}
