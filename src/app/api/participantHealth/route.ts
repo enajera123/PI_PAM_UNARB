@@ -19,7 +19,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const participantHealthData = await req.json();
 
-    // Validaciones adicionales
     if (!participantHealthData.participantId) {
       throw new Error('Missing participantId');
     }
@@ -45,9 +44,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
     });
 
-    return NextResponse.json(newParticipantHealth, { status: 201 });
+    return NextResponse.json(newParticipantHealth, { status: 200 });
   } catch (error) {
     console.error('Error creating participant health:', error);
-    return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error', details: 'Unknown error' }, { status: 500 });
   }
 }

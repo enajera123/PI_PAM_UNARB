@@ -22,7 +22,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
         });
         return NextResponse.json(newParticipantDissease, { status: 201 });
     } catch (error) {
-        // Aquí podrías personalizar el mensaje de error según el tipo de error.
         return NextResponse.json({ error: 'Error al procesar la solicitud' }, { status: 500 });
     }
 }
