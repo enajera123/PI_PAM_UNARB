@@ -18,12 +18,12 @@ export type ReferenceContactState = {
   setContacts: (contacts: ReferenceContact[]) => void;
   getContacts: () => void;
   getContactById: (id: number) => void;
-  postContact: (contact: ReferenceContact) => void;
+  postContact: (contact: ReferenceContact) => Promise<ReferenceContact | null>;
   putContact: (id: number, contact: ReferenceContact) => void;
   deleteContact: (id: number) => void;
   searchContact: (searchTerm: string) => void;
-  getContactByParticipantId: (participantId: number) => void;
-  putContactByParticipantId: (participantId: number, contact: ReferenceContact) => void;
+  getContactByParticipantId: (participantId: number) => Promise<ReferenceContact | null>;
+  putContactByParticipantId: (participantId: number, contact: ReferenceContact) => Promise<ReferenceContact | null>;
 };
 
 export type PolicyState = {
@@ -70,11 +70,11 @@ export type ParticipantMedicineState = {
   getParticipantMedicineById: (id: number) => void;
   getParticipantMedicineByMedicine: (medicine: string) => void;
   getParticipantMedicineByParticipantId: (participantId: number) => void;
-  postParticipantMedicine: (participantMedicine: ParticipantMedicine) => void;
+  postParticipantMedicine: (participantMedicine: ParticipantMedicine) => Promise<ParticipantMedicine | null>;
   putParticipantMedicine: (
     id: number,
     participantMedicine: ParticipantMedicine
-  ) => void;
+  ) => Promise<ParticipantMedicine | null>;
   deleteParticipantMedicine: (id: number) => void;
 };
 
@@ -84,8 +84,8 @@ export type ParticipantHealthState = {
   getParticipantsHealth: () => void;
   getParticipantHealthById: (id: number) => void;
   getParticipantHealthByBloodType: (bloodType: string) => void;
-  getParticipantHealthByParticipantId: (participantId: number) => void;
-  postParticipantHealth: (participantHealth: ParticipantHealth) => void;
+  getParticipantHealthByParticipantId: (participantId: number) => Promise<ParticipantHealth | null>;
+  postParticipantHealth: (participantHealth: ParticipantHealth) => Promise<ParticipantHealth | null>;
   putParticipantHealth: (
     id: number,
     participantHealth: ParticipantHealth
@@ -94,7 +94,7 @@ export type ParticipantHealthState = {
   putParticipantHealthByParticipantId: (
     id: number,
     participantHealth: ParticipantHealth
-  ) => void;
+  ) => Promise<ParticipantHealth | null>;
 };
 
 export type ParticipantDisseaseState = {
@@ -106,11 +106,11 @@ export type ParticipantDisseaseState = {
   getParticipantDiseaseByParticipantHealthtId: (
     participantHealthId: number
   ) => void;
-  postParticipantDisease: (participantDisease: ParticipantDissease) => void;
+  postParticipantDisease: (participantDisease: ParticipantDissease) => Promise<ParticipantDissease | null>;
   putParticipantDisease: (
     id: number,
     participantDisease: ParticipantDissease
-  ) => void;
+  ) => Promise<ParticipantDissease | null>;
   deleteParticipantDisease: (id: number) => void;
 };
 
