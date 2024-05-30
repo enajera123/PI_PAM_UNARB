@@ -19,8 +19,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const participantHealthData = await req.json();
 
-    const { ParticipantDisseases, ParticipantMedicines, ...participantHealth } =
-      participantHealthData;
+    // Validaciones adicionales
+    if (!participantHealthData.participantId) {
+      throw new Error('Missing participantId');
+    }
+    if (!participantHealthData.bloodType) {
+      throw new Error('Missing bloodType');
+    }
+
+    const { ParticipantDisseases, ParticipantMedicines, ...participantHealth } = participantHealthData;
 
     const newParticipantHealth = await prisma.participantHealth.create({
       data: {
@@ -29,7 +36,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           create: ParticipantDisseases,
         },
         ParticipantMedicines: {
-          create: ParticipantMedicines, 
+          create: ParticipantMedicines,
         },
       },
       include: {
@@ -40,6 +47,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     return NextResponse.json(newParticipantHealth, { status: 201 });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    console.error('Error creating participant health:', error);
+    return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });
   }
 }

@@ -23,10 +23,16 @@ const Table = ({
 
   const gridTemplateColumns =
     actionColumn === "none"
-      ? `minmax(150px, 1fr) repeat(${headers.length - 2}, minmax(0, 1fr)) minmax(180px, 1fr)`
+      ? `minmax(150px, 1fr) repeat(${
+          headers.length - 2
+        }, minmax(0, 1fr)) minmax(180px, 1fr)`
       : actionColumn === "delete"
-      ? `minmax(150px, 1fr) repeat(${headers.length - 1}, minmax(0, 1fr)) minmax(0, 1fr)`
-      : `minmax(150px, 1fr) repeat(${headers.length - 1}, minmax(0, 1fr)) minmax(210px, 1fr)`;
+      ? `minmax(150px, 1fr) repeat(${
+          headers.length - 1
+        }, minmax(0, 1fr)) minmax(0, 1fr)`
+      : `minmax(150px, 1fr) repeat(${
+          headers.length - 1
+        }, minmax(0, 1fr)) minmax(210px, 1fr)`;
 
   const getCurrentPageData = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -73,7 +79,11 @@ const Table = ({
     showDeleteConfirmation().then((result) => {
       if (result.isConfirmed) {
         deleteRowFunction && deleteRowFunction(id);
-        showCustomAlert("¡Eliminado!", "El elemento ha sido eliminado.", "success");
+        showCustomAlert(
+          "¡Eliminado!",
+          "El elemento ha sido eliminado.",
+          "success"
+        );
       }
     });
   };
@@ -103,7 +113,9 @@ const Table = ({
             >
               Eliminar
             </button>
-            <Link href={{ pathname: "/participants", query: { courseId: item.id } }}>
+            <Link
+              href={{ pathname: "/participants", query: { courseId: item.id } }}
+            >
               <button className={buttonClass}>Participantes</button>
             </Link>
           </>
@@ -160,12 +172,17 @@ const Table = ({
             style={{ gridTemplateColumns }}
           >
             {headers.map((header) => (
-              <div key={header} className="col-span-1 px-4 py-3 flex items-center justify-start">
+              <div
+                key={header}
+                className="col-span-1 px-4 py-3 flex items-center justify-start"
+              >
                 {header}
               </div>
             ))}
             {actionColumn !== "none" && (
-              <div className="col-span-1 px-4 py-3 flex items-center justify-start">Acciones</div>
+              <div className="col-span-1 px-4 py-3 flex items-center justify-start">
+                Acciones
+              </div>
             )}
           </div>
           <div>
@@ -184,14 +201,14 @@ const Table = ({
                     className="col-span-1 px-4 py-2 overflow-hidden whitespace-nowrap"
                   >
                     {key === "view" ? (
-                        <a
-                          href={item.attachmentUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 underline"
-                        >
-                          Ver archivo
-                        </a>
+                      <a
+                        href={item.attachmentUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        Ver archivo
+                      </a>
                     ) : (
                       <div className="overflow-hidden">{item[key]}</div>
                     )}
@@ -228,7 +245,11 @@ const Table = ({
               <div className="relative">
                 <div
                   className="absolute flex text-sm items-center justify-center text-medium-gray pl-16 pr-8 py-2 bg-dark-gray font-bold rounded-full shadow-md"
-                  style={{ top: "50%", left: "100%", transform: "translate(-50%, -50%)" }}
+                  style={{
+                    top: "50%",
+                    left: "100%",
+                    transform: "translate(-50%, -50%)",
+                  }}
                 >
                   {currentPage}/{totalPages}
                 </div>
@@ -237,13 +258,15 @@ const Table = ({
           )}
         </div>
         <div className="flex items-center">
-          {addButtonUrl && (
-            <Link href={addButtonUrl}>
-              <button className="flex text-white items-center px-6 py-2 rounded-lg bg-dark-red hover:bg-red-gradient">
-                Agregar
-              </button>
-            </Link>
-          )}
+          {addButtonUrl &&
+            actionColumn !== "add-participant" &&
+            actionColumn !== "delete-participants" && (
+              <Link href={addButtonUrl}>
+                <button className="flex text-white items-center px-6 py-2 rounded-lg bg-dark-red hover:bg-red-gradient">
+                  Agregar
+                </button>
+              </Link>
+            )}
         </div>
       </div>
     </div>

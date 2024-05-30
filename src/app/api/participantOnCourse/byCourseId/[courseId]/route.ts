@@ -19,7 +19,11 @@ export async function GET(req: NextRequest, { params }: ParameterCourseId) {
                 id: {
                     in: participantIds
                 }
-            }
+            },
+            include: {
+                Policy: true,
+                MedicalReport: true,
+            },
         });
 
         return NextResponse.json(participants, { status: 200 });
