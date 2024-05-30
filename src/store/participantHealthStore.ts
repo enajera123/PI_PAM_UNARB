@@ -42,6 +42,7 @@ export const useParticipantHealthStore = create<ParticipantHealthState>(
               newParticipantHealth,
             ],
           }));
+          console.log('storehealth', newParticipantHealth);
           return newParticipantHealth;
         }
         return null;
