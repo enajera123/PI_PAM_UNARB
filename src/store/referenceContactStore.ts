@@ -7,6 +7,7 @@ import {
   updateReference,
   deleteReference,
   searchContacts,
+  getreferenceContactByParticipantId,
 } from "@/services/referenceContactService";
 
 export const useReferenceContactStore = create<ReferenceContactState>(
@@ -63,6 +64,16 @@ export const useReferenceContactStore = create<ReferenceContactState>(
     searchContact: async (searchTerm: string) => {
       const searchedContacts = await searchContacts(searchTerm);
       set({ contacts: searchedContacts });
+    },
+
+    getContactByParticipantId: async (participantId: number) => {
+      const contact = await getreferenceContactByParticipantId(participantId);
+      set((state) => ({
+        contacts: state.contacts.map((p) =>
+          p.participantId === participantId ? contact : p
+        ),
+      }));
+      return contact;
     },
   })
 );

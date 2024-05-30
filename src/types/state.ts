@@ -22,6 +22,7 @@ export type ReferenceContactState = {
   putContact: (id: number, contact: ReferenceContact) => void;
   deleteContact: (id: number) => void;
   searchContact: (searchTerm: string) => void;
+  getContactByParticipantId: (participantId: number) => void;
 };
 
 export type PolicyState = {

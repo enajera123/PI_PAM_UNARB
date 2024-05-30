@@ -45,7 +45,9 @@ export default function ParticipantRegister({
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
   const [fileUrl, setFileUrl] = useState<File>();
-  const [courseRegistrations, setCourseRegistrations] = useState<{ [key: number]: boolean }>({});
+  const [courseRegistrations, setCourseRegistrations] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   const { getParticipantById, putParticipant, deleteParticipant } =
     useParticipantsStore();
@@ -81,7 +83,6 @@ export default function ParticipantRegister({
     }
   }
 
-
   useEffect(() => {
     fetchParticipant();
   }, [params.id]);
@@ -109,11 +110,13 @@ export default function ParticipantRegister({
     }
   };
 
-
-
   useEffect(() => {
     const fetchDocuments = async () => {
-      if (attachments && attachments.attachmentUrl && attachments.attachmentUrl.data) {
+      if (
+        attachments &&
+        attachments.attachmentUrl &&
+        attachments.attachmentUrl.data
+      ) {
         try {
           const buffer = attachments.attachmentUrl.data;
           const arrayBuffer = new Uint8Array(buffer).buffer;
@@ -122,7 +125,8 @@ export default function ParticipantRegister({
           if (fileName.endsWith(".pdf")) {
             mimeType = "application/pdf";
           } else if (fileName.endsWith(".docx")) {
-            mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            mimeType =
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
           } else if (fileName.endsWith(".doc")) {
             mimeType = "application/msword";
           } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
@@ -159,28 +163,26 @@ export default function ParticipantRegister({
           const buffer = participant.photo.data;
           const arrayBuffer = new Uint8Array(buffer).buffer;
 
-          const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+          const blob = new Blob([arrayBuffer], { type: "image/jpeg" });
 
           const file = new File([blob], "photo.jpg", { type: blob.type });
-
 
           setPhotoFile(file);
         } catch (error) {
           console.error("Error al cargar la foto:", error);
         }
       } else {
-        console.error("No se encontraron datos de foto en el objeto participant.");
+        console.error(
+          "No se encontraron datos de foto en el objeto participant."
+        );
         console.error(
           "No se encontraron datos de foto en el objeto participant."
         );
       }
     };
 
-
     fetchPhoto();
   }, [participant]);
-
-
 
   useEffect(() => {
     console.log("Participant state updated:", participant);
@@ -198,8 +200,6 @@ export default function ParticipantRegister({
       setExpirationDatePolicy(participant.Policy?.expirationDate);
       setExpirationDateReport(participant.MedicalReport?.expirationDate);
       setFileName(participant.ParticipantAttachments.name);
-
-      // Set attachments state
       if (participant.ParticipantAttachments) {
         setAttachments(participant.ParticipantAttachments);
       }
@@ -344,7 +344,7 @@ export default function ParticipantRegister({
         Swal.fire({
           icon: "success",
           title: "Éxito",
-          text: "Participante agregado al curso correctamente.",
+          text: "Participante agregado al curso exitosamente.",
         });
         return;
       } else {
@@ -358,57 +358,18 @@ export default function ParticipantRegister({
   const tableHeaders = ["Documento", "Link"];
 
   const tableData = dataFiles.map((file) => ({
-    "Documento": file.name,
+    Documento: file.name,
     Link: (
-      <button onClick={()=>{getDownloadDocument(params.id,file.name)}}>
+      <button
+        onClick={() => {
+          getDownloadDocument(params.id, file.name);
+        }}
+      >
         Ver Documento
       </button>
-    ),  
-  })
-);
-console.log("descarga",dataFiles)
-
-
-
-
-  const headers = ["Nombre", "Codigo", "Estado", "Action"];
-  const headersFiles = ["Nombre", "Action"];
-  /*const dataFiles = [
-    { name: "Documento" },
-    { name: "Documento" },
-    { name: "Documento" },
-    { name: "Documento" },
-    { name: "Documento" },
-  ];*/
-
-  /*const TableFile = ({ headers, data }) => {
-    return (
-      <table className="min-w-full bg-white">
-        <thead>
-          <tr>
-            {headers.map((header, index) => (
-              <th key={index} className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase tracking-wider">
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="even:bg-gray-50">
-              {headers.map((header, colIndex) => (
-                <td key={colIndex} className="py-2 px-4 border-b border-gray-200">
-                  {row[header]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
-    );
-  };*/
-
+    ),
+  }));
+  console.log("descarga", dataFiles);
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -445,12 +406,26 @@ console.log("descarga",dataFiles)
         </div>
         <div className="col-span-1">
           <div className="mt-7">
-            <Button className="bg-red-gradient">
+            <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
               Agregar Poliza Estudiantil
-            </Button>
+              <input
+                type="file"
+                accept=".pdf,.docx,.jpg,.png"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+            </label>
           </div>
           <div className="mt-7">
-            <Button className="bg-red-gradient">Agregar Dictamen Médico</Button>
+            <label className="bg-red-gradient cursor-pointer text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+              Agregar Dictamen Médico
+              <input
+                type="file"
+                accept=".pdf,.docx,.jpg,.png"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+            </label>
           </div>
         </div>
         <div className="col-span-1">
@@ -575,7 +550,7 @@ console.log("descarga",dataFiles)
             data={tableData}
             headers={tableHeaders}
             itemsPerPage={3}
-          //actionColumn="delete"
+            //actionColumn="delete"
           />
         </div>
         <div className="flex justify-center mt-6">
@@ -590,8 +565,6 @@ console.log("descarga",dataFiles)
           {filteredData.length > 0 ? (
             <Table
               desactivateRowFunction={addParticipantOnCourse}
-              //deleteRowFunction={deleteCourse}
-              //doubleClickRowFunction={updateCourse}
               keys={["name", "courseNumber"]}
               data={filteredData}
               headers={["Nombre", "Código"]}
@@ -601,9 +574,6 @@ console.log("descarga",dataFiles)
           ) : (
             <p>No se encontraron resultados</p>
           )}
-        </div>
-        <div className="flex justify-center mt-6">
-          <Button className="bg-red-gradient w-1/3">Agregar</Button>
         </div>
       </div>
     </div>

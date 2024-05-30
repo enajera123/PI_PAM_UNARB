@@ -64,3 +64,17 @@ export async function searchContacts(searchTerm: string) {
     return null;
   }
 }
+
+export async function getreferenceContactByParticipantId(
+  participantId: number
+) {
+  try {
+    const response = await axios.get(
+      `/api/referenceContact/byParticipantId/${participantId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
