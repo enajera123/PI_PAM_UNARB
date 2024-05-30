@@ -21,9 +21,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const { attachmentUrl, participantId, name } = participantAttachmentData;
 
     if (!participantId || !name || !attachmentUrl) {
-      return res
-        .status(400)
-        .json({ message: "Todos los campos son obligatorios" });
+      return NextResponse.json(
+        { message: "Todos los campos son obligatorios" },
+        { status: 400 }
+      );
     }
 
     const buffer = Buffer.from(attachmentUrl, "base64");
@@ -36,18 +37,22 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
     });
 
-    return res.status(201).json(newParticipantAttachment);
+    return NextResponse.json(newParticipantAttachment, { status: 201 });
   } catch (error) {
     console.error("Error al registrar participantAttachment:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );  }
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextRequest, res: NextResponse) {
   if (req.method === "POST") {
-    return POST(req, res);
+    return POST(req,res);
   } else {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Método ${req.method} no permitido`);
+    return NextResponse.json(
+      { message: `Método ${req.method} no permitido` },
+      { status: 405, headers: { Allow: "POST" } }
+    );
   }
 }
