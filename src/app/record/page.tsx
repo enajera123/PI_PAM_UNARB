@@ -16,11 +16,12 @@ import { FaWhatsapp } from "react-icons/fa";
 import Button from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import Select from "@/components/Select/Select";
-import Table from "@/components/Table/Table";
 import Link from "next/link";
 import Image from "next/image";
+import TableFile from "@/components/TableFile/TableFile";
 import logoUNAPAM from "@/resources/LogoWhite.png";
 import { LuUserCircle2 } from "react-icons/lu";
+import { getDownloadDocument } from "@/services/participantsService";
 
 export default function ParticipantRegister() {
   const [identification, setIdentification] = useState("");
@@ -151,15 +152,27 @@ export default function ParticipantRegister() {
     { value: "DIMEX", label: "DIMEX" },
   ];
 
-  const dataFiles = [
-    { name: "Documento" },
-    { name: "Documento" },
-    { name: "Documento" },
-    { name: "Documento" },
-    { name: "Documento" },
-  ];
-
   const deleteDocument = (id: number) => {};
+const dataFiles = [
+  ...attachments.map((attachment) => ({
+    name: attachment.name,
+    url: attachment.attachmentUrl,
+  })),
+];
+
+const tableData = dataFiles.map((file) => ({
+  Documento: file.name,
+  Link: (
+    <button
+      className="flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+      onClick={() => {
+        getDownloadDocument(params.id, file.name);
+      }}
+    >
+      Ver Documento
+    </button>
+  ),
+}));
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">
@@ -339,13 +352,12 @@ export default function ParticipantRegister() {
           Documentos Adjuntos
         </p>
         <div className="mt-6">
-          <Table
-            deleteRowFunction={deleteDocument}
+          <TableFile
+            deleteFunction={deleteDocument}
             keys={["name", "url", "view"]}
-            data={attachments}
-            headers={["Documento", "URL", "Acción"]}
+            data={dataFiles}
+            headers={["Documento", "Link"]}
             itemsPerPage={3}
-            actionColumn="delete"
           />
         </div>
         <div className="flex justify-center mt-6">
