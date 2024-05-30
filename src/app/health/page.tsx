@@ -142,7 +142,7 @@ export default function Health() {
             const diseaseData = {
               disease: diseaseName,
               description: diseaseDescription,
-              participantHealthId,
+              participantHealthId: participantHealthId ?? 0,
             };
             await postParticipantDisease(diseaseData);
           }
@@ -151,7 +151,7 @@ export default function Health() {
             const medicineData = {
               medicine: medicineName,
               description: medicineDescription,
-              participantHealthId,
+              participantHealthId: participantHealthId ?? 0,
             };
             await postParticipantMedicine(medicineData);
           }
@@ -194,7 +194,7 @@ export default function Health() {
             const diseaseData = {
               disease: diseaseName,
               description: diseaseDescription,
-              participantHealthId,
+              participantHealthId: participantHealthId ?? 0,
             };
             await putParticipantDisease(participantId, diseaseData);
           }
@@ -203,7 +203,7 @@ export default function Health() {
             const medicineData = {
               medicine: medicineName,
               description: medicineDescription,
-              participantHealthId,
+              participantHealthId: participantHealthId ?? 0,
             };
             await putParticipantMedicine(participantId, medicineData);
           }
