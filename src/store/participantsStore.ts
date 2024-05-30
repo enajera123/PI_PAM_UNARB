@@ -20,7 +20,7 @@ export const useParticipantsStore = create<ParticipantState>((set) => ({
     set({ participants });
   },
 
-  getParticipantById: async (id: number) => {
+  getParticipantById: async (id: number): Promise<Participant | null> => {
     const participant = await getParticipantById(id);
     console.log("Valor de participant:", participant);
     set((state) => ({
@@ -31,7 +31,9 @@ export const useParticipantsStore = create<ParticipantState>((set) => ({
     return participant;
   },
 
-  postParticipant: async (participant: Participant) => {
+  postParticipant: async (
+    participant: Participant
+  ): Promise<Participant | null> => {
     try {
       const newParticipant = await createParticipant(participant);
       if (newParticipant) {
@@ -41,13 +43,15 @@ export const useParticipantsStore = create<ParticipantState>((set) => ({
         console.log("Nuevo participante agregado:", newParticipant);
         return newParticipant;
       }
+      return null;
     } catch (error) {
       console.error("Error al crear participante:", error);
+      return null;
       throw error;
     }
-  },  
+  },
 
-  putParticipant: async (id: number, participant: Participant) => {
+  putParticipant: async (id: number, participant: Participant): Promise<Participant | null> => {
     const updatedParticipant = await updateParticipant(id, participant);
     set((state) => ({
       participants: state.participants.map((p) =>

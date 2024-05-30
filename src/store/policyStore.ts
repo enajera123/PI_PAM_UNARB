@@ -25,7 +25,7 @@ export const usePolicyStore = create<PolicyState>((set) => ({
     return policy;
   },
 
-  postPolicy: async (policy: Policy) => {
+  postPolicy: async (policy: Policy): Promise<Policy | null> => {
     try {
       const newPolicy = await createPolicy(policy);
       if (newPolicy) {
@@ -40,7 +40,7 @@ export const usePolicyStore = create<PolicyState>((set) => ({
     }
   },
 
-  putPolicy: async (id: number, policy: Policy) => {
+  putPolicy: async (id: number, policy: Policy): Promise<Policy | null> => {
     const updatedPolicy = await updatePolicy(id, policy);
     set((state) => ({
       policys: state.policys.map((p) => (p.id === id ? updatedPolicy : p)),

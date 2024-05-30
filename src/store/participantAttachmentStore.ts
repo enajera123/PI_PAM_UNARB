@@ -20,7 +20,9 @@ export const useParticipantAttachmentStore = create<ParticipantAttachmentState>(
       set({ participantsAttachment });
     },
 
-    getParticipantAttachmentById: async (id: number) => {
+    getParticipantAttachmentById: async (
+      id: number
+    ): Promise<ParticipantAttachment | null> => {
       const participantAttachment = await getParticipantAttachmentById(id);
       set((state) => ({
         participantsAttachment: state.participantsAttachment.map((p) =>
@@ -32,7 +34,7 @@ export const useParticipantAttachmentStore = create<ParticipantAttachmentState>(
 
     postParticipantAttachment: async (
       participantAttachment: ParticipantAttachment
-    ) => {
+    ): Promise<ParticipantAttachment | null> => {
       try {
         const newParticipantAttachment = await createParticipantAttachment(
           participantAttachment
@@ -44,7 +46,10 @@ export const useParticipantAttachmentStore = create<ParticipantAttachmentState>(
               newParticipantAttachment,
             ],
           }));
-          console.log("store participant attachment:", newParticipantAttachment);
+          console.log(
+            "store participant attachment:",
+            newParticipantAttachment
+          );
           return newParticipantAttachment;
         }
         return null;
@@ -57,7 +62,7 @@ export const useParticipantAttachmentStore = create<ParticipantAttachmentState>(
     putParticipantAttachment: async (
       id: number,
       participantAttachment: ParticipantAttachment
-    ) => {
+    ): Promise<ParticipantAttachment | null> => {
       const updatedParticipantAttachment = await updateParticipantAttachment(
         id,
         participantAttachment
@@ -79,7 +84,9 @@ export const useParticipantAttachmentStore = create<ParticipantAttachmentState>(
       }));
     },
 
-    getParticipantAttachmentByParticipantId: async (participantId: number) => {
+    getParticipantAttachmentByParticipantId: async (
+      participantId: number
+    ): Promise<ParticipantAttachment | null> => {
       const participantAttachment =
         await getParticipantAttachmentByParticipantId(participantId);
       set((state) => ({

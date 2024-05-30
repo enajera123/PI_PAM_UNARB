@@ -22,8 +22,13 @@ export type ReferenceContactState = {
   putContact: (id: number, contact: ReferenceContact) => void;
   deleteContact: (id: number) => void;
   searchContact: (searchTerm: string) => void;
-  getContactByParticipantId: (participantId: number) => Promise<ReferenceContact | null>;
-  putContactByParticipantId: (participantId: number, contact: ReferenceContact) => Promise<ReferenceContact | null>;
+  getContactByParticipantId: (
+    participantId: number
+  ) => Promise<ReferenceContact | null>;
+  putContactByParticipantId: (
+    participantId: number,
+    contact: ReferenceContact
+  ) => Promise<ReferenceContact | null>;
 };
 
 export type PolicyState = {
@@ -31,8 +36,8 @@ export type PolicyState = {
   setPolicys: (policys: Policy[]) => void;
   getPolicys: () => void;
   getPolicyById: (id: number) => void;
-  postPolicy: (policy: Policy) => void;
-  putPolicy: (id: number, policy: Policy) => void;
+  postPolicy: (policy: Policy) => Promise<Policy | null>;
+  putPolicy: (id: number, policy: Policy) => Promise<Policy | null>;
   deletePolicy: (id: number) => void;
 };
 
@@ -40,12 +45,15 @@ export type ParticipantState = {
   participants: Participant[];
   setParticipants: (participants: Participant[]) => void;
   getParticipants: () => void;
-  getParticipantById: (id: number) => void;
+  getParticipantById: (id: number) => Promise<Participant | null>;
   getParticipantByEmail: (email: string) => void;
   getParticipantByIdentification: (identification: string) => void;
   getParticipantByFirstName: (firstName: string) => void;
-  postParticipant: (participant: Participant) => void;
-  putParticipant: (id: number, participant: Participant) => void;
+  postParticipant: (participant: Participant) => Promise<Participant | null>;
+  putParticipant: (
+    id: number,
+    participant: Participant
+  ) => Promise<Participant | null>;
   deleteParticipant: (id: number) => void;
 };
 
@@ -55,9 +63,15 @@ export type ParticipantOnCourseState = {
     participantsOnCourse: ParticipantOnCourse[]
   ) => void;
   getParticipantsOnCourse: () => void;
-  getParticipantOnCourseByCourseId: (id: number) => void;
-  getParticipantOnCourseByParticipantId: (participantId: number) => void;
-  postParticipantOnCourse: (participantOnCourse: ParticipantOnCourse) => void;
+  getParticipantOnCourseByCourseId: (
+    id: number
+  ) => Promise<ParticipantOnCourse | null>;
+  getParticipantOnCourseByParticipantId: (
+    participantId: number
+  ) => Promise<ParticipantOnCourse | null>;
+  postParticipantOnCourse: (
+    participantOnCourse: ParticipantOnCourse
+  ) => Promise<ParticipantOnCourse | null>;
   deleteParticipantsOnCourseByCourseId: (courseId: number) => void;
 };
 
@@ -70,7 +84,9 @@ export type ParticipantMedicineState = {
   getParticipantMedicineById: (id: number) => void;
   getParticipantMedicineByMedicine: (medicine: string) => void;
   getParticipantMedicineByParticipantId: (participantId: number) => void;
-  postParticipantMedicine: (participantMedicine: ParticipantMedicine) => Promise<ParticipantMedicine | null>;
+  postParticipantMedicine: (
+    participantMedicine: ParticipantMedicine
+  ) => Promise<ParticipantMedicine | null>;
   putParticipantMedicine: (
     id: number,
     participantMedicine: ParticipantMedicine
@@ -84,8 +100,12 @@ export type ParticipantHealthState = {
   getParticipantsHealth: () => void;
   getParticipantHealthById: (id: number) => void;
   getParticipantHealthByBloodType: (bloodType: string) => void;
-  getParticipantHealthByParticipantId: (participantId: number) => Promise<ParticipantHealth | null>;
-  postParticipantHealth: (participantHealth: ParticipantHealth) => Promise<ParticipantHealth | null>;
+  getParticipantHealthByParticipantId: (
+    participantId: number
+  ) => Promise<ParticipantHealth | null>;
+  postParticipantHealth: (
+    participantHealth: ParticipantHealth
+  ) => Promise<ParticipantHealth | null>;
   putParticipantHealth: (
     id: number,
     participantHealth: ParticipantHealth
@@ -105,8 +125,10 @@ export type ParticipantDisseaseState = {
   getParticipantDiseaseByDisease: (disease: string) => void;
   getParticipantDiseaseByParticipantHealthtId: (
     participantHealthId: number
-  ) => void;
-  postParticipantDisease: (participantDisease: ParticipantDissease) => Promise<ParticipantDissease | null>;
+  ) => Promise<ParticipantDissease | null>;
+  postParticipantDisease: (
+    participantDisease: ParticipantDissease
+  ) => Promise<ParticipantDissease | null>;
   putParticipantDisease: (
     id: number,
     participantDisease: ParticipantDissease
@@ -120,15 +142,19 @@ export type ParticipantAttachmentState = {
     participantsAttachment: ParticipantAttachment[]
   ) => void;
   getParticipantsAttachment: () => void;
-  getParticipantAttachmentById: (id: number) => void;
-  getParticipantAttachmentByParticipantId: (participantId: number) => void;
+  getParticipantAttachmentById: (
+    id: number
+  ) => Promise<ParticipantAttachment | null>;
+  getParticipantAttachmentByParticipantId: (
+    participantId: number
+  ) => Promise<ParticipantAttachment | null>;
   postParticipantAttachment: (
     participantAttachment: ParticipantAttachment
-  ) => void;
+  ) => Promise<ParticipantAttachment | null>;
   putParticipantAttachment: (
     id: number,
     participantAttachment: ParticipantAttachment
-  ) => void;
+  ) => Promise<ParticipantAttachment | null>;
   deleteParticipantAttachment: (id: number) => void;
 };
 
@@ -136,9 +162,12 @@ export type MedicalReportState = {
   reports: MedicalReport[];
   setReports: (reports: MedicalReport[]) => void;
   getMedicalReports: () => void;
-  getMedicalReportById: (id: number) => void;
-  postMedicalReport: (report: MedicalReport) => void;
-  putMedicalReport: (id: number, report: MedicalReport) => void;
+  getMedicalReportById: (id: number) => Promise<MedicalReport | null>;
+  postMedicalReport: (report: MedicalReport) => Promise<MedicalReport | null>;
+  putMedicalReport: (
+    id: number,
+    report: MedicalReport
+  ) => Promise<MedicalReport | null>;
   deleteMedicalReport: (id: number) => void;
 };
 

@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { ParameterId } from "@/types/api";
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -24,7 +25,7 @@ export async function PUT(
 
       if (ParticipantAttachments) {
         await prisma.participantAttachment.upsert({
-          where: { participantId: fetchedId },
+          where: { id: fetchedId },
           update: {
             attachmentUrl: Buffer.from(
               ParticipantAttachments.attachmentUrl.split(",")[1],
@@ -45,7 +46,7 @@ export async function PUT(
 
       if (Policy) {
         await prisma.policy.upsert({
-          where: { participantId: fetchedId },
+          where: { id: fetchedId }, 
           update: { expirationDate: Policy.expirationDate },
           create: {
             expirationDate: Policy.expirationDate,
@@ -56,7 +57,7 @@ export async function PUT(
 
       if (MedicalReport) {
         await prisma.medicalReport.upsert({
-          where: { participantId: fetchedId },
+          where: { id: fetchedId }, // Use 'id' instead of 'participantId'
           update: { expirationDate: MedicalReport.expirationDate },
           create: {
             expirationDate: MedicalReport.expirationDate,
@@ -91,6 +92,7 @@ export async function PUT(
   }
 }
 
+
 export async function DELETE(req: NextRequest, { params }: ParameterId) {
   try {
     const fetchedId = parseInt(params.id);
@@ -107,8 +109,7 @@ export async function DELETE(req: NextRequest, { params }: ParameterId) {
       { status: 500 }
     );
   }
-}
-export async function GET(req: NextRequest, { params }: ParameterId) {
+}export async function GET(req: NextRequest, { params }: ParameterId) {
   try {
     const fetchedId = parseInt(params.id);
     const participant = await prisma.participant.findUnique({
@@ -122,17 +123,18 @@ export async function GET(req: NextRequest, { params }: ParameterId) {
       },
     });
 
-   if (participant?.ParticipantAttachments) {
-      participant.ParticipantAttachments = participant.ParticipantAttachments.map(attachment => ({
-        ...attachment,
-        attachmentUrl: `data:application/octet-stream;base64,${attachment.attachmentUrl.toString('base64')}`,
-      }));
+    if (participant?.ParticipantAttachments) {
+      participant.ParticipantAttachments = participant.ParticipantAttachments.map(
+        (attachment) => ({
+          ...attachment,
+          attachmentUrl: Buffer.isBuffer(attachment.attachmentUrl)
+            ? attachment.attachmentUrl
+            : Buffer.from(attachment.attachmentUrl, "base64"),
+        })
+      );
     }
 
-   
-
-
-   return NextResponse.json(participant, { status: 200 });
+    return NextResponse.json(participant, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },

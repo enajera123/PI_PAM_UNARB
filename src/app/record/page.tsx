@@ -23,6 +23,11 @@ import logoUNAPAM from "@/resources/LogoWhite.png";
 import { LuUserCircle2 } from "react-icons/lu";
 import { getDownloadDocument } from "@/services/participantsService";
 
+interface Attachment {
+  name: string;
+  attachmentUrl: string | ArrayBuffer | null;
+}
+
 export default function ParticipantRegister() {
   const [identification, setIdentification] = useState("");
   const [name, setName] = useState("");
@@ -34,10 +39,10 @@ export default function ParticipantRegister() {
   const [date, setBirthDate] = useState("");
   const [typeID, setTypeID] = useState("Nacional");
   const [hasWhatsApp, setHasWhatsApp] = useState("Yes");
-  const [photoFile, setPhotoFile] = useState(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [expirationDatePolicy, setExpirationDatePolicy] = useState("");
   const [expirationDateReport, setExpirationDateReport] = useState("");
-  const [attachments, setAttachments] = useState([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   const { postParticipant } = useParticipantsStore();
   const { postParticipantAttachment } = useParticipantAttachmentStore();
@@ -45,13 +50,14 @@ export default function ParticipantRegister() {
   const { postMedicalReport } = useMedicalReportStore();
   const router = useRouter();
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
     setPhotoFile(file);
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
       const attachmentUrl = reader.result;
@@ -153,26 +159,26 @@ export default function ParticipantRegister() {
   ];
 
   const deleteDocument = (id: number) => {};
-const dataFiles = [
-  ...attachments.map((attachment) => ({
-    name: attachment.name,
-    url: attachment.attachmentUrl,
-  })),
-];
+  const dataFiles = [
+    ...attachments.map((attachment) => ({
+      name: attachment.name,
+      url: attachment.attachmentUrl,
+    })),
+  ];
 
-const tableData = dataFiles.map((file) => ({
-  Documento: file.name,
-  Link: (
-    <button
-      className="flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
-      onClick={() => {
-        getDownloadDocument(params.id, file.name);
-      }}
-    >
-      Ver Documento
-    </button>
-  ),
-}));
+  const tableData = dataFiles.map((file) => ({
+    Documento: file.name,
+    Link: (
+      <button
+        className="flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
+        onClick={() => {
+          getDownloadDocument(file.name);
+        }}
+      >
+        Ver Documento
+      </button>
+    ),
+  }));
 
   return (
     <div className="container mx-auto bg-gray-gradient p-10 h-auto max-w-4xl my-4 rounded-md gap-4">

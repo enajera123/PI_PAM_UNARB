@@ -25,7 +25,7 @@ export const useMedicalReportStore = create<MedicalReportState>((set) => ({
     return report;
   },
 
-  postMedicalReport: async (report: MedicalReport) => {
+  postMedicalReport: async (report: MedicalReport): Promise<MedicalReport | null> => {
     try {
       const newReport = await createMedicalReport(report);
       if (newReport) {
@@ -40,7 +40,7 @@ export const useMedicalReportStore = create<MedicalReportState>((set) => ({
     }
   },
 
-  putMedicalReport: async (id: number, report: MedicalReport) => {
+  putMedicalReport: async (id: number, report: MedicalReport): Promise<MedicalReport | null> => {
     const updatedReport = await updateMedicalReport(id, report);
     set((state) => ({
       reports: state.reports.map((r) => (r.id === id ? updatedReport : r)),

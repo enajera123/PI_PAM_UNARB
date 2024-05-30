@@ -35,7 +35,6 @@ export async function PUT(req: NextRequest, { params }: ParameterParticipantId) 
 
     const { ParticipantDisseases, ParticipantMedicines, ...participantHealth } = participantHealthData;
 
-    // Actualizar ParticipantHealth
     const updatedParticipantHealth = await prisma.participantHealth.update({
       where: {
         participantId: fetchedParticipantId,
@@ -45,12 +44,11 @@ export async function PUT(req: NextRequest, { params }: ParameterParticipantId) 
       },
     });
 
-    // Procesar enfermedades
     if (ParticipantDisseases && ParticipantDisseases.length > 0) {
       for (const disease of ParticipantDisseases) {
         await prisma.participantDissease.upsert({
           where: {
-            id: disease.id || 0, // Usa el ID si existe, de lo contrario crea uno nuevo
+            id: disease.id || 0, 
           },
           update: {
             disease: disease.disease,
@@ -65,12 +63,11 @@ export async function PUT(req: NextRequest, { params }: ParameterParticipantId) 
       }
     }
 
-    // Procesar medicamentos
     if (ParticipantMedicines && ParticipantMedicines.length > 0) {
       for (const medicine of ParticipantMedicines) {
         await prisma.participantMedicine.upsert({
           where: {
-            id: medicine.id || 0, // Usa el ID si existe, de lo contrario crea uno nuevo
+            id: medicine.id || 0,
           },
           update: {
             medicine: medicine.medicine,
@@ -85,7 +82,6 @@ export async function PUT(req: NextRequest, { params }: ParameterParticipantId) 
       }
     }
 
-    // Obtener los datos actualizados
     const response = await prisma.participantHealth.findUnique({
       where: {
         participantId: fetchedParticipantId,
