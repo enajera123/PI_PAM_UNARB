@@ -60,24 +60,24 @@ interface Participant {
     photo: string | null;
     grade: Grade;
     Policy?: Policy | null;
-    MedicalReport: MedicalReport | null;
-    ReferenceContacts: ReferenceContact[];
-    ParticipantAttachments: ParticipantAttachment[];
-    interfaceIdentification: interfaceIdentification;
-    ParticipantHealths: ParticipantHealth | null;
-    ParticipantsOnCourses: ParticipantOnCourse[];
+    MedicalReport?: MedicalReport | null;
+    ReferenceContacts?: ReferenceContact[];
+    ParticipantAttachments?: ParticipantAttachment[];
+    interfaceIdentification?: interfaceIdentification;
+    ParticipantHealths?: ParticipantHealth | null;
+    ParticipantsOnCourses?: ParticipantOnCourse[];
 };
 
 interface MedicalReport {
-    id: number;
+    id?: number;
     expirationDate: string;
-    participant: Participant;
+    participant?: Participant;
 };
 
 interface Policy {
-    id: number;
+    id?: number;
     expirationDate: string;
-    participant: Participant;
+    participant?: Participant;
 };
 
 interface ParticipantAttachment {
