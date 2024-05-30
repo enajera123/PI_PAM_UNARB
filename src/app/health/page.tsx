@@ -14,8 +14,10 @@ import { BiInjection } from "react-icons/bi";
 import { useParticipantDisseaseStore } from "@/store/participantDisseaseStore";
 import { useParticipantHealthStore } from "@/store/participantHealthStore";
 import { useParticipantMedicineStore } from "@/store/participantMedicineStore";
+import { useReferenceContactStore } from "@/store/referenceContactStore";
 import { useRouter, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
+import { showDeleteConfirmation, showCustomAlert } from "@/utils/alerts";
 
 export default function Health() {
   const [bloodType, setBloodType] = useState("");
@@ -25,10 +27,22 @@ export default function Health() {
   const [medicineName, setMedicineName] = useState("");
   const [medicineDescription, setMedicineDescription] = useState("");
 
+  //Constact
+  const [firstName, setFirstName] = useState("");
+  const [firstSurname, setFirstSurname] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [relationship, setRelationship] = useState("");
+  const [secondFirstName, setSecondFirstName] = useState("");
+  const [secondFirstSurname, setSecondFirstSurname] = useState("");
+  const [secondPhoneNumber, setSecondPhoneNumber] = useState("");
+  const [secondRelationship, setSecondRelationship] = useState("");
+
   const { postParticipantDisease, putParticipantDisease } = useParticipantDisseaseStore();
   const { postParticipantHealth, getParticipantHealthByParticipantId, putParticipantHealthByParticipantId, deleteParticipantHealth } = useParticipantHealthStore();
   const { postParticipantMedicine, putParticipantMedicine } = useParticipantMedicineStore();
   const [participantHealth, setParticipantHealth] = useState<ParticipantHealth | null>(null);
+  const [contact, setContact] = useState<ReferenceContact | null>(null);
+  const { postContact, getContactByParticipantId, putContactByParticipantId, deleteContact } = useReferenceContactStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -38,8 +52,16 @@ export default function Health() {
       const id = parseInt(participantIdFromUrl, 10);
       setParticipantId(id);
       fetchParticipantHealthData(id);
+      fetchContacts(id);
     }
   }, []);
+
+  const fetchContacts = async (id: number) => {
+    const response = await getContactByParticipantId(id);
+    if (response && response.length > 0) {
+      setContact(response[0]);
+    }
+  };
 
   const fetchParticipantHealthData = async (id: number) => {
     try {
@@ -70,7 +92,19 @@ export default function Health() {
     }
   };
 
-
+  useEffect(() => {
+    console.log("Participant contact:", contact);
+    if (contact) {
+      setFirstName(contact.firstName);
+      setFirstSurname(contact.firstSurname);
+      setPhoneNumber(contact.phoneNumber);
+      setRelationship(contact.relationship);
+      setSecondFirstName(contact.secondFirstName);
+      setSecondFirstSurname(contact.secondFirstSurname);
+      setSecondPhoneNumber(contact.secondPhoneNumber);
+      setSecondRelationship(contact.secondRelationship);
+    }
+  }, [contact]);
 
   useEffect(() => {
     console.log("Participant state updated:", participantHealth);
@@ -196,6 +230,61 @@ export default function Health() {
     await updateParticipantHealth();
   };
 
+  const handleSaveContact = async (e) => {
+    e.preventDefault();
+    const participantContact = {
+      firstName,
+      firstSurname,
+      phoneNumber,
+      relationship,
+      secondFirstName,
+      secondFirstSurname,
+      secondPhoneNumber,
+      secondRelationship,
+      participantId,
+    };
+    const response = await postContact(participantContact)
+    if (response) {
+      router.push('/searches')
+    }
+  };
+
+  const handleUpdateContact = async (e) => {
+    e.preventDefault();
+    const participantContact = {
+      firstName,
+      firstSurname,
+      phoneNumber,
+      relationship,
+      secondFirstName,
+      secondFirstSurname,
+      secondPhoneNumber,
+      secondRelationship,
+      participantId,
+    };
+    const response = await putContactByParticipantId(participantId, participantContact)
+    if (response) {
+      router.push('/searches')
+    }
+  };
+
+  const handleDeleteContact = async (id: number) => {
+    try {
+      const result = await showDeleteConfirmation();
+      if (result.isConfirmed) {
+        await deleteContact(id);
+        showCustomAlert(
+          "¡Eliminado!",
+          "El contacto del participante ha sido eliminado.",
+          "success"
+        );
+        router.push("/searches");
+      }
+    } catch (error) {
+      console.error("Error deleting participant contact:", error);
+    }
+  };
+
 
   const optionsBloodType = [
     { value: "A+", label: "A+" },
@@ -287,6 +376,8 @@ export default function Health() {
       <div className="flex-initial w-1/4">
         <p className="text-xl font-bold text-light-gray">Personas de Contacto</p>
         <Select
+          value={relationship}
+          onChange={(e) => setRelationship(e.target.value)}
           label="Parentesco"
           placeholder="Parentesco"
           icon={<GoPersonAdd color="white" />}
@@ -296,6 +387,8 @@ export default function Health() {
       <div className="flex items-center">
         <div className="flex-initial w-1/3">
           <InputField
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             label="Nombre"
             placeholder="Nombre"
             iconStart={<GoPerson color="white" />}
@@ -303,6 +396,8 @@ export default function Health() {
         </div>
         <div className="flex-initial w-1/3 pl-5">
           <InputField
+            value={firstSurname}
+            onChange={(e) => setFirstSurname(e.target.value)}
             label="Primer Apellido"
             placeholder="Primer Apellido"
             iconStart={<GoPerson color="white" />}
@@ -310,6 +405,8 @@ export default function Health() {
         </div>
         <div className="flex-initial w-1/3 pl-5">
           <InputField
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             label="Teléfono"
             placeholder="Teléfono"
             iconStart={<FiPhoneCall color="white" />}
@@ -318,6 +415,8 @@ export default function Health() {
       </div>
       <div className="flex-initial w-1/4">
         <Select
+          value={secondRelationship}
+          onChange={(e) => setSecondRelationship(e.target.value)}
           label="Parentesco"
           placeholder="Parentesco"
           icon={<GoPersonAdd color="white" />}
@@ -327,6 +426,8 @@ export default function Health() {
       <div className="flex items-center">
         <div className="flex-initial w-1/3">
           <InputField
+            value={secondFirstName}
+            onChange={(e) => setSecondFirstName(e.target.value)}
             label="Nombre"
             placeholder="Nombre"
             iconStart={<GoPerson color="white" />}
@@ -334,6 +435,8 @@ export default function Health() {
         </div>
         <div className="flex-initial w-1/3 pl-5">
           <InputField
+            value={secondFirstSurname}
+            onChange={(e) => setSecondFirstSurname(e.target.value)}
             label="Primer Apellido"
             placeholder="Primer Apellido"
             iconStart={<GoPerson color="white" />}
@@ -341,6 +444,8 @@ export default function Health() {
         </div>
         <div className="flex-initial w-1/3 pl-5">
           <InputField
+            value={secondPhoneNumber}
+            onChange={(e) => setSecondPhoneNumber(e.target.value)}
             label="Teléfono"
             placeholder="Teléfono"
             iconStart={<FiPhoneCall color="white" />}
@@ -350,13 +455,13 @@ export default function Health() {
       <div className="flex items-center pl-10">
         <div className="flex-initial w-1/3"></div>
         <div className="flex-initial w-1/3">
-          <Button className="bg-red-gradient w-60">Registrar</Button>
+          <Button onClick={(e) => handleSaveContact(e)} className="bg-red-gradient w-60">Registrar</Button>
         </div>
         <div className="flex-initial w-1/3">
-          <Button className="bg-red-gradient w-60">Actualizar</Button>
+          <Button onClick={(e) => handleUpdateContact(e)} className="bg-red-gradient w-60">Actualizar</Button>
         </div>
         <div className="flex-initial w-1/3">
-          <Button className="bg-red-gradient w-60">Eliminar</Button>
+          <Button onClick={() => handleDeleteContact(Number(participantId))} className="bg-red-gradient w-60">Eliminar</Button>
         </div>
       </div>
     </div>

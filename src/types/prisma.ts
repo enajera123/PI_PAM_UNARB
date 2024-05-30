@@ -104,9 +104,12 @@ interface ReferenceContact {
     id: number;
     firstName: string;
     firstSurname: string;
-    secondSurname: string;
     phoneNumber: string;
     relationship: string;
+    secondFirstName: string;
+    secondFirstSurname: string;
+    secondPhoneNumber: string;
+    secondRelationship: string;
     participantId: number;
     Participant: Participant;
 };
