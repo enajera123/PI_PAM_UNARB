@@ -69,10 +69,10 @@ export default function ParticipantRegister() {
     reader.readAsDataURL(file);
   };
 
-  const handleSaveParticipant = async (e) => {
+  const handleSaveParticipant = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const createParticipant = async (photoUrl = null) => {
+    const createParticipant = async (photoUrl: string | null) => {
       try {
         const participantData = {
           identification,
@@ -135,11 +135,11 @@ export default function ParticipantRegister() {
     if (photoFile) {
       const reader = new FileReader();
       reader.onload = async () => {
-        await createParticipant(reader.result);
+        await createParticipant(reader.result as string);
       };
       reader.readAsDataURL(photoFile);
     } else {
-      await createParticipant();
+      await createParticipant(null);
     }
   };
 
@@ -166,13 +166,14 @@ export default function ParticipantRegister() {
     })),
   ];
 
-  const tableData = dataFiles.map((file) => ({
+  const tableData = dataFiles.map((file, index) => ({
+    id: index,
     Documento: file.name,
     Link: (
       <button
         className="flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
         onClick={() => {
-          getDownloadDocument(file.name);
+          getDownloadDocument(file.id, file.name);
         }}
       >
         Ver Documento
