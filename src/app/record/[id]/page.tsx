@@ -151,7 +151,36 @@ export default function ParticipantRegister({
 
     fetchDocuments();
   }, [attachments]);
-  
+
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      if (participant && participant.photo && participant.photo.data) {
+        try {
+          const buffer = participant.photo.data;
+          const arrayBuffer = new Uint8Array(buffer).buffer;
+
+          const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+
+          const file = new File([blob], "photo.jpg", { type: blob.type });
+
+
+          setPhotoFile(file);
+        } catch (error) {
+          console.error("Error al cargar la foto:", error);
+        }
+      } else {
+        console.error("No se encontraron datos de foto en el objeto participant.");
+        console.error(
+          "No se encontraron datos de foto en el objeto participant."
+        );
+      }
+    };
+
+
+    fetchPhoto();
+  }, [participant]);
+
+
 
   useEffect(() => {
     console.log("Participant state updated:", participant);
