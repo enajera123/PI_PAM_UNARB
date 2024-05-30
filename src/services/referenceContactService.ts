@@ -78,3 +78,19 @@ export async function getreferenceContactByParticipantId(
     return null;
   }
 }
+
+export async function updatereferenceContactByParticipantId(
+  participantId: number,
+  contact: ReferenceContact
+) {
+  try {
+    const response = await axios.put(
+      `/api/referenceContact/byParticipantId/${participantId}`,
+      contact
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

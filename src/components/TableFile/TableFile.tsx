@@ -49,12 +49,12 @@ const TableFile = ({
             {headers.map((header, index) => (
               <th
                 key={index}
-                className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase tracking-wider"
+                className="py-2 px-4 border-b-2 border-gray-200 bg-dark-red dark:bg-medium-red dark:text-white text-left text-sm leading-4 text-white-600 uppercase tracking-wider"
               >
                 {header}
               </th>
             ))}
-            <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase tracking-wider">
+            <th className="py-2 px-4 border-b-2 border-gray-200 bg-dark-red dark:bg-medium-red dark:text-white text-left text-sm leading-4 text-white-600 uppercase tracking-wider">
               Acciones
             </th>
           </tr>
@@ -72,7 +72,7 @@ const TableFile = ({
               ))}
               <td className="py-2 px-4 border-b border-gray-200">
                 <button
-                  className="text-white bg-red-500 hover:bg-red-700 px-3 py-1 rounded"
+                  className="flex items-center justify-center bg-white text-dark-gray rounded-xl px-2 border border-gray-400 shadow-md hover:bg-gray-100 hover:text-gray-800"
                   onClick={() => handleDelete(rowIndex)}
                 >
                   Eliminar
