@@ -23,6 +23,7 @@ export type ReferenceContactState = {
   deleteContact: (id: number) => void;
   searchContact: (searchTerm: string) => void;
   getContactByParticipantId: (participantId: number) => void;
+  putContactByParticipantId: (participantId: number, contact: ReferenceContact) => void;
 };
 
 export type PolicyState = {
