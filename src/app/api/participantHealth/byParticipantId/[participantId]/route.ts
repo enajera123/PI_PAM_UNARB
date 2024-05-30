@@ -28,17 +28,14 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: ParameterParticipantId
-) {
+export async function PUT(req: NextRequest, { params }: ParameterParticipantId) {
   try {
     const fetchedParticipantId = parseInt(params.participantId);
     const participantHealthData = await req.json();
 
-    const { ParticipantDisseases, ParticipantMedicines, ...participantHealth } =
-      participantHealthData;
+    const { ParticipantDisseases, ParticipantMedicines, ...participantHealth } = participantHealthData;
 
+    // Actualizar ParticipantHealth
     const updatedParticipantHealth = await prisma.participantHealth.update({
       where: {
         participantId: fetchedParticipantId,
@@ -48,40 +45,47 @@ export async function PUT(
       },
     });
 
-    await prisma.participantDissease.deleteMany({
-      where: {
-        participantHealthId: updatedParticipantHealth.id,
-      },
-    });
-
-    await prisma.participantMedicine.deleteMany({
-      where: {
-        participantHealthId: updatedParticipantHealth.id,
-      },
-    });
-
-    const updatedDisseases = await Promise.all(
-      ParticipantDisseases.map(async (disease) => {
-        return await prisma.participantDissease.create({
-          data: {
-            ...disease,
+    // Procesar enfermedades
+    if (ParticipantDisseases && ParticipantDisseases.length > 0) {
+      for (const disease of ParticipantDisseases) {
+        await prisma.participantDissease.upsert({
+          where: {
+            id: disease.id || 0, // Usa el ID si existe, de lo contrario crea uno nuevo
+          },
+          update: {
+            disease: disease.disease,
+            description: disease.description,
+          },
+          create: {
+            disease: disease.disease,
+            description: disease.description,
             participantHealthId: updatedParticipantHealth.id,
           },
         });
-      })
-    );
+      }
+    }
 
-    const updatedMedicines = await Promise.all(
-      ParticipantMedicines.map(async (medicine) => {
-        return await prisma.participantMedicine.create({
-          data: {
-            ...medicine,
+    // Procesar medicamentos
+    if (ParticipantMedicines && ParticipantMedicines.length > 0) {
+      for (const medicine of ParticipantMedicines) {
+        await prisma.participantMedicine.upsert({
+          where: {
+            id: medicine.id || 0, // Usa el ID si existe, de lo contrario crea uno nuevo
+          },
+          update: {
+            medicine: medicine.medicine,
+            description: medicine.description,
+          },
+          create: {
+            medicine: medicine.medicine,
+            description: medicine.description,
             participantHealthId: updatedParticipantHealth.id,
           },
         });
-      })
-    );
+      }
+    }
 
+    // Obtener los datos actualizados
     const response = await prisma.participantHealth.findUnique({
       where: {
         participantId: fetchedParticipantId,
@@ -94,6 +98,7 @@ export async function PUT(
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
+    console.error("Error updating participant health data:", error);
     return NextResponse.json(
       { error: "Error interno del servidor" },
       { status: 500 }
