@@ -89,6 +89,10 @@ export type ParticipantHealthState = {
     participantHealth: ParticipantHealth
   ) => void;
   deleteParticipantHealth: (id: number) => void;
+  putParticipantHealthByParticipantId: (
+    id: number,
+    participantHealth: ParticipantHealth
+  ) => void;
 };
 
 export type ParticipantDisseaseState = {

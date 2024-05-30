@@ -26,7 +26,7 @@ export default function Health() {
   const [medicineDescription, setMedicineDescription] = useState("");
 
   const { postParticipantDisease, putParticipantDisease } = useParticipantDisseaseStore();
-  const { postParticipantHealth, getParticipantHealthByParticipantId, putParticipantHealth, deleteParticipantHealth } = useParticipantHealthStore();
+  const { postParticipantHealth, getParticipantHealthByParticipantId, putParticipantHealthByParticipantId, deleteParticipantHealth } = useParticipantHealthStore();
   const { postParticipantMedicine, putParticipantMedicine } = useParticipantMedicineStore();
   const [participantHealth, setParticipantHealth] = useState<ParticipantHealth | null>(null);
   const router = useRouter();
@@ -154,7 +154,7 @@ export default function Health() {
       };
 
       try {
-        const response = await putParticipantHealth(participantId, participantHealthData);
+        const response = await putParticipantHealthByParticipantId(participantId, participantHealthData);
         console.log("update participantHealth", participantHealthData);
         if (response) {
           const participantHealthId = response.id;
